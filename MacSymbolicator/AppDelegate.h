@@ -7,13 +7,12 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <objc/runtime.h>
-#import "NSApplication+FixedWindowMenu.h"
 #import "MBDropZone.h"
 #import "NSString+ShellExecution.h"
 #import "NSString+RubyConvenience.h"
 #import "CrashFile.h"
 #import "DSYMFile.h"
+#import "MBCrashReporter.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, MBDropZoneDelegate>
 

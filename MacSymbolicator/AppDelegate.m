@@ -7,15 +7,10 @@
 //
 
 #import "AppDelegate.h"
-#import "MBCrashReporter.h"
 
 @implementation AppDelegate
 
-- (void)awakeFromNib {
-    Method new = class_getInstanceMethod([NSApplication class], @selector(new_removeWindowsItem:));
-    Method old = class_getInstanceMethod([NSApplication class], @selector(removeWindowsItem:));
-    method_exchangeImplementations(new, old);
-    
+- (void)awakeFromNib {    
     [_crashReportDropZone setText:@"Drop Crash Report"];
     [_crashReportDropZone setFileType:@".crash"];
     [_crashReportDropZone setDelegate:self];
