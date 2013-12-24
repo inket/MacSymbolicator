@@ -10,4 +10,6 @@
 
 @interface NSApplication (FixedWindowMenu)
 
+- (void)new_removeWindowsItem:(NSWindow *)aWindow;
+
 @end

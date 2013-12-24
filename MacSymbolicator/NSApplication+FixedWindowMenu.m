@@ -10,13 +10,9 @@
 
 @implementation NSApplication (FixedWindowMenu)
 
-- (void)removeWindowsItem:(NSWindow *)aWindow {
+- (void)new_removeWindowsItem:(NSWindow *)aWindow {
     if (aWindow != [[NSApp delegate] window])
-    {
-        for (NSMenuItem* item in [[self windowsMenu] itemArray]) {
-            if ([item target] == aWindow) [[self windowsMenu] removeItem:item];
-        }
-    }
+        [self new_removeWindowsItem:aWindow];
 }
 
 @end

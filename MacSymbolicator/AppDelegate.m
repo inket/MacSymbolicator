@@ -12,6 +12,10 @@
 @implementation AppDelegate
 
 - (void)awakeFromNib {
+    Method new = class_getInstanceMethod([NSApplication class], @selector(new_removeWindowsItem:));
+    Method old = class_getInstanceMethod([NSApplication class], @selector(removeWindowsItem:));
+    method_exchangeImplementations(new, old);
+    
     [_crashReportDropZone setText:@"Drop Crash Report"];
     [_crashReportDropZone setFileType:@".crash"];
     [_crashReportDropZone setDelegate:self];
@@ -50,7 +54,13 @@
 }
 
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
-    [_window makeKeyAndOrderFront:nil];
+    if ([_resultWindow isKeyWindow])
+    {
+        [_window orderBack:nil];
+        [_resultWindow makeKeyAndOrderFront:nil];
+    }
+    else
+        [_window makeKeyAndOrderFront:nil];
     
     return YES;
 }
