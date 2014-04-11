@@ -217,6 +217,7 @@
 				B2509D4918F87FC3001A92A7 /* CopyFiles */,
 				B207F41117DB0F240009F307 /* Frameworks */,
 				B207F41217DB0F240009F307 /* Resources */,
+				B2509D4D18F88A97001A92A7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -268,6 +269,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B2509D4D18F88A97001A92A7 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This build script is based on http://kylefuller.co.uk/posts/versioning-with-xcode-and-git/\n# Difference is that instead of having to use git to increment your app's version (git tag <version>),\n# you could simply use Xcode as usual. This script would automatically create a tag for that version if it's a new one.\n\nCURRENT_TAG=$(git describe --tags --abbrev=0)\nCURRENT_VERSION=$(defaults read \"${SOURCE_ROOT}/${INFOPLIST_FILE%.*}\" \"CFBundleShortVersionString\")\n\n# Create a tag for this version, if it doesn't exist\nif [[ $CURRENT_VERSION != $CURRENT_TAG ]];\nthen git tag $CURRENT_VERSION;\nfi\n\n# What's new here: removes object name and replaces \"-dirty\" with \"d\"\nGIT_RELEASE_VERSION=$(git describe --tags --always --dirty | sed 's/-[a-z0-9]\\{8\\}//g' | sed 's/-dirty/d/g')\n\nCOMMITS=$(git rev-list HEAD | wc -l)\nCOMMITS=$(($COMMITS))\n\ndefaults write \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH%.*}\" \"CFBundleShortVersionString\" \"${GIT_RELEASE_VERSION#*v}\"\ndefaults write \"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH%.*}\" \"CFBundleVersion\" \"${COMMITS}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B207F41017DB0F240009F307 /* Sources */ = {
