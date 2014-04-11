@@ -14,6 +14,9 @@
 		B207F42E17DB0F240009F307 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B207F42C17DB0F240009F307 /* MainMenu.xib */; };
 		B207F43017DB0F240009F307 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B207F42F17DB0F240009F307 /* Images.xcassets */; };
 		B207F44D17DB11DE0009F307 /* MBDropZone.m in Sources */ = {isa = PBXBuildFile; fileRef = B207F44C17DB11DE0009F307 /* MBDropZone.m */; };
+		B2509D4818F87F1F001A92A7 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2509D4718F87F1F001A92A7 /* Sparkle.framework */; };
+		B2509D4A18F87FCA001A92A7 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = B2509D4718F87F1F001A92A7 /* Sparkle.framework */; };
+		B2509D4C18F88A4B001A92A7 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = B2509D4B18F88A4B001A92A7 /* dsa_pub.pem */; };
 		B2DC6C5E1868B6940058D578 /* CrashFile.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DC6C5D1868B6940058D578 /* CrashFile.m */; };
 		B2DC6C641868BE8B0058D578 /* NSString+RubyConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DC6C631868BE8B0058D578 /* NSString+RubyConvenience.m */; };
 		B2DC6C671868BF1F0058D578 /* NSRegularExpression+RubyConvenience.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DC6C661868BF1F0058D578 /* NSRegularExpression+RubyConvenience.m */; };
@@ -23,6 +26,19 @@
 		B2DC6C72186910D20058D578 /* MBCrashReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DC6C71186910D20058D578 /* MBCrashReporter.m */; };
 		B2DC6C78186922CB0058D578 /* NSApplication+FixedWindowMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = B2DC6C77186922CB0058D578 /* NSApplication+FixedWindowMenu.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B2509D4918F87FC3001A92A7 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B2509D4A18F87FCA001A92A7 /* Sparkle.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		B207F41417DB0F240009F307 /* MacSymbolicator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacSymbolicator.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +60,8 @@
 		B207F44117DB0F240009F307 /* MacSymbolicatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacSymbolicatorTests.m; sourceTree = "<group>"; };
 		B207F44B17DB11DE0009F307 /* MBDropZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBDropZone.h; sourceTree = "<group>"; };
 		B207F44C17DB11DE0009F307 /* MBDropZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBDropZone.m; sourceTree = "<group>"; };
+		B2509D4718F87F1F001A92A7 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		B2509D4B18F88A4B001A92A7 /* dsa_pub.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = dsa_pub.pem; sourceTree = "<group>"; };
 		B2DC6C5C1868B6940058D578 /* CrashFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrashFile.h; sourceTree = "<group>"; };
 		B2DC6C5D1868B6940058D578 /* CrashFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrashFile.m; sourceTree = "<group>"; };
 		B2DC6C621868BE8B0058D578 /* NSString+RubyConvenience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+RubyConvenience.h"; sourceTree = "<group>"; };
@@ -67,6 +85,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B207F41817DB0F240009F307 /* Cocoa.framework in Frameworks */,
+				B2509D4818F87F1F001A92A7 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,6 +113,7 @@
 		B207F41617DB0F240009F307 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B2509D4718F87F1F001A92A7 /* Sparkle.framework */,
 				B207F41717DB0F240009F307 /* Cocoa.framework */,
 				B207F43617DB0F240009F307 /* XCTest.framework */,
 				B207F41917DB0F240009F307 /* Other Frameworks */,
@@ -135,6 +155,7 @@
 		B207F41E17DB0F240009F307 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				B2509D4B18F88A4B001A92A7 /* dsa_pub.pem */,
 				B207F41F17DB0F240009F307 /* MacSymbolicator-Info.plist */,
 				B207F42017DB0F240009F307 /* InfoPlist.strings */,
 				B207F42317DB0F240009F307 /* main.m */,
@@ -193,6 +214,7 @@
 			buildConfigurationList = B207F44517DB0F240009F307 /* Build configuration list for PBXNativeTarget "MacSymbolicator" */;
 			buildPhases = (
 				B207F41017DB0F240009F307 /* Sources */,
+				B2509D4918F87FC3001A92A7 /* CopyFiles */,
 				B207F41117DB0F240009F307 /* Frameworks */,
 				B207F41217DB0F240009F307 /* Resources */,
 			);
@@ -237,6 +259,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2509D4C18F88A4B001A92A7 /* dsa_pub.pem in Resources */,
 				B2DC6C691868C9200058D578 /* symbolicate.rb in Resources */,
 				B207F42217DB0F240009F307 /* InfoPlist.strings in Resources */,
 				B207F43017DB0F240009F307 /* Images.xcassets in Resources */,
@@ -369,6 +392,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacSymbolicator/MacSymbolicator-Prefix.pch";
 				INFOPLIST_FILE = "MacSymbolicator/MacSymbolicator-Info.plist";
@@ -382,6 +409,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacSymbolicator/MacSymbolicator-Prefix.pch";
 				INFOPLIST_FILE = "MacSymbolicator/MacSymbolicator-Info.plist";

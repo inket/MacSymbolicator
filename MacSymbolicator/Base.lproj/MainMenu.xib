@@ -24,9 +24,13 @@
                                     <action selector="orderFrontStandardAboutPanel:" target="-2" id="142"/>
                                 </connections>
                             </menuItem>
-                            <menuItem isSeparatorItem="YES" id="236">
-                                <modifierMask key="keyEquivalentModifierMask" command="YES"/>
+                            <menuItem title="Check for Updates…" id="SZS-Zb-EIe">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="checkForUpdates:" target="eLD-9O-LHJ" id="bQZ-98-yQl"/>
+                                </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="osx-hG-oHY"/>
                             <menuItem title="Preferences…" keyEquivalent="," id="129"/>
                             <menuItem isSeparatorItem="YES" id="143">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
@@ -789,5 +793,6 @@
                 </constraints>
             </view>
         </window>
+        <customObject id="eLD-9O-LHJ" customClass="SUUpdater"/>
     </objects>
 </document>
