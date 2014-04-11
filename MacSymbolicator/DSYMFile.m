@@ -19,10 +19,11 @@
     
     if (self)
     {
-        NSString* attributes = [[NSString stringWithFormat:@"mdls -name com_apple_xcode_dsym_uuids -raw '%@'", file] runAsCommand];
+        NSString* dwarfDumpOutput = [[NSString stringWithFormat:@"dwarfdump --uuid '%@'", file] runAsCommand];
+        NSString* foundUUID = [[[[dwarfDumpOutput strip] scan:@"/UUID: (.*) \\(/mi"] firstObject] firstObject];
         
         self.fileName = [file lastPathComponent];
-        self.uuid = [[[[attributes scan:@"/\"(.*?)\"/i"] firstObject] firstObject] strip];
+        self.uuid = (foundUUID && [foundUUID isKindOfClass:[NSString class]]) ? foundUUID : nil;
     }
     
     return self;

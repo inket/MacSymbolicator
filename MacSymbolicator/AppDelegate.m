@@ -40,7 +40,7 @@
     MBCrashReporter* crashReporter = [[MBCrashReporter alloc] initWithUploadURL:@"http://inket.herokuapp.com/crashreporter/MacSymbolicator" andDeveloperEmail:@"inket@outlook.com"];
     
     if ([crashReporter hasNewCrashReport] && [MBCrashReporter askToSendCrashReport])
-        [crashReporter sendCrashReport];
+        [crashReporter performSelectorOnMainThread:@selector(sendCrashReport) withObject:nil waitUntilDone:NO];
     
     if ([_resultWindow isKeyWindow])
         [NSApp addWindowsItem:_window title:@"MacSymbolicator" filename:NO];
@@ -51,7 +51,7 @@
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
     if ([_resultWindow isKeyWindow])
     {
-        [_window orderBack:nil];
+        [_window makeKeyAndOrderFront:nil];
         [_resultWindow makeKeyAndOrderFront:nil];
     }
     else
@@ -60,13 +60,62 @@
     return YES;
 }
 
-- (void)startSearchForDSYM {
-    [_dSYMDropZone setDetailText:@"Searching…"];
-    NSString* command = [NSString stringWithFormat:@"mdfind '%@'", [_crashReport uuid] ];
+- (NSString*)searchSpotlightByUUIDLookingFor:(NSString*)uuid {
+    NSString* command = [NSString stringWithFormat:@"mdfind '%@'", uuid];
     NSArray* files = [[command runAsCommand] componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     
     for (NSString* file in files) {
         if ([[file lowercaseString] hasSuffix:@".dsym"])
+            return file;
+    }
+    
+    return nil;
+}
+
+- (NSString*)searchSpotlightByDSYMLookingForUUID:(NSString*)uuid {
+    NSString* allDSYMs = [@"mdfind 'kMDItemFSName == *.dSYM'" runAsCommand];
+    NSArray* dsymFiles = [allDSYMs componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    for (NSString* file in dsymFiles) {
+        NSString* dwarfDumpOutput = [[NSString stringWithFormat:@"dwarfdump --uuid '%@'", file] runAsCommand];
+        NSString* foundUUID = [[[[dwarfDumpOutput strip] scan:@"/UUID: (.*) \\(/mi"] firstObject] firstObject];
+        
+        if ([uuid isEqualToString:foundUUID])
+            return file;
+    }
+    
+    return nil;
+}
+
+- (NSString*)searchArchivesFolderByDSYMLookingForUUID:(NSString*)uuid {
+    NSString* allDSYMs = [@"find ~/Library/Developer/Xcode/Archives/ -name *.dSYM" runAsCommand];
+    NSArray* dsymFiles = [allDSYMs componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    
+    if ([[dsymFiles firstObject] hasSuffix:@"find:"]) // `find` error
+        return nil;
+    
+    for (NSString* file in dsymFiles) {
+        NSString* dwarfDumpOutput = [[NSString stringWithFormat:@"dwarfdump --uuid '%@'", file] runAsCommand];
+        NSString* foundUUID = [[[[dwarfDumpOutput strip] scan:@"/UUID: (.*) \\(/mi"] firstObject] firstObject];
+        
+        if ([uuid isEqualToString:foundUUID])
+            return file;
+    }
+    
+    return nil;
+}
+
+- (void)startSearchForDSYM {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [_dSYMDropZone setDetailText:@"Searching…"];
+
+        NSString* uuidLookedFor = [_crashReport uuid];
+        
+        NSString* file = [self searchSpotlightByUUIDLookingFor:uuidLookedFor];
+        if (!file) file = [self searchSpotlightByDSYMLookingForUUID:uuidLookedFor];
+        if (!file) file = [self searchArchivesFolderByDSYMLookingForUUID:uuidLookedFor];
+        
+        if (file)
         {
             [_dSYMDropZone setFile:file];
             [_dSYMDropZone setDetailText:file];
@@ -74,34 +123,46 @@
             [self setDsymFile:f];
             
             [_differentUUIDLabel setHidden:[_crashReport.uuid isEqualToString:_dsymFile.uuid]];
-
-            break;
         }
-    }
-    
-    if (![_dSYMDropZone file])
-        [_dSYMDropZone setDetailText:@""];
+        else
+        {
+            [_dSYMDropZone setDetailText:@""];
+        }
+    });
 }
 
 - (IBAction)symbolicate:(id)sender {
     if (![_crashReportDropZone file] || ![_dSYMDropZone file]) return;
-    if (![_crashReport.uuid isEqualToString:_dsymFile.uuid]) return;
     
-    NSString* scriptPath = [[NSBundle mainBundle] pathForResource:@"symbolicate" ofType:@"rb"];
-    if (!scriptPath) return;
-
-    NSString* command = [NSString stringWithFormat:@"ruby '%@' '%@' '%@' -q", scriptPath, [_crashReportDropZone file], [_dSYMDropZone file]];
-    NSString* result = [command runAsCommand];
+    [_symbolicateButton setTitle:@"Symbolicating…"];
+    [_symbolicateButton setEnabled:NO];
     
-    if ([result hasPrefix:@"Process:"])
-    {
-        [_crashReport setSymbolicatedContent:result];
-        [_resultWindow setTitle:[NSString stringWithFormat:@"Symbolicated %@", [_crashReport fileName]]];
-        [_resultTextView setString:result];
-        [_resultWindow makeKeyAndOrderFront:nil];
-    }
-    else
-        [[NSAlert alertWithMessageText:@"Symbolication Error" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", result] runModal];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString* scriptPath = [[NSBundle mainBundle] pathForResource:@"symbolicate" ofType:@"rb"];
+        if (!scriptPath) return;
+        
+        NSString* command = [NSString stringWithFormat:@"ruby '%@' '%@' '%@' -q", scriptPath, [_crashReportDropZone file], [_dSYMDropZone file]];
+        NSString* result = [command runAsCommand];
+        
+        if ([result hasPrefix:@"Process:"])
+        {
+            [_crashReport setSymbolicatedContent:result];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if ([result hasPrefix:@"Process:"])
+            {
+                [_resultWindow setTitle:[NSString stringWithFormat:@"Symbolicated %@", [_crashReport fileName]]];
+                [_resultTextView setString:result];
+                [_resultWindow makeKeyAndOrderFront:nil];
+            }
+            else
+                [[NSAlert alertWithMessageText:@"Symbolication Error" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", result] runModal];
+            
+            [_symbolicateButton setTitle:@"Symbolicate"];
+            [_symbolicateButton setEnabled:YES];
+        });
+    });
 }
 
 - (void)dropZone:(MBDropZone*)dropZone receivedFile:(NSString*)file {
@@ -122,9 +183,16 @@
         [self startSearchForDSYM];
     else if ([_crashReportDropZone file] && [_dSYMDropZone file])
     {
-        [_differentUUIDLabel setHidden:[_crashReport.uuid isEqualToString:_dsymFile.uuid]];
-        if ([_crashReport.uuid isEqualToString:_dsymFile.uuid])
+        BOOL sameUUID = [_crashReport.uuid isEqualToString:_dsymFile.uuid];
+        [_differentUUIDLabel setHidden:sameUUID];
+        
+        if (sameUUID)
+        {
+            [_symbolicateButton setTitle:@"Symbolicate"];
             [_symbolicateButton performClick:nil];
+        }
+        else
+            [_symbolicateButton setTitle:@"Symbolicate Anyway"];
     }
 }
 

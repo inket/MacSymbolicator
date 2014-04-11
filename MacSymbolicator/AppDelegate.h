@@ -16,14 +16,14 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, MBDropZoneDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
-@property (assign) IBOutlet NSButton* symbolicateButton;
-@property (assign) IBOutlet NSTextField* differentUUIDLabel;
-@property (assign) IBOutlet MBDropZone *crashReportDropZone;
-@property (assign) IBOutlet MBDropZone *dSYMDropZone;
+@property (strong) IBOutlet NSWindow *window;
+@property (strong) IBOutlet NSButton* symbolicateButton;
+@property (strong) IBOutlet NSTextField* differentUUIDLabel;
+@property (strong) IBOutlet MBDropZone *crashReportDropZone;
+@property (strong) IBOutlet MBDropZone *dSYMDropZone;
 
-@property (assign) IBOutlet NSWindow* resultWindow;
-@property (assign) IBOutlet NSTextView* resultTextView;
+@property (strong) IBOutlet NSWindow* resultWindow;
+@property (strong) IBOutlet NSTextView* resultTextView;
 
 @property (strong) CrashFile* crashReport;
 @property (strong) DSYMFile* dsymFile;

@@ -114,28 +114,20 @@
 		B207F41D17DB0F240009F307 /* MacSymbolicator */ = {
 			isa = PBXGroup;
 			children = (
-				B2DC6C70186910D20058D578 /* MBCrashReporter.h */,
-				B2DC6C71186910D20058D578 /* MBCrashReporter.m */,
-				B2DC6C6A1868CEB60058D578 /* NSString+ShellExecution.h */,
-				B2DC6C6B1868CEB60058D578 /* NSString+ShellExecution.m */,
-				B2DC6C681868C9200058D578 /* symbolicate.rb */,
-				B207F42917DB0F240009F307 /* AppDelegate.h */,
-				B207F42A17DB0F240009F307 /* AppDelegate.m */,
-				B207F42C17DB0F240009F307 /* MainMenu.xib */,
+				B2509D4618F8763E001A92A7 /* Helper */,
 				B207F42F17DB0F240009F307 /* Images.xcassets */,
 				B207F41E17DB0F240009F307 /* Supporting Files */,
+				B2509D4518F875AA001A92A7 /* Categories */,
+				B207F42917DB0F240009F307 /* AppDelegate.h */,
+				B207F42A17DB0F240009F307 /* AppDelegate.m */,
+				B2DC6C681868C9200058D578 /* symbolicate.rb */,
 				B207F44B17DB11DE0009F307 /* MBDropZone.h */,
 				B207F44C17DB11DE0009F307 /* MBDropZone.m */,
 				B2DC6C5C1868B6940058D578 /* CrashFile.h */,
 				B2DC6C5D1868B6940058D578 /* CrashFile.m */,
-				B2DC6C621868BE8B0058D578 /* NSString+RubyConvenience.h */,
-				B2DC6C631868BE8B0058D578 /* NSString+RubyConvenience.m */,
-				B2DC6C651868BF1F0058D578 /* NSRegularExpression+RubyConvenience.h */,
-				B2DC6C661868BF1F0058D578 /* NSRegularExpression+RubyConvenience.m */,
 				B2DC6C6D1868D52D0058D578 /* DSYMFile.h */,
 				B2DC6C6E1868D52D0058D578 /* DSYMFile.m */,
-				B2DC6C76186922CB0058D578 /* NSApplication+FixedWindowMenu.h */,
-				B2DC6C77186922CB0058D578 /* NSApplication+FixedWindowMenu.m */,
+				B207F42C17DB0F240009F307 /* MainMenu.xib */,
 			);
 			path = MacSymbolicator;
 			sourceTree = "<group>";
@@ -167,6 +159,30 @@
 				B207F43E17DB0F240009F307 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B2509D4518F875AA001A92A7 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				B2DC6C6A1868CEB60058D578 /* NSString+ShellExecution.h */,
+				B2DC6C6B1868CEB60058D578 /* NSString+ShellExecution.m */,
+				B2DC6C621868BE8B0058D578 /* NSString+RubyConvenience.h */,
+				B2DC6C631868BE8B0058D578 /* NSString+RubyConvenience.m */,
+				B2DC6C651868BF1F0058D578 /* NSRegularExpression+RubyConvenience.h */,
+				B2DC6C661868BF1F0058D578 /* NSRegularExpression+RubyConvenience.m */,
+				B2DC6C76186922CB0058D578 /* NSApplication+FixedWindowMenu.h */,
+				B2DC6C77186922CB0058D578 /* NSApplication+FixedWindowMenu.m */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		B2509D4618F8763E001A92A7 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				B2DC6C70186910D20058D578 /* MBCrashReporter.h */,
+				B2DC6C71186910D20058D578 /* MBCrashReporter.m */,
+			);
+			name = Helper;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

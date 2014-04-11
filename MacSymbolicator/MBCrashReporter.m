@@ -1,8 +1,8 @@
 //
 //  MBCrashReporter.m
 //
-//  Created by inket on 23/7/13.
-//  Copyright (c) 2013 inket. Licensed under GNU GPL v3.0. See LICENSE for details.
+//  Created by Mahdi Bchetnia on 23/7/13.
+//  Copyright (c) 2013-2014 Mahdi Bchetnia. Licensed under GNU GPL v3.0. See LICENSE for details.
 //  Attributes are appreciated.
 //
 
@@ -84,15 +84,37 @@
         NSLog(@"Crash report %@ sent successfully.", [crashReportPath lastPathComponent]);
 }
 
++ (BOOL)rememberSettingIsSet {
+    return [[[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys] containsObject:@"MBCRRememberChoice"];
+}
+
++ (BOOL)rememberedSetting {
+    return [[NSUserDefaults standardUserDefaults] boolForKey:@"MBCRRememberChoice"];
+}
+
 + (BOOL)askToSendCrashReport {
+    if ([MBCrashReporter rememberSettingIsSet])
+        return [MBCrashReporter rememberedSetting];
+    
     NSString* appName = [[NSRunningApplication currentApplication] localizedName];
 
     NSString* messageText = @"Send crash report to the developer ?";
     NSString* informativeText = [NSString stringWithFormat:@"It seems %@ crashed the last time it ran.\nIt is recommended that you send the (anonymous) crash report so that the developer can identify the issue and fix it as soon as possible.", appName];
     
     NSAlert* alert = [NSAlert alertWithMessageText:messageText defaultButton:nil alternateButton:@"Cancel" otherButton:nil informativeTextWithFormat:informativeText, nil];
-
-    return [alert runModal] == NSAlertDefaultReturn;
+    
+    [alert setShowsSuppressionButton:YES];
+    [[alert suppressionButton] setTitle:@"Remember my choice"];
+    
+    BOOL alertResult = ([alert runModal] == NSAlertDefaultReturn);
+    
+    if ([[alert suppressionButton] state] == NSOnState)
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:alertResult forKey:@"MBCRRememberChoice"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    return alertResult;
 }
 
 + (NSData*)uploadFile:(NSString*)path toURL:(NSString*)url returningResponse:(NSURLResponse**)response error:(NSError**)error {
