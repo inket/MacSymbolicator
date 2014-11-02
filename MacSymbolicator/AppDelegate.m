@@ -27,10 +27,6 @@
     [self setCrashReport:f];
     
     [self startSearchForDSYM];
-    [self symbolicate:nil];
-        
-    if (![_resultWindow isKeyWindow]) // if symbolication failed / dsym not found
-        [_window makeKeyAndOrderFront:nil];
     
     return YES;
 }
@@ -128,6 +124,13 @@
         {
             [_dSYMDropZone setDetailText:@""];
         }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self symbolicate:nil];
+            
+            if (![_resultWindow isKeyWindow]) // if symbolication failed / dsym not found
+                [_window makeKeyAndOrderFront:nil];
+        });
     });
 }
 
