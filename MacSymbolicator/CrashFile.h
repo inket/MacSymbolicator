@@ -11,6 +11,7 @@
 
 @interface CrashFile : NSObject
 
+@property (strong) NSString* path;
 @property (strong) NSString* fileName;
 @property (strong) NSString* processName;
 @property (strong) NSString* responsible;
@@ -19,7 +20,7 @@
 @property (strong) NSString* buildVersion;
 @property (strong) NSString* uuid;
 
-@property (strong) NSString* symbolicatedContent;
+@property (nonatomic, strong) NSString* symbolicatedContent;
 
 + (instancetype)crashWithFile:(NSString*)file;
 

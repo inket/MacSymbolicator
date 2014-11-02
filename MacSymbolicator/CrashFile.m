@@ -28,6 +28,7 @@
             return nil;
         }
         
+        self.path = file;
         self.fileName = [file lastPathComponent];
         self.processName = [[[[content scan:@"/^Process:\\s+(.+?)\\[/i"] firstObject] firstObject] strip];
         self.bundleIdentifier = [[[[content scan:@"/^Identifier:\\s+(.+?)$/i"] firstObject] firstObject] strip];
@@ -38,6 +39,17 @@
     }
     
     return self;
+}
+
+- (void)setSymbolicatedContent:(NSString *)symbolicatedContent {
+    _symbolicatedContent = symbolicatedContent;
+    NSString* extension = [self.fileName componentsSeparatedByString:@"."].lastObject;
+    NSString* newReplacement = [NSString stringWithFormat:@"_symbolicated.%@", extension];
+    extension = [NSString stringWithFormat:@".%@", extension];
+    NSString* newFileName = [self.fileName stringByReplacingOccurrencesOfString:extension withString:newReplacement];
+    NSString* path = [self.path stringByReplacingOccurrencesOfString:self.fileName withString:newFileName];
+    
+    [symbolicatedContent writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
 
 @end
