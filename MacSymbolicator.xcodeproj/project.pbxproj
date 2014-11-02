@@ -54,10 +54,6 @@
 		B207F42A17DB0F240009F307 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B207F42D17DB0F240009F307 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		B207F42F17DB0F240009F307 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		B207F43617DB0F240009F307 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		B207F43D17DB0F240009F307 /* MacSymbolicatorTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MacSymbolicatorTests-Info.plist"; sourceTree = "<group>"; };
-		B207F43F17DB0F240009F307 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		B207F44117DB0F240009F307 /* MacSymbolicatorTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacSymbolicatorTests.m; sourceTree = "<group>"; };
 		B207F44B17DB11DE0009F307 /* MBDropZone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBDropZone.h; sourceTree = "<group>"; };
 		B207F44C17DB11DE0009F307 /* MBDropZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBDropZone.m; sourceTree = "<group>"; };
 		B2509D4718F87F1F001A92A7 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
@@ -96,7 +92,6 @@
 			isa = PBXGroup;
 			children = (
 				B207F41D17DB0F240009F307 /* MacSymbolicator */,
-				B207F43B17DB0F240009F307 /* MacSymbolicatorTests */,
 				B207F41617DB0F240009F307 /* Frameworks */,
 				B207F41517DB0F240009F307 /* Products */,
 			);
@@ -115,7 +110,6 @@
 			children = (
 				B2509D4718F87F1F001A92A7 /* Sparkle.framework */,
 				B207F41717DB0F240009F307 /* Cocoa.framework */,
-				B207F43617DB0F240009F307 /* XCTest.framework */,
 				B207F41917DB0F240009F307 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -160,24 +154,6 @@
 				B207F42017DB0F240009F307 /* InfoPlist.strings */,
 				B207F42317DB0F240009F307 /* main.m */,
 				B207F42517DB0F240009F307 /* MacSymbolicator-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		B207F43B17DB0F240009F307 /* MacSymbolicatorTests */ = {
-			isa = PBXGroup;
-			children = (
-				B207F44117DB0F240009F307 /* MacSymbolicatorTests.m */,
-				B207F43C17DB0F240009F307 /* Supporting Files */,
-			);
-			path = MacSymbolicatorTests;
-			sourceTree = "<group>";
-		};
-		B207F43C17DB0F240009F307 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				B207F43D17DB0F240009F307 /* MacSymbolicatorTests-Info.plist */,
-				B207F43E17DB0F240009F307 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -321,14 +297,6 @@
 				B207F42D17DB0F240009F307 /* Base */,
 			);
 			name = MainMenu.xib;
-			sourceTree = "<group>";
-		};
-		B207F43E17DB0F240009F307 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B207F43F17DB0F240009F307 /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
