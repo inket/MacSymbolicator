@@ -144,23 +144,28 @@
         NSString* scriptPath = [[NSBundle mainBundle] pathForResource:@"symbolicate" ofType:@"rb"];
         if (!scriptPath) return;
         
-        NSString* command = [NSString stringWithFormat:@"ruby '%@' '%@' '%@' -q", scriptPath, [_crashReportDropZone file], [_dSYMDropZone file]];
+        NSString* command = [NSString stringWithFormat:@"ruby '%@' '%@' '%@'", scriptPath, [_crashReportDropZone file], [_dSYMDropZone file]];
         NSString* result = [command runAsCommand];
         
-        if ([result hasPrefix:@"Process:"])
+        if ([result hasPrefix:@"MacSymbolicator"])
         {
             [_crashReport setSymbolicatedContent:result];
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if ([result hasPrefix:@"Process:"])
+            if ([result hasPrefix:@"MacSymbolicator"])
             {
                 [_resultWindow setTitle:[NSString stringWithFormat:@"Symbolicated %@", [_crashReport fileName]]];
                 [_resultTextView setString:result];
                 [_resultWindow makeKeyAndOrderFront:nil];
             }
             else
-                [[NSAlert alertWithMessageText:@"Symbolication Error" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", result] runModal];
+                [[NSAlert alertWithMessageText:@"Symbolication Error"
+                                 defaultButton:nil
+                               alternateButton:nil
+                                   otherButton:nil
+                     informativeTextWithFormat:@"%@", result
+                  ] runModal];
             
             [_symbolicateButton setTitle:@"Symbolicate"];
             [_symbolicateButton setEnabled:YES];
