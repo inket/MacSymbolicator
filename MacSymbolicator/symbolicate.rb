@@ -29,6 +29,13 @@ unless quiet
   puts
 end
 
+# No addresses to look up; no need to go any further because
+# `atos` will enter interactive mode without these.
+if addresses.empty?
+  puts crash_content
+  exit true
+end
+
 result = `xcrun atos -o \"#{dsym_file}\" -arch #{arch} -l #{load_address} #{addresses.join(' ')}`.strip
 
 if (!result.empty?)
