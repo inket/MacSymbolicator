@@ -11,10 +11,11 @@
 
 @implementation MBDropZone
 
-- (id)initWithFrame:(NSRect)frame
+- (instancetype)initWithFrame:(NSRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
+    if (self)
+	{
         // Initialization code here.
     }
     
@@ -36,12 +37,18 @@
     [background fill];
     
     // Padding
-    dirtyRect = NSMakeRect(dirtyRect.origin.x + 5, dirtyRect.origin.y + 5, dirtyRect.size.width - 10, dirtyRect.size.height - 10);
+	CGFloat borderOffset = 20.0;
+    dirtyRect = NSMakeRect(dirtyRect.origin.x + borderOffset,
+						   dirtyRect.origin.y + borderOffset,
+						   dirtyRect.size.width - borderOffset * 2,
+						   dirtyRect.size.height - borderOffset * 2);
 
     // Rounded Rectangle Drawing
-    if (!_file)
+    if (!_file || _isHoveringFile)
     {
-        NSBezierPath* roundedRectanglePath = [NSBezierPath bezierPathWithRoundedRect:dirtyRect xRadius:8 yRadius:8];
+        NSBezierPath* roundedRectanglePath = [NSBezierPath bezierPathWithRoundedRect:dirtyRect
+																			 xRadius:8
+																			 yRadius:8];
         _isHoveringFile ? [color3 setStroke] : [color setStroke];
         [roundedRectanglePath setLineWidth:2];
         CGFloat roundedRectanglePattern[] = {6, 6, 6, 6};
@@ -74,7 +81,7 @@
     
     if (_detailText)
     {
-        NSRect textRect = NSMakeRect(dirtyRect.origin.x, 55, dirtyRect.size.width, 20);
+        NSRect textRect = NSMakeRect(dirtyRect.origin.x, 30, dirtyRect.size.width, 20);
         
         NSMutableParagraphStyle* textStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
         [textStyle setAlignment:NSCenterTextAlignment];
@@ -89,7 +96,7 @@
 
     if (_fileType)
     {
-        NSRect textRect2 = NSMakeRect(dirtyRect.origin.x, 95, dirtyRect.size.width, 30);
+        NSRect textRect2 = NSMakeRect(dirtyRect.origin.x, 50, dirtyRect.size.width, 30);
         
         NSMutableParagraphStyle* textStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
         [textStyle setAlignment:NSCenterTextAlignment];
@@ -104,26 +111,33 @@
     
     if (_icon)
     {
-        [_icon drawInRect:NSMakeRect(dirtyRect.size.width/2-16+6, 135, 32, 32)];
+		CGSize iconSize = CGSizeMake(64.0, 64.0);
+        [_icon drawInRect:NSMakeRect(dirtyRect.size.width * 0.5 - iconSize.width * 0.1, /*Shadow*/
+									 dirtyRect.size.width - iconSize.height * 2,
+									 iconSize.width, iconSize.height)];
     }
 }
 
-- (void)setIcon:(NSImage *)icon {
+- (void)setIcon:(NSImage *)icon
+{
     _icon = icon;
     [self display];
 }
 
-- (void)setText:(NSString *)text {
+- (void)setText:(NSString *)text
+{
     _text = text;
     [self display];
 }
 
-- (void)setDetailText:(NSString *)detailText {
+- (void)setDetailText:(NSString *)detailText
+{
     _detailText = detailText;
     [self display];
 }
 
-- (void)setFileType:(NSString *)fileType {
+- (void)setFileType:(NSString *)fileType
+{
     NSString* ft = [fileType lowercaseString];
     _fileType = [NSString stringWithFormat:@"%@%@", [ft hasPrefix:@"." ] ? @"" : @".", ft];
     _icon = [[NSWorkspace sharedWorkspace] iconForFileType:_fileType];
@@ -132,46 +146,47 @@
     [self display];
 }
 
-- (void)setFile:(NSString *)file {
-    _file = file;
-
-    [self setText:[[file lastPathComponent] stringByDeletingPathExtension]];
+- (void)setFile:(NSString *)file
+{
+	if (file.length && ![file isEqualToString:_file])
+	{
+		_file = file;
+		
+		[self setText:[[file lastPathComponent] stringByDeletingPathExtension]];
+	}
 }
 
-- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
-    NSMutableArray* draggedFiles = [[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType] mutableCopy];
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
+{
+    NSArray* draggedFiles = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"pathExtension IN %@", _fileType];
+	NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:predicate];
 
-    for (NSString* draggedFile in draggedFiles) {
-        if ([[draggedFile lowercaseString] hasSuffix:_fileType])
-        {
-            _isHoveringFile = YES;
-            [self display];
-            return NSDragOperationCopy;
-        }
-    }
-    
-    return NSDragOperationNone;
+	_isHoveringFile = filteredDraggedFiles.count > 0;
+	[self display];
+	
+	return filteredDraggedFiles.count > 0 ? NSDragOperationCopy : NSDragOperationNone;
 }
 
-- (void)draggingExited:(id<NSDraggingInfo>)sender {
+- (void)draggingExited:(id<NSDraggingInfo>)sender
+{
     _isHoveringFile = NO;
     [self display];
 }
 
-- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender {
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender
+{
     return YES;
 }
 
-- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
-    NSMutableArray* draggedFiles = [[[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType] mutableCopy];
-    
-    for (NSString* draggedFile in draggedFiles) {
-        if ([[draggedFile lowercaseString] hasSuffix:_fileType])
-        {
-            [self setFile:draggedFile];
-            break;
-        }
-    }
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
+{
+	NSArray* draggedFiles = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
+	
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"pathExtension IN %@", _fileType];
+	NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:predicate];
+	[self setFile:filteredDraggedFiles.firstObject];
     
     [self draggingExited:nil];
     [_delegate dropZone:self receivedFile:_file];

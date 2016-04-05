@@ -687,7 +687,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZWg-vD-aSk" customClass="MBDropZone">
-                                    <rect key="frame" x="20" y="20" width="260" height="221"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="261"/>
                                 </customView>
                             </subviews>
                         </view>
@@ -701,7 +701,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1vR-fa-5s6" customClass="MBDropZone">
-                                    <rect key="frame" x="20" y="20" width="259" height="221"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="299" height="261"/>
                                 </customView>
                             </subviews>
                         </view>
