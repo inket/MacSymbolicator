@@ -7,19 +7,23 @@
 //
 
 #import "NSApplication+FixedWindowMenu.h"
-#import "AppDelegate.h"
+#import <objc/runtime.h>
 
 @implementation NSApplication (FixedWindowMenu)
 
-+ (void)load {
++ (void)load
+{
     Method new = class_getInstanceMethod([NSApplication class], @selector(new_removeWindowsItem:));
     Method old = class_getInstanceMethod([NSApplication class], @selector(removeWindowsItem:));
     method_exchangeImplementations(new, old);
 }
 
-- (void)new_removeWindowsItem:(NSWindow *)aWindow {
-    if (aWindow != [(AppDelegate*)[NSApp delegate] window])
+- (void)new_removeWindowsItem:(NSWindow *)aWindow
+{
+    if (aWindow != [[NSApp delegate] window])
+	{
         [self new_removeWindowsItem:aWindow];
+	}
 }
 
 @end

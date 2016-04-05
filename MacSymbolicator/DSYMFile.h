@@ -7,8 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NSString+RubyConvenience.h"
-#import "NSString+ShellExecution.h"
 
 @interface DSYMFile : NSObject
 

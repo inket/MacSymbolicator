@@ -6,8 +6,6 @@
 //  Attributes are appreciated.
 //
 
-#import <Foundation/Foundation.h>
-
 @interface MBCrashReporter : NSObject {
     __strong NSString* _newCrashReport;
 }
@@ -15,7 +13,7 @@
 @property (strong) NSString* uploadURL;
 @property (strong) NSString* email;
 
-- (id)initWithUploadURL:(NSString*)uploadURL andDeveloperEmail:(NSString*)email;
+- (instancetype)initWithUploadURL:(NSString*)uploadURL andDeveloperEmail:(NSString*)email;
 - (BOOL)hasNewCrashReport;
 - (void)sendCrashReport;
 + (BOOL)askToSendCrashReport;

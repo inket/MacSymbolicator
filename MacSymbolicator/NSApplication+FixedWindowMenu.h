@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <objc/runtime.h>
 
 @interface NSApplication (FixedWindowMenu)
 

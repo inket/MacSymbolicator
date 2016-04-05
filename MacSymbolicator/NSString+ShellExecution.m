@@ -10,7 +10,8 @@
 
 @implementation NSString (ShellExecution)
 
-- (NSString*)runAsCommand {
+- (NSString*)runAsCommand
+{
     NSPipe* pipe = [NSPipe pipe];
     
     NSTask* task = [[NSTask alloc] init];

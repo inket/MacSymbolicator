@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 inket. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+
 
 @interface NSString (ShellExecution)
 

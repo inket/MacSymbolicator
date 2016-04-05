@@ -7,14 +7,18 @@
 //
 
 #import "DSYMFile.h"
+#import "NSString+RubyConvenience.h"
+#import "NSString+ShellExecution.h"
 
 @implementation DSYMFile
 
-+ (instancetype)dsymWithFile:(NSString*)file {
++ (instancetype)dsymWithFile:(NSString*)file
+{
     return [[DSYMFile alloc] initWithFile:file];
 }
 
-- (instancetype)initWithFile:(NSString*)file {
+- (instancetype)initWithFile:(NSString*)file
+{
     self = [super init];
     
     if (self)

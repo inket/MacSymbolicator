@@ -7,7 +7,6 @@
 //
 
 #import "MBDropZone.h"
-#import "AppDelegate.h"
 
 @implementation MBDropZone
 
@@ -160,7 +159,7 @@
 {
     NSArray* draggedFiles = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"pathExtension IN %@", _fileType];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF ENDSWITH %@", _fileType];
 	NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:predicate];
 
 	_isHoveringFile = filteredDraggedFiles.count > 0;
@@ -184,7 +183,7 @@
 {
 	NSArray* draggedFiles = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
 	
-	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"pathExtension IN %@", _fileType];
+	NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF ENDSWITH %@", _fileType];
 	NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:predicate];
 	[self setFile:filteredDraggedFiles.firstObject];
     

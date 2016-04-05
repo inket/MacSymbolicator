@@ -7,14 +7,17 @@
 //
 
 #import "CrashFile.h"
+#import "NSString+RubyConvenience.h"
 
 @implementation CrashFile
 
-+ (instancetype)crashWithFile:(NSString*)file {
++ (instancetype)crashWithFile:(NSString*)file
+{
     return [[CrashFile alloc] initWithFile:file];
 }
 
-- (instancetype)initWithFile:(NSString*)file {
+- (instancetype)initWithFile:(NSString*)file
+{
     self = [super init];
     
     if (self)
@@ -25,6 +28,7 @@
         if (error || [[content stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] isEqualToString:@""])
         {
             NSLog(@"%@", error);
+			
             return nil;
         }
         
@@ -41,8 +45,10 @@
     return self;
 }
 
-- (void)setSymbolicatedContent:(NSString *)symbolicatedContent {
+- (void)setSymbolicatedContent:(NSString *)symbolicatedContent
+{
     _symbolicatedContent = symbolicatedContent;
+	
     NSString* extension = [self.fileName componentsSeparatedByString:@"."].lastObject;
     NSString* newReplacement = [NSString stringWithFormat:@"_symbolicated.%@", extension];
     extension = [NSString stringWithFormat:@".%@", extension];

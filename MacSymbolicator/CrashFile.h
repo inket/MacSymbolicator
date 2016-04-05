@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NSString+RubyConvenience.h"
 
 @interface CrashFile : NSObject
 

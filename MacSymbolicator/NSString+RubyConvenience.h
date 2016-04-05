@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "NSRegularExpression+RubyConvenience.h"
 
 @interface NSString (RubyConvenience)
 
