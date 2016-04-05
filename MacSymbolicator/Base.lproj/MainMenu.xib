@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13C1021" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment defaultVersion="1070" identifier="macosx"/>
-        <development version="5000" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="10116"/>
+        <capability name="box content view" minToolsVersion="7.0"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -12,7 +12,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <menu title="AMainMenu" systemMenu="main" id="29">
             <items>
                 <menuItem title="MacSymbolicator" id="56">
@@ -27,7 +27,7 @@
                             <menuItem title="Check for Updates…" id="SZS-Zb-EIe">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="checkForUpdates:" target="eLD-9O-LHJ" id="bQZ-98-yQl"/>
+                                    <action selector="checkForUpdates:" target="4M7-Cp-cC9" id="IRR-Ln-m1l"/>
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="osx-hG-oHY"/>
@@ -654,7 +654,7 @@
         <window title="MacSymbolicator" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="335" y="390" width="600" height="320"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <value key="minSize" type="size" width="600" height="320"/>
             <value key="maxSize" type="size" width="600" height="320"/>
             <view key="contentView" id="372">
@@ -663,8 +663,7 @@
                 <subviews>
                     <box autoresizesSubviews="NO" fixedFrame="YES" title="Box" boxType="custom" borderType="line" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="NeG-UW-d4p">
                         <rect key="frame" x="-1" y="58" width="602" height="263"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <view key="contentView">
+                        <view key="contentView" id="1B5-1H-wA2">
                             <rect key="frame" x="1" y="1" width="600" height="261"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         </view>
@@ -673,7 +672,6 @@
                     </box>
                     <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d7a-Sr-teG">
                         <rect key="frame" x="225" y="18" width="150" height="25"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="roundTextured" title="Symbolicate" bezelStyle="texturedRounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="LAh-Me-d4Z">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="system"/>
@@ -684,14 +682,12 @@
                     </button>
                     <box autoresizesSubviews="NO" fixedFrame="YES" title="Box" boxType="custom" borderType="line" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="isG-nt-8xi">
                         <rect key="frame" x="-1" y="58" width="302" height="263"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <view key="contentView">
+                        <view key="contentView" id="pJg-nd-vuC">
                             <rect key="frame" x="1" y="1" width="300" height="261"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZWg-vD-aSk" customClass="MBDropZone">
-                                    <rect key="frame" x="-1" y="-1" width="302" height="263"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <rect key="frame" x="20" y="20" width="260" height="221"/>
                                 </customView>
                             </subviews>
                         </view>
@@ -700,14 +696,12 @@
                     </box>
                     <box autoresizesSubviews="NO" fixedFrame="YES" title="Box" boxType="custom" borderType="line" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="Bhb-e0-Y9g">
                         <rect key="frame" x="300" y="58" width="301" height="263"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <view key="contentView">
+                        <view key="contentView" id="KX0-fc-h5S">
                             <rect key="frame" x="1" y="1" width="299" height="261"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <customView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1vR-fa-5s6" customClass="MBDropZone">
-                                    <rect key="frame" x="-2" y="-1" width="302" height="263"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <rect key="frame" x="20" y="20" width="259" height="221"/>
                                 </customView>
                             </subviews>
                         </view>
@@ -716,7 +710,6 @@
                     </box>
                     <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hzh-QG-r3v">
                         <rect key="frame" x="364" y="23" width="218" height="14"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="DSYM &amp; Crash UUIDs do not match!" id="zd0-KD-rMf">
                             <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -734,6 +727,7 @@
                 <outlet property="resultTextView" destination="v1m-Ng-Wbc" id="U0B-yO-ndc"/>
                 <outlet property="resultWindow" destination="lT6-hQ-R9b" id="hKR-Dq-jjo"/>
                 <outlet property="symbolicateButton" destination="d7a-Sr-teG" id="i5j-OS-PZ3"/>
+                <outlet property="updater" destination="4M7-Cp-cC9" id="AxC-74-Qzl"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>
@@ -741,14 +735,13 @@
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" deferred="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="lT6-hQ-R9b">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <rect key="contentRect" x="196" y="207" width="700" height="400"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1058"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1440" height="877"/>
             <view key="contentView" id="O0k-Zs-ji6">
                 <rect key="frame" x="0.0" y="0.0" width="700" height="400"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dwn-Z7-QuS">
                         <rect key="frame" x="0.0" y="0.0" width="700" height="400"/>
-                        <autoresizingMask key="autoresizingMask"/>
                         <clipView key="contentView" id="34B-ek-xn8">
                             <rect key="frame" x="0.0" y="0.0" width="700" height="400"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -793,6 +786,6 @@
                 </constraints>
             </view>
         </window>
-        <customObject id="eLD-9O-LHJ" customClass="SUUpdater"/>
+        <customObject id="4M7-Cp-cC9" customClass="SUUpdater"/>
     </objects>
 </document>

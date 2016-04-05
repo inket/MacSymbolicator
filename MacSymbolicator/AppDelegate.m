@@ -7,6 +7,30 @@
 //
 
 #import "AppDelegate.h"
+#import "MBDropZone.h"
+#import "NSString+ShellExecution.h"
+#import "NSString+RubyConvenience.h"
+#import "CrashFile.h"
+#import "DSYMFile.h"
+#import "MBCrashReporter.h"
+#import <Sparkle/Sparkle.h>
+
+@interface AppDelegate() <MBDropZoneDelegate>
+
+@property (nonatomic, weak) IBOutlet NSButton* symbolicateButton;
+@property (nonatomic, weak) IBOutlet NSTextField* differentUUIDLabel;
+@property (nonatomic, weak) IBOutlet MBDropZone *crashReportDropZone;
+@property (nonatomic, weak) IBOutlet MBDropZone *dSYMDropZone;
+
+@property (nonatomic, strong) IBOutlet NSWindow* resultWindow;
+@property (nonatomic, strong) IBOutlet NSTextView* resultTextView;
+
+@property (nonatomic, strong) CrashFile* crashReport;
+@property (nonatomic, strong) DSYMFile* dsymFile;
+
+@property (nonatomic, strong) IBOutlet SUUpdater *updater;
+
+@end
 
 @implementation AppDelegate
 
