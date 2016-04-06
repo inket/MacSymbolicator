@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A5F8388E1CB3E4F90089F433 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F8388B1CB3DD650089F433 /* Sparkle.framework */; };
-		A5F838901CB3E5110089F433 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5F8388B1CB3DD650089F433 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A5F838AD1CB523CB0089F433 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5F838AB1CB523800089F433 /* Sparkle.framework */; };
+		A5F838AF1CB523E10089F433 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5F838AB1CB523800089F433 /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B207F41817DB0F240009F307 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B207F41717DB0F240009F307 /* Cocoa.framework */; };
 		B207F42217DB0F240009F307 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B207F42017DB0F240009F307 /* InfoPlist.strings */; };
 		B207F42417DB0F240009F307 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B207F42317DB0F240009F307 /* main.m */; };
@@ -28,20 +28,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		A5F8388F1CB3E5080089F433 /* CopyFiles */ = {
+		A5F838AE1CB523D80089F433 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A5F838901CB3E5110089F433 /* Sparkle.framework in CopyFiles */,
+				A5F838AF1CB523E10089F433 /* Sparkle.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A5F8388B1CB3DD650089F433 /* Sparkle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Sparkle.framework; path = "/Users/korich/Library/Developer/Xcode/DerivedData/MacSymbolicator-cadktnsqbtiotndvxaxedzqrjpkm/Build/Products/Debug/Sparkle.framework"; sourceTree = "<absolute>"; };
+		A5F838AB1CB523800089F433 /* Sparkle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = Sparkle.framework; path = "../../../Library/Developer/Xcode/DerivedData/MacSymbolicator-cadktnsqbtiotndvxaxedzqrjpkm/Build/Products/Debug/Sparkle.framework"; sourceTree = SOURCE_ROOT; };
 		B207F41417DB0F240009F307 /* MacSymbolicator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacSymbolicator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B207F41717DB0F240009F307 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B207F41A17DB0F240009F307 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -81,7 +81,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B207F41817DB0F240009F307 /* Cocoa.framework in Frameworks */,
-				A5F8388E1CB3E4F90089F433 /* Sparkle.framework in Frameworks */,
+				A5F838AD1CB523CB0089F433 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,7 +121,7 @@
 		B207F41617DB0F240009F307 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A5F8388B1CB3DD650089F433 /* Sparkle.framework */,
+				A5F838AB1CB523800089F433 /* Sparkle.framework */,
 				B207F41717DB0F240009F307 /* Cocoa.framework */,
 				B207F41917DB0F240009F307 /* Other Frameworks */,
 			);
@@ -202,7 +202,7 @@
 				B207F41117DB0F240009F307 /* Frameworks */,
 				B207F41217DB0F240009F307 /* Resources */,
 				B2509D4D18F88A97001A92A7 /* ShellScript */,
-				A5F8388F1CB3E5080089F433 /* CopyFiles */,
+				A5F838AE1CB523D80089F433 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -388,10 +388,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacSymbolicator/MacSymbolicator-Prefix.pch";
 				INFOPLIST_FILE = "MacSymbolicator/MacSymbolicator-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "me.inket.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -403,10 +407,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MacSymbolicator/MacSymbolicator-Prefix.pch";
 				INFOPLIST_FILE = "MacSymbolicator/MacSymbolicator-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "me.inket.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
