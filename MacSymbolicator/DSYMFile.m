@@ -12,17 +12,14 @@
 
 @implementation DSYMFile
 
-+ (instancetype)dsymWithFile:(NSString*)file
-{
++ (instancetype)dsymWithFile:(NSString*)file {
     return [[DSYMFile alloc] initWithFile:file];
 }
 
-- (instancetype)initWithFile:(NSString*)file
-{
+- (instancetype)initWithFile:(NSString*)file {
     self = [super init];
     
-    if (self)
-    {
+    if (self) {
         NSString* dwarfDumpOutput = [[NSString stringWithFormat:@"dwarfdump --uuid '%@'", file] runAsCommand];
         NSString* foundUUID = [[[[dwarfDumpOutput strip] scan:@"/UUID: (.*) \\(/mi"] firstObject] firstObject];
         
