@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Submodules/Sparkle/Sparkle.xcodeproj">
+      location = "group:MacSymbolicator.xcodeproj">
    </FileRef>
    <FileRef
-      location = "container:MacSymbolicator.xcodeproj">
+      location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>
