@@ -88,18 +88,15 @@
     }
 }
 
-+ (BOOL)rememberSettingIsSet
-{
++ (BOOL)rememberSettingIsSet {
     return [[[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys] containsObject:@"MBCRRememberChoice"];
 }
 
-+ (BOOL)rememberedSetting
-{
++ (BOOL)rememberedSetting {
     return [[NSUserDefaults standardUserDefaults] boolForKey:@"MBCRRememberChoice"];
 }
 
-+ (BOOL)askToSendCrashReport
-{
++ (BOOL)askToSendCrashReport {
     if ([MBCrashReporter rememberSettingIsSet]) {
         return [MBCrashReporter rememberedSetting];
     }
@@ -153,8 +150,7 @@
     return [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
 }
 
-+ (NSWindow*)reportWindow
-{
++ (NSWindow*)reportWindow {
     NSWindow* window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 230, 60)
                                                    styleMask:NSTitledWindowMask
                                                      backing:NSBackingStoreBuffered

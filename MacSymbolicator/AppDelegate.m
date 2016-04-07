@@ -102,7 +102,7 @@
     NSString* allDSYMs = [@"find ~/Library/Developer/Xcode/Archives/ -name *.dSYM" runAsCommand];
     NSArray* dsymFiles = [allDSYMs componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     
-    if ([[dsymFiles firstObject] hasSuffix:@"find:"]) {  // `find` error
+    if ([[dsymFiles firstObject] hasPrefix:@"find:"]) {  // `find` error
         return nil;
     }
     
@@ -124,8 +124,7 @@
     return file;
 }
 
-- (void)startSearchForDSYM
-{
+- (void)startSearchForDSYM {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
         [_dSYMDropZone setDetailText:@"Searching…"];
