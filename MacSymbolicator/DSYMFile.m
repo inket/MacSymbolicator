@@ -7,6 +7,8 @@
 //
 
 #import "DSYMFile.h"
+#import "NSString+RubyConvenience.h"
+#import "NSString+ShellExecution.h"
 
 @implementation DSYMFile
 
@@ -17,8 +19,7 @@
 - (instancetype)initWithFile:(NSString*)file {
     self = [super init];
     
-    if (self)
-    {
+    if (self) {
         NSString* dwarfDumpOutput = [[NSString stringWithFormat:@"dwarfdump --uuid '%@'", file] runAsCommand];
         NSString* foundUUID = [[[[dwarfDumpOutput strip] scan:@"/UUID: (.*) \\(/mi"] firstObject] firstObject];
         

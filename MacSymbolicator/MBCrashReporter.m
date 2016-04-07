@@ -10,11 +10,10 @@
 
 @implementation MBCrashReporter
 
-- (id)initWithUploadURL:(NSString*)uploadURL andDeveloperEmail:(NSString*)email {
+- (instancetype)initWithUploadURL:(NSString*)uploadURL andDeveloperEmail:(NSString*)email {
     self = [super init];
     
-    if (self)
-    {
+    if (self) {
         _uploadURL = uploadURL;
         _email = email;
     }
@@ -28,23 +27,27 @@
     
     NSFileManager* fileManager = [NSFileManager defaultManager];
     NSError* error = nil;
-    NSArray* files = [fileManager contentsOfDirectoryAtPath:[@"~/Library/Logs/DiagnosticReports/" stringByExpandingTildeInPath] error:&error];
+    NSArray* files = [fileManager contentsOfDirectoryAtPath:[@"~/Library/Logs/DiagnosticReports/"
+                                                             stringByExpandingTildeInPath] error:&error];
     
-    if (error)
-    {
+    if (error) {
         NSLog(@"%@", error);
         return NO;
     }
     
     NSMutableArray* newCrashes = [NSMutableArray array];
     NSString* appName = [[NSRunningApplication currentApplication] localizedName];
-    for (NSString* crashReport in files) {
-        if ([crashReport hasPrefix:[NSString stringWithFormat:@"%@_", appName]] && ![crashHistory containsObject:crashReport])
-            [newCrashes addObject:crashReport];
-    }
     
-    if ([newCrashes count] > 0)
-    {
+    [files enumerateObjectsUsingBlock:^(NSString* crashReport, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        if ([crashReport hasPrefix:[NSString stringWithFormat:@"%@_", appName]] &&
+            ![crashHistory containsObject:crashReport])  {
+            
+            [newCrashes addObject:crashReport];
+        }
+    }];
+    
+    if ([newCrashes count] > 0) {
         if (!crashHistory) crashHistory = [NSMutableArray array];
         [crashHistory addObjectsFromArray:newCrashes];
         [defaults setObject:crashHistory forKey:@"crashHistory"];
@@ -62,7 +65,9 @@
 }
 
 - (void)sendCrashReport {
-    if (!_newCrashReport) return;
+    if (!_newCrashReport) {
+        return;
+    }
     
     NSString* crashReportPath = [[NSString stringWithFormat:@"~/Library/Logs/DiagnosticReports/%@", _newCrashReport] stringByExpandingTildeInPath];
     
@@ -75,41 +80,47 @@
     [sendingWindow orderOut:nil];
     sendingWindow = nil;
     
-    if (error || [(NSHTTPURLResponse*)response statusCode] != 200)
-    {
+    if (error || [(NSHTTPURLResponse*)response statusCode] != 200) {
         NSLog(@"Couldn't send the crash report '%@'. Please send it to %@ if possible.", crashReportPath, _email ? _email : @"the developer");
         if (error) NSLog(@"%@", error);
-    }
-    else
+    } else {
         NSLog(@"Crash report %@ sent successfully.", [crashReportPath lastPathComponent]);
+    }
 }
 
-+ (BOOL)rememberSettingIsSet {
++ (BOOL)rememberSettingIsSet
+{
     return [[[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] allKeys] containsObject:@"MBCRRememberChoice"];
 }
 
-+ (BOOL)rememberedSetting {
++ (BOOL)rememberedSetting
+{
     return [[NSUserDefaults standardUserDefaults] boolForKey:@"MBCRRememberChoice"];
 }
 
-+ (BOOL)askToSendCrashReport {
-    if ([MBCrashReporter rememberSettingIsSet])
++ (BOOL)askToSendCrashReport
+{
+    if ([MBCrashReporter rememberSettingIsSet]) {
         return [MBCrashReporter rememberedSetting];
+    }
     
     NSString* appName = [[NSRunningApplication currentApplication] localizedName];
-
+    
     NSString* messageText = @"Send crash report to the developer ?";
     NSString* informativeText = [NSString stringWithFormat:@"It seems %@ crashed the last time it ran.\nIt is recommended that you send the (anonymous) crash report so that the developer can identify the issue and fix it as soon as possible.", appName];
     
-    NSAlert* alert = [NSAlert alertWithMessageText:messageText defaultButton:nil alternateButton:@"Cancel" otherButton:nil informativeTextWithFormat:informativeText, nil];
+    NSAlert* alert = [NSAlert alertWithMessageText:messageText
+                                     defaultButton:nil
+                                   alternateButton:@"Cancel"
+                                       otherButton:nil
+                         informativeTextWithFormat:informativeText, nil];
     
     [alert setShowsSuppressionButton:YES];
     [[alert suppressionButton] setTitle:@"Remember my choice"];
     
     BOOL alertResult = ([alert runModal] == NSAlertDefaultReturn);
     
-    if ([[alert suppressionButton] state] == NSOnState)
-    {
+    if ([[alert suppressionButton] state] == NSOnState) {
         [[NSUserDefaults standardUserDefaults] setBool:alertResult forKey:@"MBCRRememberChoice"];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -117,7 +128,10 @@
     return alertResult;
 }
 
-+ (NSData*)uploadFile:(NSString*)path toURL:(NSString*)url returningResponse:(NSURLResponse**)response error:(NSError**)error {
++ (NSData*)uploadFile:(NSString*)path
+                toURL:(NSString*)url
+    returningResponse:(NSURLResponse**)response
+                error:(NSError**)error {
     NSData* fileData = [[NSData alloc] initWithContentsOfFile:path];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setURL:[NSURL URLWithString:url]];
@@ -133,14 +147,18 @@
     [body appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
     [body appendData:fileData];
     [body appendData:[[NSString stringWithFormat:@"r\n--%@--\r\n",boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-
+    
     [request setHTTPBody:body];
     
     return [NSURLConnection sendSynchronousRequest:request returningResponse:response error:error];
 }
 
-+ (NSWindow*)reportWindow {
-    NSWindow* window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 230, 60) styleMask:NSTitledWindowMask backing:NSBackingStoreBuffered defer:NO];
++ (NSWindow*)reportWindow
+{
+    NSWindow* window = [[NSWindow alloc] initWithContentRect:NSMakeRect(0, 0, 230, 60)
+                                                   styleMask:NSTitledWindowMask
+                                                     backing:NSBackingStoreBuffered
+                                                       defer:NO];
     [window center];
     [window setTitle:@"Crash Reporter"];
     NSTextField* label = [[NSTextField alloc] initWithFrame:NSMakeRect(0, 20, 210, 20)];

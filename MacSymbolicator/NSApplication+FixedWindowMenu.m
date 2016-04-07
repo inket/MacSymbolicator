@@ -7,7 +7,7 @@
 //
 
 #import "NSApplication+FixedWindowMenu.h"
-#import "AppDelegate.h"
+#import <objc/runtime.h>
 
 @implementation NSApplication (FixedWindowMenu)
 
@@ -18,8 +18,9 @@
 }
 
 - (void)new_removeWindowsItem:(NSWindow *)aWindow {
-    if (aWindow != [(AppDelegate*)[NSApp delegate] window])
+    if (aWindow != [[NSApp delegate] window]) {
         [self new_removeWindowsItem:aWindow];
+    }
 }
 
 @end
