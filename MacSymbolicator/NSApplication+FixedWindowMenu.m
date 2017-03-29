@@ -18,7 +18,8 @@
 }
 
 - (void)new_removeWindowsItem:(NSWindow *)aWindow {
-    if (aWindow != [[NSApp delegate] window]) {
+    id appDelegate = [NSApp delegate];
+    if (aWindow != [appDelegate window]) {
         [self new_removeWindowsItem:aWindow];
     }
 }
