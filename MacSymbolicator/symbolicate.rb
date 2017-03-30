@@ -14,6 +14,7 @@ process_name = crash_content.scan(/^Process:\s+(.*?)\s\[/im).flatten.first
 load_address, bundle_identifier = crash_content.scan(/Binary Images:.*?(0x.*?)\s.*?\+(.*?)\s\(/im).flatten
 addresses = crash_content.scan(/^\d+\s+(?:#{bundle_identifier}|#{process_name}).*?(0x.*?)\s/im).flatten
 code_type = crash_content.scan(/^Code Type:(.*?)(?:\(.*\))?$/i).flatten.first.strip
+code_type = code_type.gsub(/\s+/m, ' ').gsub(/^\s+|\s+$/m, '').split(" ").first.strip
 
 code_types_to_arch = { 'X86-64' => 'x86_64', 'X86' => 'i386', 'PPC' => 'ppc' }
 arch = code_types_to_arch[code_type] || code_type
