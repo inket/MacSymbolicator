@@ -1,0 +1,10 @@
+excluded:
+  - Pods
+  - Carthage
+line_length: 120
+file_length: 500
+disabled_rules:
+  - type_body_length
+  - function_body_length
+  - type_name
+  - variable_name
