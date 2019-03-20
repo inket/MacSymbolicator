@@ -99,13 +99,17 @@
 }
 
 - (NSString*)searchArchivesFolderByDSYMLookingForUUID:(NSString*)uuid {
-    NSString* allDSYMs = [@"find ~/Library/Developer/Xcode/Archives/ -name *.dSYM" runAsCommand];
-    NSArray* dsymFiles = [allDSYMs componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-    
-    if ([[dsymFiles firstObject] hasPrefix:@"find:"]) {  // `find` error
-        return nil;
-    }
-    
+	
+	NSURL* archivesURL = [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"/Library/Developer/Xcode/Archives"]];
+	NSDirectoryEnumerator<NSURL *> *urlEnumerator = [[NSFileManager defaultManager] enumeratorAtURL:archivesURL includingPropertiesForKeys:nil options:NSDirectoryEnumerationSkipsHiddenFiles errorHandler:nil];
+	
+	NSMutableArray* dsymFiles = [[NSMutableArray alloc] init];
+	for(NSURL* url in urlEnumerator) {
+		if ([url.lastPathComponent.pathExtension isEqualToString:@"dSYM"]) {
+			[dsymFiles addObject:url.path];
+		}
+	}
+
     return [self getFileForUUID:uuid inList:dsymFiles];
 }
 
