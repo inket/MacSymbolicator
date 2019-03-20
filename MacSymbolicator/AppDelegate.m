@@ -129,30 +129,33 @@
 }
 
 - (void)startSearchForDSYM {
+	
+	[_dSYMDropZone setDetailText:@"Searching…"];
+	
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        [_dSYMDropZone setDetailText:@"Searching…"];
-        
+		
         NSString* uuidLookedFor = [_crashReport uuid];
+		NSLog(@"searching for crash UUID: %@", uuidLookedFor);
         
         NSString* file = [self searchSpotlightByUUIDLookingFor:uuidLookedFor];
         if (!file) file = [self searchSpotlightByDSYMLookingForUUID:uuidLookedFor];
         if (!file) file = [self searchArchivesFolderByDSYMLookingForUUID:uuidLookedFor];
-        
-        if (file) {
-            [_dSYMDropZone setFile:file];
-            [_dSYMDropZone setDetailText:file];
-            DSYMFile* f = [DSYMFile dsymWithFile:file];
-            [self setDsymFile:f];
-            
-            [_differentUUIDLabel setHidden:[_crashReport.uuid isEqualToString:_dsymFile.uuid]];
-        } else {
-            [_dSYMDropZone setDetailText:@""];
-        }
-        
+		
         dispatch_async(dispatch_get_main_queue(), ^{
-            
-            [self symbolicate:nil];
+			
+			if (file) {
+				[_dSYMDropZone setFile:file];
+				[_dSYMDropZone setDetailText:file];
+				DSYMFile* f = [DSYMFile dsymWithFile:file];
+				[self setDsymFile:f];
+				
+				[_differentUUIDLabel setHidden:[_crashReport.uuid isEqualToString:_dsymFile.uuid]];
+				
+				[self symbolicate:nil];
+			} else {
+				[_dSYMDropZone setDetailText:@""];
+			}
+			
             
             if (![_resultWindow isKeyWindow]) { // if symbolication failed / dsym not found
                 [_window makeKeyAndOrderFront:nil];
