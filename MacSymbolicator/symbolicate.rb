@@ -10,9 +10,12 @@ end
 dsym_file = Dir["#{dsym_file}/Contents/Resources/DWARF/*"].first || dsym_file
 crash_content = File.open(crash_file, 'r').read
 
+# If this is a sample (rather than a crash report), delete some garbage that isn't used for symbolication and doesn't make the output any better
+crash_content = crash_content.gsub(/\?\?\?\s+\(in\s+(.*)\)\s+load\s+address\s+(0x.*?\s+\+\s+0x.*?)\s+\[(0x.*?)(\].*)/, "\\1 \\3 \\2")
+
 process_name = crash_content.scan(/^Process:\s+(.*?)\s\[/im).flatten.first
 load_address, bundle_identifier = crash_content.scan(/Binary Images:.*?(0x.*?)\s.*?\+(.*?)\s\(/im).flatten
-addresses = crash_content.scan(/^\d+\s+(?:#{bundle_identifier}|#{process_name}).*?(0x.*?)\s/im).flatten
+addresses = crash_content.scan(/^(?:\s+\+\s+)?\d+\s+(?:#{bundle_identifier}|#{process_name}).*?(0x.*?)\s/im).flatten
 code_type = crash_content.scan(/^Code Type:(.*?)(?:\(.*\))?$/i).flatten.first.strip
 code_type = code_type.gsub(/\s+/m, ' ').gsub(/^\s+|\s+$/m, '').split(" ").first.strip
 
