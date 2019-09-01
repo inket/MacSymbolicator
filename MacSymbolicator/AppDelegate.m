@@ -126,8 +126,10 @@
 
 - (void)startSearchForDSYM {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-        [_dSYMDropZone setDetailText:@"Searching…"];
+		
+        dispatch_async(dispatch_get_main_queue(), ^{
+		    [_dSYMDropZone setDetailText:@"Searching…"];
+		});
         
         NSString* uuidLookedFor = [_crashReport uuid];
         
