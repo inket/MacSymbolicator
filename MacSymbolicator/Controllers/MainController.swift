@@ -136,7 +136,12 @@ class MainController {
         dsymFileDropZone.detailText = "Searching…"
 
         DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let foundDSYMPath = self?.searchForDSYM(uuid: crashFileUUID) else { return }
+            let dsymPath = self?.searchForDSYM(
+                uuid: crashFileUUID,
+                crashFileDirectory: crashFile.path.deletingLastPathComponent().path
+            )
+
+            guard let foundDSYMPath = dsymPath else { return }
 
             DispatchQueue.main.async {
                 let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
@@ -147,14 +152,12 @@ class MainController {
         }
     }
 
-    func searchForDSYM(uuid: String) -> String? {
+    func searchForDSYM(uuid: String, crashFileDirectory: String) -> String? {
         return
-            FileSearch.inRootDirectory().spotlight
-                .search(UUID: uuid).filter(byFileExtension: "dsym").results.first ??
-            FileSearch.inRootDirectory().spotlight
-                .search(fileExtension: "dsym").filter(byUUID: uuid).results.first ??
-            FileSearch.in(directory: "~/Library/Developer/Xcode/Archives/").unix
-                .search(name: "*.dSYM").filter(byUUID: uuid).results.first
+            FileSearch.shallow.in(directory: crashFileDirectory)
+                .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid) ??
+            FileSearch.deep.in(directory: "~/Library/Developer/Xcode/Archives/")
+                .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid)
     }
 }
 
