@@ -16,11 +16,13 @@
 
 @property (weak) id<MBDropZoneDelegate> delegate;
 @property (strong, nonatomic) NSImage* icon;
-@property (strong, nonatomic) NSString* fileType;
+@property (strong, nonatomic) NSArray<NSString*>* fileTypes;
 @property (strong, nonatomic) NSString* text;
 @property (strong, nonatomic) NSString* detailText;
 
 @property (strong, nonatomic) NSString* file;
+
+- (void) setFileType:(NSString*)fileType;
 
 @end
 

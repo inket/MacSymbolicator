@@ -35,8 +35,8 @@
 @implementation AppDelegate
 
 - (void)awakeFromNib {
-    [_crashReportDropZone setText:@"Drop Crash Report"];
-    [_crashReportDropZone setFileType:@".crash"];
+    [_crashReportDropZone setText:@"Drop Crash Report or Sample"];
+    [_crashReportDropZone setFileTypes:@[@".crash", @".txt"]];
     [_crashReportDropZone setDelegate:self];
     
     [_dSYMDropZone setText:@"Drop App DSYM"];

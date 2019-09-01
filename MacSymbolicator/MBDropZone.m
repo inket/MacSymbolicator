@@ -88,7 +88,8 @@
         [_detailText drawInRect:NSOffsetRect(textRect, 0, 1) withAttributes:textFontAttributes];
     }
     
-    if (_fileType) {
+    if (_fileTypes) {
+    	NSString* fileType = [_fileTypes componentsJoinedByString:@", "];
         NSRect textRect2 = NSMakeRect(dirtyRect.origin.x, 50, dirtyRect.size.width, 30);
         
         NSMutableParagraphStyle* textStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
@@ -98,7 +99,7 @@
                                             [NSFont fontWithName:@"Helvetica Neue Medium" size:18], NSFontAttributeName,
                                             color3, NSForegroundColorAttributeName,
                                             textStyle, NSParagraphStyleAttributeName, nil];
-        [_fileType drawInRect:NSOffsetRect(textRect2, 0, 1) withAttributes:textFontAttributes];
+        [fileType drawInRect:NSOffsetRect(textRect2, 0, 1) withAttributes:textFontAttributes];
     }
     
     
@@ -126,11 +127,20 @@
 }
 
 - (void)setFileType:(NSString *)fileType {
-    NSString* ft = [fileType lowercaseString];
-    _fileType = [NSString stringWithFormat:@"%@%@", [ft hasPrefix:@"." ] ? @"" : @".", ft];
-    _icon = [[NSWorkspace sharedWorkspace] iconForFileType:_fileType];
+	[self setFileTypes:@[fileType]];
+}
+
+- (void)setFileTypes:(NSArray<NSString*> *)fileTypes {
+	NSMutableArray<NSString*>* normalized = [[NSMutableArray alloc] init];
+	for (NSString* fileType in fileTypes) {
+    	NSString* ft = [fileType lowercaseString];
+    	[normalized addObject:[NSString stringWithFormat:@"%@%@", [ft hasPrefix:@"." ] ? @"" : @".", ft]];
+	}
+	_fileTypes = normalized;
+	
+    _icon = [[NSWorkspace sharedWorkspace] iconForFileType:normalized[0]];
     [self registerForDraggedTypes:@[NSFilenamesPboardType]];
-    
+	
     [self display];
 }
 
@@ -145,8 +155,7 @@
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
     NSArray* draggedFiles = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF ENDSWITH[c] %@", _fileType];
-    NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:predicate];
+    NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:[self predicate]];
     
     _isHoveringFile = filteredDraggedFiles.count > 0;
     [self display];
@@ -163,11 +172,18 @@
     return YES;
 }
 
+- (NSPredicate*) predicate {
+	NSMutableArray<NSString*>* formatParts = [[NSMutableArray alloc] init];
+	for (NSString* fileType __attribute__((unused)) in _fileTypes) {
+		[formatParts addObject:@"SELF ENDSWITH[c] %@"];
+	}
+    return [NSPredicate predicateWithFormat:[formatParts componentsJoinedByString:@" OR "] argumentArray:_fileTypes];
+}
+
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
     NSArray* draggedFiles = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
     
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF ENDSWITH[c] %@", _fileType];
-    NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:predicate];
+    NSArray *filteredDraggedFiles = [draggedFiles filteredArrayUsingPredicate:[self predicate]];
     [self setFile:filteredDraggedFiles.firstObject];
     
     [self draggingExited:nil];
