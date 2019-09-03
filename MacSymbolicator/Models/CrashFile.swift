@@ -43,10 +43,17 @@ public struct CrashFile {
             options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
         ).first?.first?.trimmed
 
-        self.addresses = content.scan(
+        let crashReportAddresses = content.scan(
             pattern: "^\\d+\\s+(\(bundleIdentifier ?? "")|\(processName ?? "")).*?(0x.*?)\\s",
             options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
         ).compactMap { $0.last }
+
+        let sampleAddresses = content.scan(
+            pattern: "\\?{3}\\s+\\(in\\s.*?\\)\\s+load\\saddress.*?\\[(0x.*?)\\]",
+            options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
+        ).compactMap { $0.last }
+
+        self.addresses = crashReportAddresses + sampleAddresses
 
         self.responsible = content.scan(pattern: "^Responsible:\\s+(.+?)\\[").first?.first?.trimmed
         self.version = content.scan(pattern: "^Version:\\s+(.+?)\\(").first?.first?.trimmed
@@ -59,12 +66,13 @@ public struct CrashFile {
     }
 
     func saveSymbolicatedContent() {
+        let originalPathExtension = path.pathExtension
         let extensionLessPath = path.deletingPathExtension()
         let newFilename = extensionLessPath.lastPathComponent.appending("_symbolicated")
         let newPath = extensionLessPath
             .deletingLastPathComponent()
             .appendingPathComponent(newFilename)
-            .appendingPathExtension("crash")
+            .appendingPathExtension(originalPathExtension)
 
         do {
             try symbolicatedContent?.write(to: newPath, atomically: true, encoding: .utf8)

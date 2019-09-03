@@ -1,62 +1,54 @@
-Process:               CrashingAndHangingTest [93231]
-Path:                  /Users/USER/Documents/*/CrashingAndHangingTest
-Identifier:            CrashingAndHangingTest
-Version:               0
-Code Type:             X86-64 (Native)
-Parent Process:        zsh [93160]
-Responsible:           Terminal [55830]
-User ID:               501
+Sampling process 94003 for 3 seconds with 1 millisecond of run time between samples
+Sampling completed, processing symbols...
+Analysis of sampling CrashingAndHangingTest (pid 94003) every 1 millisecond
+Process:         CrashingAndHangingTest [94003]
+Path:            /Users/USER/Documents/*/CrashingAndHangingTest
+Load Address:    0x101671000
+Identifier:      CrashingAndHangingTest
+Version:         0
+Code Type:       X86-64
+Parent Process:  zsh [93932]
 
-Date/Time:             2019-09-04 01:00:52.242 +0900
-OS Version:            Mac OS X 10.15 (19A546d)
-Report Version:        12
-Bridge OS Version:     3.0 (14Y904)
-Anonymous UUID:        50D5553D-FA9A-2541-272F-7C6F43916630
+Date/Time:       2019-09-04 1:01:53.560 a +0900
+Launch Time:     2019-09-04 1:01:49.037 a +0900
+OS Version:      Mac OS X 10.15 (19A546d)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
 
-Sleep/Wake UUID:       A3CD4A02-3A64-4DC6-A7A1-98F0DBF6BAB0
+Physical footprint:         688K
+Physical footprint (peak):  688K
+----
 
-Time Awake Since Boot: 73000 seconds
-Time Since Wake:       9000 seconds
+Call graph:
+    2761 Thread_2295308   DispatchQueue_1: com.apple.main-thread  (serial)
+    + 2761 start  (in libdyld.dylib) + 1  [0x7fff70df52a5]
+    +   2761 ???  (in CrashingAndHangingTest)  load address 0x101671000 + 0xe30  [0x101671e30]
+    +     2761 ???  (in CrashingAndHangingTest)  load address 0x101671000 + 0xd68  [0x101671d68]
+    +       2761 ???  (in CrashingAndHangingTest)  load address 0x101671000 + 0xdca  [0x101671dca]
+    +         2761 _pthread_mutex_firstfit_lock_slow  (in libsystem_pthread.dylib) + 222  [0x7fff70ffd759]
+    +           2761 _pthread_mutex_firstfit_lock_wait  (in libsystem_pthread.dylib) + 96  [0x7fff70fffa3a]
+    +             2761 __psynch_mutexwait  (in libsystem_kernel.dylib) + 10  [0x7fff70f40f7a]
+    2761 Thread_2295310   DispatchQueue_10: com.apple.root.default-qos  (concurrent)
+      2761 start_wqthread  (in libsystem_pthread.dylib) + 15  [0x7fff70ffe5bf]
+        2761 _pthread_wqthread  (in libsystem_pthread.dylib) + 220  [0x7fff70ffe71d]
+          2761 _dispatch_worker_thread2  (in libdispatch.dylib) + 92  [0x7fff70db3f25]
+            2761 _dispatch_root_queue_drain  (in libdispatch.dylib) + 326  [0x7fff70db37e5]
+              2761 _dispatch_queue_override_invoke  (in libdispatch.dylib) + 763  [0x7fff70da7328]
+                2761 _dispatch_client_callout  (in libdispatch.dylib) + 8  [0x7fff70da54de]
+                  2761 _dispatch_call_block_and_release  (in libdispatch.dylib) + 12  [0x7fff70da4553]
+                    2761 sleep  (in libsystem_c.dylib) + 41  [0x7fff70ec4f8a]
+                      2761 nanosleep  (in libsystem_c.dylib) + 196  [0x7fff70ec5122]
+                        2761 __semwait_signal  (in libsystem_kernel.dylib) + 10  [0x7fff70f42012]
 
-System Integrity Protection: enabled
+Total number in stack (recursive counted multiple, when >=5):
 
-Crashed Thread:        0  Dispatch queue: com.apple.main-thread
-
-Exception Type:        EXC_BAD_ACCESS (SIGSEGV)
-Exception Codes:       KERN_INVALID_ADDRESS at 0x0000000000000001
-Exception Note:        EXC_CORPSE_NOTIFY
-
-Termination Signal:    Segmentation fault: 11
-Termination Reason:    Namespace SIGNAL, Code 0xb
-Terminating Process:   exc handler [93231]
-
-VM Regions Near 0x1:
---> 
-    __TEXT                 00000001003da000-00000001003db000 [    4K] r-x/r-x SM=COW  /Users/USER/Documents/*
-
-Application Specific Information:
-dyld2 mode
-
-Thread 0 Crashed:: Dispatch queue: com.apple.main-thread
-0   CrashingAndHangingTest        	0x00000001003dade1 0x1003da000 + 3553
-1   CrashingAndHangingTest        	0x00000001003dae30 0x1003da000 + 3632
-2   libdyld.dylib                 	0x00007fff70df52a5 start + 1
-
-Thread 0 crashed with X86 Thread State (64-bit):
-  rax: 0x610ab690d6b000ca  rbx: 0x00007f8390700180  rcx: 0x00007f8391801040  rdx: 0x0000000000000000
-  rdi: 0x00007f8390700180  rsi: 0x00000001003daf62  rbp: 0x00007ffeef825910  rsp: 0x00007ffeef825910
-   r8: 0x000007f83907016c   r9: 0x0000000000000002  r10: 0x00000001003dc090  r11: 0x00000001003daddd
-  r12: 0x0000000000000000  r13: 0x0000000000000000  r14: 0x0000000000000001  r15: 0x00007fff6fa8c840
-  rip: 0x00000001003dade1  rfl: 0x0000000000010206  cr2: 0x0000000000000001
-  
-Logical CPU:     0
-Error Code:      0x00000006 (no mapping for user data read)
-Trap Number:     14
-
+Sort by top of stack, same collapsed (when >= 5):
+        __psynch_mutexwait  (in libsystem_kernel.dylib)        2761
+        __semwait_signal  (in libsystem_kernel.dylib)        2761
 
 Binary Images:
-       0x1003da000 -        0x1003dafff +CrashingAndHangingTest (0) <3457264D-8E59-379C-B9DE-F64DD04F1BB7> /Users/USER/Documents/*/CrashingAndHangingTest
-       0x10d204000 -        0x10d29291f  dyld (732.2) <BAB55B81-E18F-3129-BD61-CC42B9F21198> /usr/lib/dyld
+       0x101671000 -        0x101671fff +CrashingAndHangingTest (0) <3457264D-8E59-379C-B9DE-F64DD04F1BB7> /Users/*/Documents/*/CrashingAndHangingTest
+       0x11155c000 -        0x1115ea91f  dyld (732.2) <BAB55B81-E18F-3129-BD61-CC42B9F21198> /usr/lib/dyld
     0x7fff35b46000 -     0x7fff35b46fff  com.apple.Accelerate (1.11 - Accelerate 1.11) <CED7B300-45C4-34B3-BF54-AC7FF58589A7> /System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate
     0x7fff35b5e000 -     0x7fff361c9fff  com.apple.vImage (8.1 - 524.1) <EF16C817-2A0A-31FB-B115-AF5C43BD429B> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vImage.framework/Versions/A/vImage
     0x7fff361ca000 -     0x7fff36432fff  libBLAS.dylib (1303) <ABAB4AF1-CFFC-3D84-8C65-F796E912DA90> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
@@ -175,42 +167,4 @@ Binary Images:
     0x7fff71017000 -     0x7fff7102dff2  libsystem_trace.dylib (1147.0.3) <5CCFC340-BDAD-3B07-8F07-673E415A8E97> /usr/lib/system/libsystem_trace.dylib
     0x7fff7102f000 -     0x7fff71034ffb  libunwind.dylib (35.4) <78F6BBB2-7086-30DD-BB95-C8C41F5743B1> /usr/lib/system/libunwind.dylib
     0x7fff71035000 -     0x7fff71069ff6  libxpc.dylib (1738.0.17) <9AF26A0D-3B3E-3D48-A323-41099647A578> /usr/lib/system/libxpc.dylib
-
-External Modification Summary:
-  Calls made by other processes targeting this process:
-    task_for_pid: 0
-    thread_create: 0
-    thread_set_state: 0
-  Calls made by this process:
-    task_for_pid: 0
-    thread_create: 0
-    thread_set_state: 0
-  Calls made by all processes on this machine:
-    task_for_pid: 4877921
-    thread_create: 0
-    thread_set_state: 7110
-
-VM Region Summary:
-ReadOnly portion of Libraries: Total=413.4M resident=0K(0%) swapped_out_or_unallocated=413.4M(100%)
-Writable regions: Total=37.6M written=0K(0%) resident=0K(0%) swapped_out=0K(0%) unallocated=37.6M(100%)
- 
-                                VIRTUAL   REGION 
-REGION TYPE                        SIZE    COUNT (non-coalesced) 
-===========                     =======  ======= 
-Activity Tracing                   256K        1 
-Kernel Alloc Once                    8K        1 
-MALLOC                            29.1M       14 
-MALLOC guard page                   16K        4 
-STACK GUARD                       56.0M        1 
-Stack                             8192K        1 
-__DATA                            5963K      118 
-__DATA_CONST                        24K        2 
-__LINKEDIT                       347.4M        3 
-__OBJC_RO                         31.7M        1 
-__OBJC_RW                         1748K        2 
-__TEXT                            66.0M      120 
-__UNICODE                          564K        1 
-shared memory                       28K        4 
-===========                     =======  ======= 
-TOTAL                            546.7M      273 
-
+Sample analysis of process 94003 written to file /dev/stdout

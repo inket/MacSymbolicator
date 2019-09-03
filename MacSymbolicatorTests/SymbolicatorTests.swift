@@ -5,25 +5,43 @@
 
 import Foundation
 import XCTest
-import MacSymbolicator
+@testable import MacSymbolicator
 
 class SymbolicatorTests: XCTestCase {
     func testSymbolication() {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
-        let crashReportURL = testBundle.url(forResource: "report", withExtension: "crash")!
-        let symbolicatedCrashReportURL = testBundle.url(forResource: "report_symbolicated", withExtension: "crash")!
-        let dsymURL = testBundle.url(forResource: "MacSymbolicator", withExtension: "app.dSYM")!
 
-        let crashFile = CrashFile(path: crashReportURL)!
+        let combinations: [(URL, URL)] = [
+            (
+                testBundle.url(forResource: "report", withExtension: "crash")!,
+                testBundle.url(forResource: "report_symbolicated", withExtension: "crash")!
+            ),
+            (
+                testBundle.url(forResource: "singlethread-sample", withExtension: "txt")!,
+                testBundle.url(forResource: "singlethread-sample_symbolicated", withExtension: "txt")!
+            ),
+            (
+                testBundle.url(forResource: "multithread-sample", withExtension: "txt")!,
+                testBundle.url(forResource: "multithread-sample_symbolicated", withExtension: "txt")!
+            )
+        ]
+
+        let dsymURL = testBundle.url(forResource: "CrashingAndHangingTest", withExtension: "dSYM")!
         let dsymFile = DSYMFile(path: dsymURL)
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        combinations.forEach { combination in
+            let (beforeSymbolicationURL, afterSymbolicationURL) = combination
+            let crashFile = CrashFile(path: beforeSymbolicationURL)!
 
-        XCTAssert(symbolicator.symbolicate())
+            var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
 
-        // swiftlint:disable:next force_try
-        let symbolicatedContent = try! String(contentsOf: symbolicatedCrashReportURL)
+            XCTAssert(symbolicator.symbolicate())
 
-        XCTAssertEqual(symbolicator.symbolicatedContent, symbolicatedContent)
+            // swiftlint:disable:next force_try
+            let symbolicatedContent = try! String(contentsOf: afterSymbolicationURL)
+
+            XCTAssertEqual(symbolicator.symbolicatedContent, symbolicatedContent)
+            XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+        }
     }
 }

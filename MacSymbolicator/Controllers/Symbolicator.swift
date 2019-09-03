@@ -74,12 +74,19 @@ public struct Symbolicator {
         }
 
         var replacedContent = crashFile.content
-        for index in 0...(outputLines.count - 1) {
+        for index in 0..<outputLines.count {
             let address = addresses[index]
             let replacement = outputLines[index]
-            let occurences = replacedContent.scan(pattern: "\(address).*?$").flatMap { $0 }
 
-            occurences.forEach {
+            // Replace the entries using the sample format
+            let sampleOccurences = replacedContent.scan(pattern: "\\?{3}.*?\\[\(address)\\]").flatMap { $0 }
+            sampleOccurences.forEach {
+                replacedContent = replacedContent.replacingOccurrences(of: $0, with: "\(replacement) [\(address)]")
+            }
+
+            // Replace the entries using the crash report format
+            let crashOccurences = replacedContent.scan(pattern: "\(address)\\s.*?$").flatMap { $0 }
+            crashOccurences.forEach {
                 replacedContent = replacedContent.replacingOccurrences(of: $0, with: "\(address) \(replacement)")
             }
         }
