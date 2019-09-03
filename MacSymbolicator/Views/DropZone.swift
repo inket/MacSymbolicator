@@ -19,25 +19,39 @@ class DropZone: NSView {
         }
     }
 
-    private var _fileType: String = "" {
+    private var _fileTypes: [String] = [] {
         didSet {
-            self.icon = NSWorkspace.shared.icon(forFileType: _fileType)
+            guard !_fileTypes.isEmpty else {
+                icon = nil
+                fileTypeTextField.attributedStringValue = NSAttributedString()
+                unregisterDraggedTypes()
+                return
+            }
 
             registerForDraggedTypes([(kUTTypeFileURL as NSPasteboard.PasteboardType)])
 
+            let primaryFileType = _fileTypes[0]
+            icon = NSWorkspace.shared.icon(forFileType: primaryFileType)
             fileTypeTextField.attributedStringValue = NSAttributedString(
-                string: _fileType,
+                string: primaryFileType,
                 attributes: Style.textAttributes(size: 16, color: Colors.gray3)
             )
         }
     }
 
-    var fileType: String {
-        get { return _fileType }
+    var fileTypes: [String] {
+        get { return _fileTypes }
         set {
-            // Prepend "." to fileType if needed
-            _fileType = (newValue.hasPrefix(".") ? "" : ".").appending(newValue.lowercased())
+            _fileTypes = newValue.map {
+                // Prepend "." to every fileType if needed
+                ($0.hasPrefix(".") ? "" : ".").appending($0.lowercased())
+            }
         }
+    }
+
+    var fileTypesPredicate: NSPredicate {
+        let predicateFormat = (0..<fileTypes.count).map { _ in "SELF ENDSWITH[c] %@" }.joined(separator: " OR ")
+        return NSPredicate(format: predicateFormat, argumentArray: fileTypes)
     }
 
     var text: String? {
@@ -103,15 +117,15 @@ class DropZone: NSView {
     private var detailTextTextFieldHeightConstraint: NSLayoutConstraint?
 
     // MARK: Methods
-    init(fileType: String, text: String? = nil, detailText: String? = nil) {
+    init(fileTypes: [String], text: String? = nil, detailText: String? = nil) {
         super.init(frame: .zero)
 
-        defer {
-            self.fileType = fileType
+        DispatchQueue.main.async { // So that all didSet do trigger
+            self.fileTypes = fileTypes
             self.text = text
             self.detailText = detailText
 
-            setup()
+            self.setup()
         }
     }
 
@@ -238,8 +252,7 @@ extension DropZone {
             return nil
         }
 
-        let predicate = NSPredicate(format: "SELF ENDSWITH[c] %@ || SELF ENDSWITH[c] %@", _fileType, "\(_fileType)/")
-        return predicate.evaluate(with: draggedFileURL.absoluteString) ? draggedFileURL : nil
+        return fileTypesPredicate.evaluate(with: draggedFileURL.path) ? draggedFileURL : nil
     }
 }
 

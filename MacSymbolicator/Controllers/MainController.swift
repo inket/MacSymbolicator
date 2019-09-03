@@ -9,9 +9,9 @@ class MainController {
     private let mainWindow = MainWindow(width: 600, height: 300)
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
-    private let crashFileDropZone = DropZone(fileType: ".crash", text: "Drop Crash Report")
+    private let crashFileDropZone = DropZone(fileTypes: [".crash", ".txt"], text: "Drop Crash Report or Sample")
     private let dsymFileDropZone = DropZone(
-        fileType: ".dSYM",
+        fileTypes: [".dSYM"],
         text: "Drop App DSYM",
         detailText: "(if not found automatically)"
     )
