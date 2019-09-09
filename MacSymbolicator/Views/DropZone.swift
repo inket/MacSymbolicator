@@ -217,12 +217,21 @@ class DropZone: NSView {
             roundedRectanglePath.stroke()
         }
     }
+
+    func acceptFile(url fileURL: URL) -> Bool {
+        guard validFileURL(fileURL) else { return false }
+
+        self.file = fileURL
+        delegate?.receivedFile(dropZone: self, fileURL: fileURL)
+
+        return true
+    }
 }
 
 // MARK: NSDraggingDestination
 extension DropZone {
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        self.isHoveringFile = (validFileURL(sender) != nil)
+        self.isHoveringFile = (validDraggedFileURL(from: sender) != nil)
         return isHoveringFile ? .copy : []
     }
 
@@ -236,7 +245,7 @@ extension DropZone {
 
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         defer { self.isHoveringFile = false }
-        guard let draggedFileURL = validFileURL(sender) else { return false }
+        guard let draggedFileURL = validDraggedFileURL(from: sender) else { return false }
 
         self.file = draggedFileURL
         delegate?.receivedFile(dropZone: self, fileURL: draggedFileURL)
@@ -244,15 +253,21 @@ extension DropZone {
         return true
     }
 
-    private func validFileURL(_ sender: NSDraggingInfo) -> URL? {
+    private func validDraggedFileURL(from draggingInfo: NSDraggingInfo) -> URL? {
         guard
-            let draggedFile = sender.draggingPasteboard.string(forType: kUTTypeFileURL as NSPasteboard.PasteboardType),
+            let draggedFile = draggingInfo.draggingPasteboard.string(
+                forType: kUTTypeFileURL as NSPasteboard.PasteboardType
+            ),
             let draggedFileURL = URL(string: draggedFile)
         else {
             return nil
         }
 
-        return fileTypesPredicate.evaluate(with: draggedFileURL.path) ? draggedFileURL : nil
+        return validFileURL(draggedFileURL) ? draggedFileURL : nil
+    }
+
+    private func validFileURL(_ url: URL) -> Bool {
+        return fileTypesPredicate.evaluate(with: url.path)
     }
 }
 

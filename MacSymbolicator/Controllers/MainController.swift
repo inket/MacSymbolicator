@@ -159,6 +159,11 @@ class MainController {
             FileSearch.deep.in(directory: "~/Library/Developer/Xcode/Archives/")
                 .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid)
     }
+
+    func openFile(_ path: String) -> Bool {
+        guard let fileURL = URL(string: path) else { return false }
+        return crashFileDropZone.acceptFile(url: fileURL) || dsymFileDropZone.acceptFile(url: fileURL)
+    }
 }
 
 extension MainController: DropZoneDelegate {
