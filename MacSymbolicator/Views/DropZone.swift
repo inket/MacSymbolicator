@@ -34,7 +34,7 @@ class DropZone: NSView {
             icon = NSWorkspace.shared.icon(forFileType: primaryFileType)
             fileTypeTextField.attributedStringValue = NSAttributedString(
                 string: primaryFileType,
-                attributes: Style.textAttributes(size: 16, color: Colors.gray3)
+                attributes: Style.textAttributes(size: 16, color: .labelColor)
             )
         }
     }
@@ -64,7 +64,7 @@ class DropZone: NSView {
 
             textTextField.attributedStringValue = NSAttributedString(
                 string: newText,
-                attributes: Style.textAttributes(size: 14, color: Colors.gray2)
+                attributes: Style.textAttributes(size: 14, color: .secondaryLabelColor)
             )
             textTextFieldHeightConstraint?.constant = 40
         }
@@ -80,7 +80,7 @@ class DropZone: NSView {
 
             detailTextTextField.attributedStringValue = NSAttributedString(
                 string: newDetailText,
-                attributes: Style.textAttributes(size: 12, color: Colors.gray2)
+                attributes: Style.textAttributes(size: 12, color: .tertiaryLabelColor)
             )
             detailTextTextFieldHeightConstraint?.constant = 70
         }
@@ -200,7 +200,7 @@ class DropZone: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         // Background
-        (isHoveringFile ? Colors.shade : Colors.transparent).setFill()
+        (isHoveringFile ? Colors.shade : NSColor.clear).setFill()
         dirtyRect.fill()
 
         // Padding
@@ -209,7 +209,7 @@ class DropZone: NSView {
 
         // Dashed drop area outline drawing
         if file == nil {
-            (isHoveringFile ? Colors.gray3 : Colors.gray1).setStroke()
+            (isHoveringFile ? Colors.gray2 : Colors.gray1).setStroke()
 
             let roundedRectanglePath = NSBezierPath(roundedRect: drawRect, xRadius: 8, yRadius: 8)
             roundedRectanglePath.lineWidth = 1.5
@@ -275,10 +275,8 @@ extension DropZone {
 extension DropZone {
     private struct Colors {
         static let gray1 = NSColor(calibratedWhite: 0.7, alpha: 1)
-        static let gray2 = NSColor(calibratedWhite: 0.6, alpha: 1)
-        static let gray3 = NSColor(calibratedWhite: 0.4, alpha: 1)
+        static let gray2 = NSColor(calibratedWhite: 0.4, alpha: 1)
         static let shade = NSColor(calibratedWhite: 0.0, alpha: 0.025)
-        static let transparent = NSColor(calibratedWhite: 0.0, alpha: 0)
     }
 
     private struct Style {
