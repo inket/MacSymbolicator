@@ -173,7 +173,7 @@ class MainController {
                 let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
                 self?.dsymFile = DSYMFile(path: foundDSYMURL)
                 self?.dsymFileDropZone.file = foundDSYMURL
-                self?.dsymFileDropZone.detailText = nil
+                self?.dsymFileDropZone.detailText = foundDSYMPath
             }
         }
     }
