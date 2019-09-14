@@ -122,7 +122,9 @@ class MainController {
 
             if success {
                 crashFile.symbolicatedContent = symbolicator.symbolicatedContent
-                crashFile.saveSymbolicatedContent()
+                if let savedFileURL = crashFile.saveSymbolicatedContent() {
+                    NSWorkspace.shared.activateFileViewerSelecting([savedFileURL])
+                }
             }
 
             DispatchQueue.main.async {

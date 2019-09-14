@@ -65,7 +65,7 @@ public struct CrashFile {
         ).first?.first?.trimmed
     }
 
-    func saveSymbolicatedContent() {
+    func saveSymbolicatedContent() -> URL? {
         let originalPathExtension = path.pathExtension
         let extensionLessPath = path.deletingPathExtension()
         let newFilename = extensionLessPath.lastPathComponent.appending("_symbolicated")
@@ -76,8 +76,10 @@ public struct CrashFile {
 
         do {
             try symbolicatedContent?.write(to: newPath, atomically: true, encoding: .utf8)
+            return newPath
         } catch {
             NSLog("\(error)")
+            return nil
         }
     }
 }
