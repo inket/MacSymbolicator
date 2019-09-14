@@ -203,7 +203,7 @@ extension MainController: DropZoneDelegate {
             dsymFileDropZone.detailText = nil
         }
 
-        if crashFile != nil && dsymFile == nil {
+        if crashFile != nil && (dsymFile == nil || dsymFile?.uuid != crashFile?.uuid) {
             startSearchForDSYM()
         }
     }
