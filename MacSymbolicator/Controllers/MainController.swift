@@ -216,7 +216,7 @@ extension MainController: DropZoneDelegate {
             updateDSYMDetailText()
         }
 
-        if crashFile != nil && (dsymFile == nil || dsymFile?.uuid != crashFile?.uuid) {
+        if crashFile != nil && dsymFile?.uuid != crashFile?.uuid && dropZone != dsymFileDropZone {
             startSearchForDSYM()
         }
     }
