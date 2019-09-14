@@ -141,9 +141,13 @@ class MainController {
                 crashFileDirectory: crashFile.path.deletingLastPathComponent().path
             )
 
-            guard let foundDSYMPath = dsymPath else { return }
-
             DispatchQueue.main.async {
+                guard let foundDSYMPath = dsymPath else {
+                    // Indicate that we've finished searching for it.
+                    self?.dsymFileDropZone.detailText = nil
+                    return
+                }
+
                 let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
                 self?.dsymFile = DSYMFile(path: foundDSYMURL)
                 self?.dsymFileDropZone.file = foundDSYMURL
