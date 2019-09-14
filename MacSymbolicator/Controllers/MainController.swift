@@ -164,16 +164,15 @@ class MainController {
             )
 
             DispatchQueue.main.async {
-                guard let foundDSYMPath = dsymPath else {
-                    // Indicate that we've finished searching for it.
-                    self?.dsymFileDropZone.detailText = nil
-                    return
+                defer {
+                    self?.updateDSYMDetailText()
                 }
+
+                guard let foundDSYMPath = dsymPath else { return }
 
                 let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
                 self?.dsymFile = DSYMFile(path: foundDSYMURL)
                 self?.dsymFileDropZone.file = foundDSYMURL
-                self?.dsymFileDropZone.detailText = foundDSYMPath
             }
         }
     }
@@ -188,6 +187,20 @@ class MainController {
                 .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid)
     }
 
+    func updateDSYMDetailText() {
+        if let dsymFile = dsymFile {
+            let dsymFilePath = dsymFile.path.path
+            let uuidMismatch = dsymFile.uuid != nil && crashFile != nil && dsymFile.uuid != crashFile?.uuid
+
+            dsymFileDropZone.detailText = [
+                dsymFilePath,
+                uuidMismatch ? "(!) UUID mismatch (!)" : nil
+            ].compactMap { $0 }.joined(separator: "\n")
+        } else {
+            dsymFileDropZone.detailText = nil
+        }
+    }
+
     func openFile(_ path: String) -> Bool {
         guard let fileURL = URL(string: path) else { return false }
         return crashFileDropZone.acceptFile(url: fileURL) || dsymFileDropZone.acceptFile(url: fileURL)
@@ -197,10 +210,10 @@ class MainController {
 extension MainController: DropZoneDelegate {
     func receivedFile(dropZone: DropZone, fileURL: URL) {
         if dropZone == crashFileDropZone {
-            self.crashFile = CrashFile(path: fileURL)
+            crashFile = CrashFile(path: fileURL)
         } else if dropZone == dsymFileDropZone {
-            self.dsymFile = DSYMFile(path: fileURL)
-            dsymFileDropZone.detailText = nil
+            dsymFile = DSYMFile(path: fileURL)
+            updateDSYMDetailText()
         }
 
         if crashFile != nil && (dsymFile == nil || dsymFile?.uuid != crashFile?.uuid) {
