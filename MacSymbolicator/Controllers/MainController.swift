@@ -6,7 +6,8 @@
 import Cocoa
 
 class MainController {
-    private let mainWindow = MainWindow(width: 600, height: 300)
+    private let mainWindow = CenteredWindow(width: 600, height: 300)
+
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
     private let crashFileDropZone = DropZone(fileTypes: [".crash", ".txt"], text: "Drop Crash Report or Sample")
@@ -16,6 +17,7 @@ class MainController {
         detailText: "(if not found automatically)"
     )
     private let symbolicateButton = NSButton()
+    private let viewErrorsButton = NSButton()
 
     private var crashFile: CrashFile?
     private var dsymFile: DSYMFile?
@@ -27,16 +29,27 @@ class MainController {
         }
     }
 
+    private let errorsController = ErrorsController()
+
     init() {
         crashFileDropZone.delegate = self
         dsymFileDropZone.delegate = self
+        errorsController.delegate = self
 
+        mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
         mainWindow.title = "MacSymbolicator"
         symbolicateButton.title = "Symbolicate"
         symbolicateButton.bezelStyle = .rounded
         symbolicateButton.focusRingType = .none
         symbolicateButton.target = self
         symbolicateButton.action = #selector(MainController.symbolicate)
+
+        viewErrorsButton.title = "View Errors…"
+        viewErrorsButton.bezelStyle = .rounded
+        viewErrorsButton.focusRingType = .none
+        viewErrorsButton.target = errorsController
+        viewErrorsButton.action = #selector(ErrorsController.viewErrors)
+        viewErrorsButton.isHidden = true
 
         let contentView = mainWindow.contentView!
 
@@ -45,12 +58,14 @@ class MainController {
         dropZonesContainerView.addSubview(crashFileDropZone)
         dropZonesContainerView.addSubview(dsymFileDropZone)
         statusView.addSubview(symbolicateButton)
+        statusView.addSubview(viewErrorsButton)
 
         dropZonesContainerView.translatesAutoresizingMaskIntoConstraints = false
         crashFileDropZone.translatesAutoresizingMaskIntoConstraints = false
         dsymFileDropZone.translatesAutoresizingMaskIntoConstraints = false
         statusView.translatesAutoresizingMaskIntoConstraints = false
         symbolicateButton.translatesAutoresizingMaskIntoConstraints = false
+        viewErrorsButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             dropZonesContainerView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -79,7 +94,11 @@ class MainController {
 
             symbolicateButton.centerXAnchor.constraint(equalTo: statusView.centerXAnchor),
             symbolicateButton.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
-            symbolicateButton.widthAnchor.constraint(equalToConstant: 120)
+            symbolicateButton.widthAnchor.constraint(equalToConstant: 120),
+
+            viewErrorsButton.trailingAnchor.constraint(equalTo: statusView.trailingAnchor, constant: -20),
+            viewErrorsButton.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
+            viewErrorsButton.widthAnchor.constraint(equalToConstant: 120)
         ])
 
         mainWindow.makeKeyAndOrderFront(nil)
@@ -134,6 +153,7 @@ class MainController {
         }
 
         dsymFileDropZone.detailText = "Searching…"
+        errorsController.resetErrors()
 
         DispatchQueue.global(qos: .background).async { [weak self] in
             let dsymPath = self?.searchForDSYM(
@@ -158,9 +178,11 @@ class MainController {
 
     func searchForDSYM(uuid: String, crashFileDirectory: String) -> String? {
         return
-            FileSearch.shallow.in(directory: crashFileDirectory)
+            FileSearch.nonRecursive.in(directory: crashFileDirectory)
+                .with(errorHandler: errorsController.addErrors)
                 .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid) ??
-            FileSearch.deep.in(directory: "~/Library/Developer/Xcode/Archives/")
+            FileSearch.recursive.in(directory: "~/Library/Developer/Xcode/Archives/")
+                .with(errorHandler: errorsController.addErrors)
                 .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid)
     }
 
@@ -181,6 +203,14 @@ extension MainController: DropZoneDelegate {
 
         if crashFile != nil && dsymFile == nil {
             startSearchForDSYM()
+        }
+    }
+}
+
+extension MainController: ErrorsControllerDelegate {
+    func errorsController(_ controller: ErrorsController, errorsUpdated errors: [String]) {
+        DispatchQueue.main.async {
+            self.viewErrorsButton.isHidden = errors.isEmpty
         }
     }
 }

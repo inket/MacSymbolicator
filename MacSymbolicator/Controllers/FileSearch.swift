@@ -5,7 +5,10 @@
 
 import Foundation
 
+typealias FileSearchErrorHandler = ([String]) -> Void
+
 protocol FileSearchQuery {
+    func with(errorHandler: @escaping FileSearchErrorHandler) -> FileSearchQuery
     func search(fileExtension: String) -> FileSearchResults
 }
 
@@ -18,8 +21,9 @@ protocol FileSearchResults {
 
 private class InternalFileSearch: FileSearchResults, FileSearchQuery {
     var directory: String?
-    var shallow = false
+    var recursive = true
     var results = [String]()
+    var errorHandler: FileSearchErrorHandler?
 
     private var enumerator: FileManager.DirectoryEnumerator? {
         let enumerationURL: URL
@@ -30,7 +34,7 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
         }
 
         var enumerationOptions: FileManager.DirectoryEnumerationOptions = [.skipsHiddenFiles]
-        if shallow {
+        if !recursive {
             enumerationOptions.formUnion(.skipsSubdirectoryDescendants)
         }
 
@@ -40,6 +44,11 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
             options: enumerationOptions,
             errorHandler: nil
         )
+    }
+
+    func with(errorHandler: @escaping FileSearchErrorHandler) -> FileSearchQuery {
+        self.errorHandler = errorHandler
+        return self
     }
 
     func search(fileExtension: String) -> FileSearchResults {
@@ -65,8 +74,15 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
 
     func firstMatching(uuid: String) -> String? {
         return results.first { file in
+            let command = "dwarfdump --uuid \"\(file)\""
+            let (output, error) = command.run()
+
+            if let errorOutput = error?.trimmed, !errorOutput.isEmpty {
+                errorHandler?(["\(command):\n\(errorOutput)"])
+            }
+
             guard
-                let dwarfDumpOutput = "dwarfdump --uuid \"\(file)\"".run().output?.trimmed,
+                let dwarfDumpOutput = output?.trimmed,
                 let foundUUID = dwarfDumpOutput.scan(pattern: "UUID: (.*) \\(").first?.first
             else {
                 return false
@@ -80,15 +96,15 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
 class FileSearch {
     private let internalFileSearch = InternalFileSearch()
 
-    static var deep: FileSearch {
+    static var recursive: FileSearch {
         let fileSearch = FileSearch()
-        fileSearch.internalFileSearch.shallow = false
+        fileSearch.internalFileSearch.recursive = true
         return fileSearch
     }
 
-    static var shallow: FileSearch {
+    static var nonRecursive: FileSearch {
         let fileSearch = FileSearch()
-        fileSearch.internalFileSearch.shallow = true
+        fileSearch.internalFileSearch.recursive = false
         return fileSearch
     }
 

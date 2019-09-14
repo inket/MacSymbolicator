@@ -1,11 +1,11 @@
 //
-//  MainWindow.swift
+//  CenteredWindow.swift
 //  MacSymbolicator
 //
 
 import Cocoa
 
-class MainWindow: NSWindow {
+class CenteredWindow: NSWindow {
     init(width: CGFloat, height: CGFloat) {
         guard let screen = NSScreen.main else { fatalError("No attached screen found.") }
 
@@ -23,7 +23,7 @@ class MainWindow: NSWindow {
                    defer: false)
     }
 
-    convenience init() {
-        self.init(width: 700, height: 400)
+    override func close() {
+        orderOut(self)
     }
 }
