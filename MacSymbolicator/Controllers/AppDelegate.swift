@@ -39,6 +39,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         updater = SQRLUpdater(update: URLRequest(url: updateURL))
-        updater?.startAutomaticChecks(withInterval: 60)
+        updater?.startAutomaticChecks(withInterval: 60 * 60 * 4)
     }
 }
