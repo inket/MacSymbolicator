@@ -200,7 +200,7 @@ class MainController {
     }
 
     func openFile(_ path: String) -> Bool {
-        guard let fileURL = URL(string: path) else { return false }
+        let fileURL = URL(fileURLWithPath: path)
         return crashFileDropZone.acceptFile(url: fileURL) || dsymFileDropZone.acceptFile(url: fileURL)
     }
 }
