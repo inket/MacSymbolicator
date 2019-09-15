@@ -264,6 +264,7 @@
 				B2C2291C1EF223C50015AB33 /* Frameworks */,
 				B2C2291D1EF223C50015AB33 /* Resources */,
 				B2B74D891EF7761E000BBFD6 /* Embed Frameworks */,
+				B2F61052232E10F3001375E1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -359,6 +360,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+		B2F61052232E10F3001375E1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script fixes the ShipIt hardened runtime issue to allow us\n# to notarize the app\n\n# Skip if debug, as this is not needed then\nif [[ \"${CONFIGURATION}\" == \"Debug\" ]]; then\n    exit 0\nfi\n\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\n\n# By default, use the configured code signing identity for the project/target\nIDENTITY=\"${CODE_SIGN_IDENTITY}:\"\nif [ \"$IDENTITY\" == \"\" ]\nthen\n# If a code signing identity is not specified, use ad hoc signing\nIDENTITY=\"-\"\nfi\n\n\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Squirrel.framework/Resources/Shipit\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
