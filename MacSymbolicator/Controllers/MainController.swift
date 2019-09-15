@@ -38,7 +38,7 @@ class MainController {
         errorsController.delegate = self
 
         mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
-        mainWindow.title = "MacSymbolicator"
+        mainWindow.title = "MacSymbolicator Preliminary"
         symbolicateButton.title = "Symbolicate"
         symbolicateButton.bezelStyle = .rounded
         symbolicateButton.focusRingType = .none
