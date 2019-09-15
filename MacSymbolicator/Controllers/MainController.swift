@@ -7,6 +7,7 @@ import Cocoa
 
 class MainController {
     private let mainWindow = CenteredWindow(width: 600, height: 300)
+    private let textWindowController = TextWindowController(title: "Symbolicated Content")
 
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
@@ -107,7 +108,7 @@ class MainController {
     @objc func symbolicate() {
         guard
             !isSymbolicating,
-            var crashFile = crashFile,
+            let crashFile = crashFile,
             let dsymFile = dsymFile
         else {
             return
@@ -120,15 +121,12 @@ class MainController {
         DispatchQueue.global(qos: .userInitiated).async {
             let success = symbolicator.symbolicate()
 
-            if success {
-                crashFile.symbolicatedContent = symbolicator.symbolicatedContent
-                if let savedFileURL = crashFile.saveSymbolicatedContent() {
-                    NSWorkspace.shared.activateFileViewerSelecting([savedFileURL])
-                }
-            }
-
             DispatchQueue.main.async {
-                if !success {
+                if success {
+                    self.textWindowController.text = symbolicator.symbolicatedContent ?? ""
+                    self.textWindowController.defaultSaveURL = crashFile.symbolicatedContentSaveURL
+                    self.textWindowController.showWindow()
+                } else {
                     let alert = NSAlert()
                     alert.informativeText = symbolicator.errors.joined(separator: "\n")
                     alert.alertStyle = .critical

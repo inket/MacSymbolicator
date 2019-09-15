@@ -21,6 +21,16 @@ public struct CrashFile {
     let content: String
     var symbolicatedContent: String?
 
+    var symbolicatedContentSaveURL: URL {
+        let originalPathExtension = path.pathExtension
+        let extensionLessPath = path.deletingPathExtension()
+        let newFilename = extensionLessPath.lastPathComponent.appending("_symbolicated")
+        return extensionLessPath
+            .deletingLastPathComponent()
+            .appendingPathComponent(newFilename)
+            .appendingPathExtension(originalPathExtension)
+    }
+
     public init?(path: URL) {
         guard
             let content = try? String(contentsOf: path, encoding: .utf8),
@@ -63,23 +73,5 @@ public struct CrashFile {
             pattern: "Binary Images:.*?<(.*?)>",
             options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
         ).first?.first?.trimmed
-    }
-
-    func saveSymbolicatedContent() -> URL? {
-        let originalPathExtension = path.pathExtension
-        let extensionLessPath = path.deletingPathExtension()
-        let newFilename = extensionLessPath.lastPathComponent.appending("_symbolicated")
-        let newPath = extensionLessPath
-            .deletingLastPathComponent()
-            .appendingPathComponent(newFilename)
-            .appendingPathExtension(originalPathExtension)
-
-        do {
-            try symbolicatedContent?.write(to: newPath, atomically: true, encoding: .utf8)
-            return newPath
-        } catch {
-            NSLog("\(error)")
-            return nil
-        }
     }
 }
