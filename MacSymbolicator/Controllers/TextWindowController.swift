@@ -21,7 +21,7 @@ class TextWindowController: NSObject {
 
     var text: String {
         get {
-            textView.string
+            return textView.textStorage!.string
         }
         set {
             textView.string = newValue
@@ -64,7 +64,7 @@ class TextWindowController: NSObject {
             textView.autoresizingMask = .width
 
             if #available(OSX 10.15, *) {
-                textView.font = NSFont.monospacedSystemFont(
+                textView.font = NSFont.monospacedDigitSystemFont(
                     ofSize: NSFont.systemFontSize,
                     weight: .regular
                 )
@@ -150,5 +150,5 @@ extension TextWindowController: NSToolbarDelegate {
 }
 
 extension NSToolbarItem.Identifier {
-    static var save: NSToolbarItem.Identifier { .init("Save") }
+    static var save = NSToolbarItem.Identifier(rawValue: "Save")
 }
