@@ -13,7 +13,7 @@ A simple Mac app for symbolicating Mac crash reports as Apple doesn't provide an
 Before building, make sure to run
 
 ```bash
-carthage bootstrap --platform iOS
+carthage bootstrap --platform osx
 ```
 
 Project should build with Xcode 10.3 or Xcode 11
