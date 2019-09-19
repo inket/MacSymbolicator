@@ -6,10 +6,22 @@ A simple Mac app for symbolicating Mac crash reports as Apple doesn't provide an
 
 [Download](http://mahdi.jp/apps/macsymbolicator)
 
-## Installation
-`carthage bootstrap --platform iOS`
-
-
 ![MacSymbolicator](/screenshot.png?raw=true)
 
+## Building from source
+
+Before building, make sure to run
+
+```bash
+carthage bootstrap --platform iOS
+```
+
+Project should build with Xcode 10.3 or Xcode 11
+
+## License
+
 License is GNU GPLv2.
+
+## Contact
+
+@inket on GitHub/Twitter
