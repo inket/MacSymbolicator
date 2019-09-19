@@ -63,12 +63,21 @@ class TextWindowController: NSObject {
 
             textView.autoresizingMask = .width
 
+            var fonts = [NSFont]()
+
+            #if compiler(>=5.1) // Only build this part in Xcode 11, which knows about monospacedSystemFont
             if #available(OSX 10.15, *) {
-                textView.font = NSFont.monospacedDigitSystemFont(
-                    ofSize: NSFont.systemFontSize,
-                    weight: .regular
-                )
+                fonts.append(NSFont.monospacedSystemFont(ofSize: NSFont.systemFontSize, weight: .regular))
             }
+            #endif
+
+            let monospacedFonts = ["SFMono-Regular", "Menlo"].compactMap {
+                NSFont(name: $0, size: NSFont.systemFontSize)
+            }
+
+            fonts.append(contentsOf: monospacedFonts)
+
+            textView.font = fonts.first
 
             scrollView.documentView = textView
         }
