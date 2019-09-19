@@ -21,7 +21,7 @@ class TextWindowController: NSObject {
 
     var text: String {
         get {
-            return textView.textStorage!.string
+            return textView.string
         }
         set {
             textView.string = newValue
