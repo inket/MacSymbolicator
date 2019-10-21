@@ -26,10 +26,12 @@ public struct Symbolicator {
     public mutating func symbolicate() -> Bool {
         errors.removeAll()
 
-        guard let architecture = Symbolicator.architectures[crashFile.architecture ?? "X86-64"] else {
+        guard let architectureString = crashFile.architecture else {
             errors.append("Could not detect crash file architecture.")
             return false
         }
+
+        let architecture = Symbolicator.architectures[architectureString] ?? architectureString
 
         guard let loadAddress = crashFile.loadAddress else {
             errors.append("""

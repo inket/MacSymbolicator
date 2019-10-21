@@ -48,6 +48,14 @@ public struct CrashFile {
         self.architecture = content.scan(pattern: "^Code Type:(.*?)(\\(.*\\))?$").first?.first?.trimmed
                                    .components(separatedBy: " ").first
 
+        // iOS crash reports have Code Type set to "ARM", the actual architecture is on the first line of Binary Images
+        if self.architecture == "ARM" {
+            self.architecture = content.scan(
+                pattern: "Binary Images:.*\\s+([^\\s]+)\\s+<",
+                options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
+            ).first?.first?.trimmed
+        }
+
         self.loadAddress = content.scan(
             pattern: "Binary Images:.*?(0x.*?)\\s",
             options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
