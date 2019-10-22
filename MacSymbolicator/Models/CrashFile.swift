@@ -11,12 +11,12 @@ public struct CrashFile {
     var processName: String?
     var responsible: String?
     var bundleIdentifier: String?
-    var architecture: String?
+    var architecture: Architecture?
     var loadAddress: String?
     var addresses: [String]?
     var version: String?
     var buildVersion: String?
-    var uuid: String?
+    var uuid: BinaryUUID?
 
     let content: String
     var symbolicatedContent: String?
@@ -46,14 +46,14 @@ public struct CrashFile {
         self.processName = content.scan(pattern: "^Process:\\s+(.+?)\\[").first?.first?.trimmed
         self.bundleIdentifier = content.scan(pattern: "^Identifier:\\s+(.+?)$").first?.first?.trimmed
         self.architecture = content.scan(pattern: "^Code Type:(.*?)(\\(.*\\))?$").first?.first?.trimmed
-                                   .components(separatedBy: " ").first
+            .components(separatedBy: " ").first.flatMap(Architecture.init)
 
-        // iOS crash reports have Code Type set to "ARM", the actual architecture is on the first line of Binary Images
-        if self.architecture == "ARM" {
-            self.architecture = content.scan(
+        // In the case of "ARM" the actual architecture is on the first line of Binary Images
+        if self.architecture?.isIncomplete == true {
+            self.architecture = (content.scan(
                 pattern: "Binary Images:.*\\s+([^\\s]+)\\s+<",
                 options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
-            ).first?.first?.trimmed
+            ).first?.first?.trimmed).flatMap(Architecture.init)
         }
 
         self.loadAddress = content.scan(
@@ -77,9 +77,9 @@ public struct CrashFile {
         self.version = content.scan(pattern: "^Version:\\s+(.+?)\\(").first?.first?.trimmed
         self.buildVersion = content.scan(pattern: "^Version:.+\\((.*?)\\)").first?.first?.trimmed
 
-        self.uuid = content.scan(
+        self.uuid = (content.scan(
             pattern: "Binary Images:.*?<(.*?)>",
             options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
-        ).first?.first?.trimmed
+        ).first?.first?.trimmed).flatMap(BinaryUUID.init)
     }
 }

@@ -12,12 +12,6 @@ public struct Symbolicator {
     public var symbolicatedContent: String?
     public var errors = [String]()
 
-    static let architectures = [
-        "X86-64": "x86_64",
-        "X86": "i386",
-        "PPC": "ppc"
-    ]
-
     public init(crashFile: CrashFile, dsymFile: DSYMFile) {
         self.crashFile = crashFile
         self.dsymFile = dsymFile
@@ -26,12 +20,10 @@ public struct Symbolicator {
     public mutating func symbolicate() -> Bool {
         errors.removeAll()
 
-        guard let architectureString = crashFile.architecture else {
+        guard let architecture = crashFile.architecture else {
             errors.append("Could not detect crash file architecture.")
             return false
         }
-
-        let architecture = Symbolicator.architectures[architectureString] ?? architectureString
 
         guard let loadAddress = crashFile.loadAddress else {
             errors.append("""
@@ -48,7 +40,7 @@ public struct Symbolicator {
 
         let command = symbolicationCommand(
             dsymPath: dsymFile.binaryPath,
-            architecture: architecture,
+            architecture: architecture.atosString!, // swiftlint:disable:this force_unwrapping
             loadAddress: loadAddress,
             addresses: addresses
         )

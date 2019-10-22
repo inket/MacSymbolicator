@@ -13,6 +13,11 @@
 		B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */; };
 		B25A35CD1EF9211F00F52E00 /* Symbolicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */; };
 		B26D624F232D497400DF1D1E /* ErrorsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D624E232D497400DF1D1E /* ErrorsController.swift */; };
+		B272E3BF235F232200B33076 /* iOSCrashingTest.app.dSYM in Resources */ = {isa = PBXBuildFile; fileRef = B272E3BD235F232100B33076 /* iOSCrashingTest.app.dSYM */; };
+		B272E3C0235F232200B33076 /* ios-report.crash in Resources */ = {isa = PBXBuildFile; fileRef = B272E3BE235F232200B33076 /* ios-report.crash */; };
+		B272E3C2235F26C500B33076 /* Architecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C1235F26C500B33076 /* Architecture.swift */; };
+		B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C3235F2F6500B33076 /* BinaryUUID.swift */; };
+		B272E3C6235F447100B33076 /* ios-report_symbolicated.crash in Resources */ = {isa = PBXBuildFile; fileRef = B272E3C5235F447100B33076 /* ios-report_symbolicated.crash */; };
 		B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27931331EF2875E00DDAA7D /* DropZone.swift */; };
 		B28EBD98231ECD2700414663 /* report.crash in Resources */ = {isa = PBXBuildFile; fileRef = B28EBD91231ECD2600414663 /* report.crash */; };
 		B28EBD99231ECD2700414663 /* multithread-sample_symbolicated.txt in Resources */ = {isa = PBXBuildFile; fileRef = B28EBD92231ECD2600414663 /* multithread-sample_symbolicated.txt */; };
@@ -72,6 +77,11 @@
 		B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearch.swift; sourceTree = "<group>"; };
 		B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbolicator.swift; sourceTree = "<group>"; };
 		B26D624E232D497400DF1D1E /* ErrorsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorsController.swift; sourceTree = "<group>"; };
+		B272E3BD235F232100B33076 /* iOSCrashingTest.app.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; path = iOSCrashingTest.app.dSYM; sourceTree = "<group>"; };
+		B272E3BE235F232200B33076 /* ios-report.crash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ios-report.crash"; sourceTree = "<group>"; };
+		B272E3C1235F26C500B33076 /* Architecture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Architecture.swift; sourceTree = "<group>"; };
+		B272E3C3235F2F6500B33076 /* BinaryUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryUUID.swift; sourceTree = "<group>"; };
+		B272E3C5235F447100B33076 /* ios-report_symbolicated.crash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ios-report_symbolicated.crash"; sourceTree = "<group>"; };
 		B27931331EF2875E00DDAA7D /* DropZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropZone.swift; sourceTree = "<group>"; };
 		B28EBD91231ECD2600414663 /* report.crash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = report.crash; sourceTree = "<group>"; };
 		B28EBD92231ECD2600414663 /* multithread-sample_symbolicated.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "multithread-sample_symbolicated.txt"; sourceTree = "<group>"; };
@@ -130,6 +140,9 @@
 		B212511820CD12D600F36050 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B272E3C5235F447100B33076 /* ios-report_symbolicated.crash */,
+				B272E3BE235F232200B33076 /* ios-report.crash */,
+				B272E3BD235F232100B33076 /* iOSCrashingTest.app.dSYM */,
 				B28EBD94231ECD2600414663 /* CrashingAndHangingTest.dSYM */,
 				B28EBD92231ECD2600414663 /* multithread-sample_symbolicated.txt */,
 				B28EBD95231ECD2700414663 /* multithread-sample.txt */,
@@ -175,6 +188,8 @@
 		B2B74D931EF910D6000BBFD6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B272E3C1235F26C500B33076 /* Architecture.swift */,
+				B272E3C3235F2F6500B33076 /* BinaryUUID.swift */,
 				B2B74D8C1EF8E925000BBFD6 /* DSYMFile.swift */,
 				B2B74D901EF8F7B6000BBFD6 /* CrashFile.swift */,
 			);
@@ -323,11 +338,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				B28EBD9B231ECD2700414663 /* CrashingAndHangingTest.dSYM in Resources */,
+				B272E3C6235F447100B33076 /* ios-report_symbolicated.crash in Resources */,
 				B28EBD9C231ECD2700414663 /* multithread-sample.txt in Resources */,
 				B28EBD9E231ECD2700414663 /* singlethread-sample.txt in Resources */,
 				B28EBD9A231ECD2700414663 /* singlethread-sample_symbolicated.txt in Resources */,
+				B272E3BF235F232200B33076 /* iOSCrashingTest.app.dSYM in Resources */,
 				B28EBD9D231ECD2700414663 /* report_symbolicated.crash in Resources */,
 				B28EBD99231ECD2700414663 /* multithread-sample_symbolicated.txt in Resources */,
+				B272E3C0235F232200B33076 /* ios-report.crash in Resources */,
 				B28EBD98231ECD2700414663 /* report.crash in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -398,6 +416,8 @@
 				B2B74D8D1EF8E925000BBFD6 /* DSYMFile.swift in Sources */,
 				B2B74D8B1EF8BF70000BBFD6 /* MainController.swift in Sources */,
 				B295FFB3232DDCE8002791BF /* TextWindowController.swift in Sources */,
+				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
+				B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */,
 				B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */,
 				B26D624F232D497400DF1D1E /* ErrorsController.swift in Sources */,
 				B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */,

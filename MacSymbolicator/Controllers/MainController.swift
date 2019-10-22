@@ -11,6 +11,7 @@ class MainController {
 
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
+    private let statusTextField = NSTextField()
     private let crashFileDropZone = DropZone(fileTypes: [".crash", ".txt"], text: "Drop Crash Report or Sample")
     private let dsymFileDropZone = DropZone(
         fileTypes: [".dSYM"],
@@ -39,6 +40,12 @@ class MainController {
 
         mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
         mainWindow.title = "MacSymbolicator"
+
+        statusTextField.drawsBackground = false
+        statusTextField.isBezeled = false
+        statusTextField.isEditable = false
+        statusTextField.isSelectable = false
+
         symbolicateButton.title = "Symbolicate"
         symbolicateButton.bezelStyle = .rounded
         symbolicateButton.focusRingType = .none
@@ -58,6 +65,7 @@ class MainController {
         contentView.addSubview(statusView)
         dropZonesContainerView.addSubview(crashFileDropZone)
         dropZonesContainerView.addSubview(dsymFileDropZone)
+        statusView.addSubview(statusTextField)
         statusView.addSubview(symbolicateButton)
         statusView.addSubview(viewErrorsButton)
 
@@ -65,33 +73,38 @@ class MainController {
         crashFileDropZone.translatesAutoresizingMaskIntoConstraints = false
         dsymFileDropZone.translatesAutoresizingMaskIntoConstraints = false
         statusView.translatesAutoresizingMaskIntoConstraints = false
+        statusTextField.translatesAutoresizingMaskIntoConstraints = false
         symbolicateButton.translatesAutoresizingMaskIntoConstraints = false
         viewErrorsButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             dropZonesContainerView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            dropZonesContainerView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            dropZonesContainerView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            dropZonesContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            dropZonesContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             dropZonesContainerView.heightAnchor.constraint(lessThanOrEqualToConstant: mainWindow.frame.size.height),
             dropZonesContainerView.widthAnchor.constraint(lessThanOrEqualToConstant: mainWindow.frame.size.width),
 
             statusView.topAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
-            statusView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
-            statusView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            statusView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            statusView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             statusView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
             statusView.heightAnchor.constraint(equalToConstant: 50),
 
             crashFileDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
-            crashFileDropZone.leftAnchor.constraint(equalTo: dropZonesContainerView.leftAnchor),
+            crashFileDropZone.leadingAnchor.constraint(equalTo: dropZonesContainerView.leadingAnchor),
             crashFileDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
             crashFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
             crashFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
 
             dsymFileDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
-            dsymFileDropZone.rightAnchor.constraint(equalTo: dropZonesContainerView.rightAnchor),
+            dsymFileDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
             dsymFileDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
             dsymFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
             dsymFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
+
+            statusTextField.leadingAnchor.constraint(equalTo: statusView.leadingAnchor, constant: 20),
+            statusTextField.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
+            statusTextField.widthAnchor.constraint(equalToConstant: 120),
 
             symbolicateButton.centerXAnchor.constraint(equalTo: statusView.centerXAnchor),
             symbolicateButton.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
@@ -157,7 +170,7 @@ class MainController {
 
         DispatchQueue.global(qos: .background).async { [weak self] in
             let dsymPath = self?.searchForDSYM(
-                uuid: crashFileUUID,
+                uuid: crashFileUUID.pretty,
                 crashFileDirectory: crashFile.path.deletingLastPathComponent().path
             )
 
@@ -188,12 +201,18 @@ class MainController {
     func updateDSYMDetailText() {
         if let dsymFile = dsymFile {
             let dsymFilePath = dsymFile.path.path
-            let uuidMismatch = dsymFile.uuid != nil && crashFile != nil && dsymFile.uuid != crashFile?.uuid
 
-            dsymFileDropZone.detailText = [
-                dsymFilePath,
-                uuidMismatch ? "(!) UUID mismatch (!)" : nil
-            ].compactMap { $0 }.joined(separator: "\n")
+            let uuidMismatch: Bool
+            if let crashFileUUID = crashFile?.uuid {
+                let dsymUUIDs = dsymFile.uuids.values
+                uuidMismatch = !dsymUUIDs.isEmpty && !dsymUUIDs.contains(crashFileUUID)
+            } else {
+                // We don't have enough data to decide that, let's just say it's not…
+                uuidMismatch = false
+            }
+
+            statusTextField.stringValue = uuidMismatch ? "⚠️ UUID mismatch" : ""
+            dsymFileDropZone.detailText = dsymFilePath
         } else {
             dsymFileDropZone.detailText = nil
         }
@@ -209,13 +228,13 @@ extension MainController: DropZoneDelegate {
     func receivedFile(dropZone: DropZone, fileURL: URL) {
         if dropZone == crashFileDropZone {
             crashFile = CrashFile(path: fileURL)
+
+            if let crashFile = crashFile, dsymFile?.canSymbolicate(crashFile) != true {
+                startSearchForDSYM()
+            }
         } else if dropZone == dsymFileDropZone {
             dsymFile = DSYMFile(path: fileURL)
             updateDSYMDetailText()
-        }
-
-        if crashFile != nil && dsymFile?.uuid != crashFile?.uuid && dropZone != dsymFileDropZone {
-            startSearchForDSYM()
         }
     }
 }

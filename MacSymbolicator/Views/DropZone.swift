@@ -161,6 +161,7 @@ class DropZone: NSView {
         detailTextTextField.isEditable = false
         detailTextTextField.isSelectable = false
         detailTextTextField.translatesAutoresizingMaskIntoConstraints = false
+        detailTextTextField.cell?.truncatesLastVisibleLine = true
         iconImageView.unregisterDraggedTypes()
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -207,15 +208,20 @@ class DropZone: NSView {
         let borderPadding: CGFloat = 6
         let drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
 
-        // Dashed drop area outline drawing
-        if file == nil {
-            (isHoveringFile ? Colors.gray2 : Colors.gray1).setStroke()
+        // Drop area outline drawing
+        let alpha: CGFloat = file == nil ? 1 : 0.05
+        let dashed = file == nil
 
-            let roundedRectanglePath = NSBezierPath(roundedRect: drawRect, xRadius: 8, yRadius: 8)
-            roundedRectanglePath.lineWidth = 1.5
+        (isHoveringFile ? Colors.gray2 : Colors.gray1).withAlphaComponent(alpha).setStroke()
+
+        let roundedRectanglePath = NSBezierPath(roundedRect: drawRect, xRadius: 8, yRadius: 8)
+        roundedRectanglePath.lineWidth = 1.5
+
+        if dashed {
             roundedRectanglePath.setLineDash([6, 6, 6, 6], count: 4, phase: 0)
-            roundedRectanglePath.stroke()
         }
+
+        roundedRectanglePath.stroke()
     }
 
     func acceptFile(url fileURL: URL) -> Bool {

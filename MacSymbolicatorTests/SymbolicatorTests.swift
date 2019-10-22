@@ -11,7 +11,8 @@ class SymbolicatorTests: XCTestCase {
     func testSymbolication() {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
 
-        let combinations: [(URL, URL)] = [
+        // macOS crash reports
+        let macCombinations: [(URL, URL)] = [
             (
                 testBundle.url(forResource: "report", withExtension: "crash")!,
                 testBundle.url(forResource: "report_symbolicated", withExtension: "crash")!
@@ -26,10 +27,38 @@ class SymbolicatorTests: XCTestCase {
             )
         ]
 
-        let dsymURL = testBundle.url(forResource: "CrashingAndHangingTest", withExtension: "dSYM")!
-        let dsymFile = DSYMFile(path: dsymURL)
+        // iOS crash reports
+        let iOSCombinations: [(URL, URL)] = [
+            (
+                testBundle.url(forResource: "ios-report", withExtension: "crash")!,
+                testBundle.url(forResource: "ios-report_symbolicated", withExtension: "crash")!
+            )
+        ]
 
-        combinations.forEach { combination in
+        var dsymFile = DSYMFile(
+            path: testBundle.url(forResource: "CrashingAndHangingTest", withExtension: "dSYM")!
+        )
+
+        macCombinations.forEach { combination in
+            let (beforeSymbolicationURL, afterSymbolicationURL) = combination
+            let crashFile = CrashFile(path: beforeSymbolicationURL)!
+
+            var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+
+            XCTAssert(symbolicator.symbolicate())
+
+            // swiftlint:disable:next force_try
+            let symbolicatedContent = try! String(contentsOf: afterSymbolicationURL)
+
+            XCTAssertEqual(symbolicator.symbolicatedContent, symbolicatedContent)
+            XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+        }
+
+        dsymFile = DSYMFile(
+            path: testBundle.url(forResource: "iOSCrashingTest.app", withExtension: "dSYM")!
+        )
+
+        iOSCombinations.forEach { combination in
             let (beforeSymbolicationURL, afterSymbolicationURL) = combination
             let crashFile = CrashFile(path: beforeSymbolicationURL)!
 
