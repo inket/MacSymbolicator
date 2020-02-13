@@ -190,6 +190,10 @@ class MainController {
 
     func searchForDSYM(uuid: String, crashFileDirectory: String) -> String? {
         return
+            SpotlightSearch.inRootDirectory.search(uuid: uuid)
+                .firstMatching(fileExtension: "dsym") ??
+            SpotlightSearch.inRootDirectory.search(fileExtension: "dSYM")
+                .firstMatching(uuid: uuid) ??
             FileSearch.nonRecursive.in(directory: crashFileDirectory)
                 .with(errorHandler: errorsController.addErrors)
                 .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid) ??
