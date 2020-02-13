@@ -19,7 +19,8 @@
 		B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C3235F2F6500B33076 /* BinaryUUID.swift */; };
 		B272E3C6235F447100B33076 /* ios-report_symbolicated.crash in Resources */ = {isa = PBXBuildFile; fileRef = B272E3C5235F447100B33076 /* ios-report_symbolicated.crash */; };
 		B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27931331EF2875E00DDAA7D /* DropZone.swift */; };
-		B289E09C23F4C1B50019C28B /* SpotlightSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B289E09B23F4C1B50019C28B /* SpotlightSearch.swift */; };
+		B289E0A223F5F7350019C28B /* DSYMSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B289E0A123F5F7350019C28B /* DSYMSearch.swift */; };
+		B289E0A423F5F77C0019C28B /* SpotlightSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B289E0A323F5F77C0019C28B /* SpotlightSearch.swift */; };
 		B28EBD98231ECD2700414663 /* report.crash in Resources */ = {isa = PBXBuildFile; fileRef = B28EBD91231ECD2600414663 /* report.crash */; };
 		B28EBD99231ECD2700414663 /* multithread-sample_symbolicated.txt in Resources */ = {isa = PBXBuildFile; fileRef = B28EBD92231ECD2600414663 /* multithread-sample_symbolicated.txt */; };
 		B28EBD9A231ECD2700414663 /* singlethread-sample_symbolicated.txt in Resources */ = {isa = PBXBuildFile; fileRef = B28EBD93231ECD2600414663 /* singlethread-sample_symbolicated.txt */; };
@@ -84,7 +85,8 @@
 		B272E3C3235F2F6500B33076 /* BinaryUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryUUID.swift; sourceTree = "<group>"; };
 		B272E3C5235F447100B33076 /* ios-report_symbolicated.crash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ios-report_symbolicated.crash"; sourceTree = "<group>"; };
 		B27931331EF2875E00DDAA7D /* DropZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropZone.swift; sourceTree = "<group>"; };
-		B289E09B23F4C1B50019C28B /* SpotlightSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightSearch.swift; sourceTree = "<group>"; };
+		B289E0A123F5F7350019C28B /* DSYMSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMSearch.swift; sourceTree = "<group>"; };
+		B289E0A323F5F77C0019C28B /* SpotlightSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightSearch.swift; sourceTree = "<group>"; };
 		B28EBD91231ECD2600414663 /* report.crash */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = report.crash; sourceTree = "<group>"; };
 		B28EBD92231ECD2600414663 /* multithread-sample_symbolicated.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "multithread-sample_symbolicated.txt"; sourceTree = "<group>"; };
 		B28EBD93231ECD2600414663 /* singlethread-sample_symbolicated.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "singlethread-sample_symbolicated.txt"; sourceTree = "<group>"; };
@@ -168,6 +170,16 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		B289E0A023F5F72A0019C28B /* DSYM Search */ = {
+			isa = PBXGroup;
+			children = (
+				B289E0A123F5F7350019C28B /* DSYMSearch.swift */,
+				B289E0A323F5F77C0019C28B /* SpotlightSearch.swift */,
+				B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */,
+			);
+			path = "DSYM Search";
+			sourceTree = "<group>";
+		};
 		B2B74D851EF775F0000BBFD6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -215,8 +227,6 @@
 				B26D624E232D497400DF1D1E /* ErrorsController.swift */,
 				B295FFB2232DDCE8002791BF /* TextWindowController.swift */,
 				B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */,
-				B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */,
-				B289E09B23F4C1B50019C28B /* SpotlightSearch.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -245,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				B2B74D951EF910EA000BBFD6 /* Controllers */,
+				B289E0A023F5F72A0019C28B /* DSYM Search */,
 				B2B74D941EF910E1000BBFD6 /* Views */,
 				B2B74D931EF910D6000BBFD6 /* Models */,
 				B2B74D921EF910CB000BBFD6 /* Extensions */,
@@ -421,13 +432,14 @@
 				B295FFB3232DDCE8002791BF /* TextWindowController.swift in Sources */,
 				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
 				B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */,
-				B289E09C23F4C1B50019C28B /* SpotlightSearch.swift in Sources */,
 				B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */,
 				B26D624F232D497400DF1D1E /* ErrorsController.swift in Sources */,
 				B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */,
 				B25A35CD1EF9211F00F52E00 /* Symbolicator.swift in Sources */,
 				B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */,
 				B2C229231EF223C50015AB33 /* AppDelegate.swift in Sources */,
+				B289E0A223F5F7350019C28B /* DSYMSearch.swift in Sources */,
+				B289E0A423F5F77C0019C28B /* SpotlightSearch.swift in Sources */,
 				B2B74D911EF8F7B6000BBFD6 /* CrashFile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

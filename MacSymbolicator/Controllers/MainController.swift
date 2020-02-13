@@ -168,38 +168,21 @@ class MainController {
         dsymFileDropZone.detailText = "Searching…"
         errorsController.resetErrors()
 
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            let dsymPath = self?.searchForDSYM(
-                uuid: crashFileUUID.pretty,
-                crashFileDirectory: crashFile.path.deletingLastPathComponent().path
-            )
-
-            DispatchQueue.main.async {
-                defer {
-                    self?.updateDSYMDetailText()
-                }
-
-                guard let foundDSYMPath = dsymPath else { return }
-
-                let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
-                self?.dsymFile = DSYMFile(path: foundDSYMURL)
-                self?.dsymFileDropZone.file = foundDSYMURL
+        DSYMSearch.search(
+            forUUID: crashFileUUID.pretty,
+            crashFileDirectory: crashFile.path.deletingLastPathComponent().path,
+            fileSearchErrorHandler: errorsController.addErrors
+        ) { [weak self] result in
+            defer {
+                self?.updateDSYMDetailText()
             }
-        }
-    }
 
-    func searchForDSYM(uuid: String, crashFileDirectory: String) -> String? {
-        return
-            SpotlightSearch.inRootDirectory.search(uuid: uuid)
-                .firstMatching(fileExtension: "dsym") ??
-            SpotlightSearch.inRootDirectory.search(fileExtension: "dSYM")
-                .firstMatching(uuid: uuid) ??
-            FileSearch.nonRecursive.in(directory: crashFileDirectory)
-                .with(errorHandler: errorsController.addErrors)
-                .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid) ??
-            FileSearch.recursive.in(directory: "~/Library/Developer/Xcode/Archives/")
-                .with(errorHandler: errorsController.addErrors)
-                .search(fileExtension: "dsym").sorted().firstMatching(uuid: uuid)
+            guard let foundDSYMPath = result else { return }
+
+            let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
+            self?.dsymFile = DSYMFile(path: foundDSYMURL)
+            self?.dsymFileDropZone.file = foundDSYMURL
+        }
     }
 
     func updateDSYMDetailText() {
