@@ -39,6 +39,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         updater = SQRLUpdater(update: URLRequest(url: updateURL))
+
+        // Check for updates immediately since setting the interval doesn't
+        // https://github.com/Squirrel/Squirrel.Mac/issues/99
+        updater?.checkForUpdatesCommand.execute(nil)
+
+        // Set the interval to 4 hours
         updater?.startAutomaticChecks(withInterval: 60 * 60 * 4)
     }
 }
