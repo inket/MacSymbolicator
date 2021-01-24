@@ -47,7 +47,7 @@ Thread 0 crashed with X86 Thread State (64-bit):
   rdi: 0x00007f8390700180  rsi: 0x00000001003daf62  rbp: 0x00007ffeef825910  rsp: 0x00007ffeef825910
    r8: 0x000007f83907016c   r9: 0x0000000000000002  r10: 0x00000001003dc090  r11: 0x00000001003daddd
   r12: 0x0000000000000000  r13: 0x0000000000000000  r14: 0x0000000000000001  r15: 0x00007fff6fa8c840
-  rip: 0x00000001003dade1 -[MyClass crashingMethod] (in CrashingAndHangingTest) (main.m:50)
+  rip: 0x00000001003dade1  rfl: 0x0000000000010206  cr2: 0x0000000000000001
   
 Logical CPU:     0
 Error Code:      0x00000006 (no mapping for user data read)

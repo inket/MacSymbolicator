@@ -79,7 +79,7 @@ public struct Symbolicator {
             }
 
             // Replace the entries using the crash report format
-            let crashOccurences = replacedContent.scan(pattern: "\(address)\\s.*?$").flatMap { $0 }
+            let crashOccurences = replacedContent.scan(pattern: "\(address)\\s0x.*?$").flatMap { $0 }
             crashOccurences.forEach {
                 replacedContent = replacedContent.replacingOccurrences(of: $0, with: "\(address) \(replacement)")
             }
