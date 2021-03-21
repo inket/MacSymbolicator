@@ -14,30 +14,42 @@
 @implementation MyClass
 
 - (void)start {
-    int r = arc4random_uniform(4);
+    NSInteger r = 0;
 
     if (NSProcessInfo.processInfo.arguments.count > 1) {
-        r = NSProcessInfo.processInfo.arguments[1].intValue;
+        r = NSProcessInfo.processInfo.arguments[1].integerValue;
+    } else {
+        printf("%s\n", [@"usage:" cStringUsingEncoding:NSUTF8StringEncoding]);
+        printf("%s\n", [@"    `crashingAndHangingTest 0`: crashes in the main target" cStringUsingEncoding:NSUTF8StringEncoding]);
+        printf("%s\n", [@"    `crashingAndHangingTest 1`: crashes in a separate target (framework)" cStringUsingEncoding:NSUTF8StringEncoding]);
+        printf("%s\n", [@"    `crashingAndHangingTest 2`: hangs one thread (for generating samples via Activity Monitor)" cStringUsingEncoding:NSUTF8StringEncoding]);
+        printf("%s\n", [@"    `crashingAndHangingTest 3`: hangs 2 threads (for generating samples via Activity Monitor)" cStringUsingEncoding:NSUTF8StringEncoding]);
     }
 
-    if (r == 1) {
-        // Hang on one thread, this should generate a short format sample when sampled via Activity Monitor where lines
-        // will start with spaces
-        NSLog(@"hanging…");
-        [self hangingMethod];
-    } else if (r == 2) {
-        // Hang in 2 threads, this should generate a multithreaded format sample when sampled via Activity Monitor
-        // where lines will start with "+"
-        NSLog(@"background hanging…");
-        [self backgroundHangingMethod];
-    } else if (r == 3) {
-        // Crash; pick up the crash report @ ~/Library/Logs/DiagnosticReports
-        NSLog(@"crashing in AnotherTarget…");
-        [CrashingClass crash];
-    } else {
-        // Crash; pick up the crash report @ ~/Library/Logs/DiagnosticReports
-        NSLog(@"crashing…");
-        [self crashingMethod];
+    switch (r) {
+        case 1:
+            // Crash; pick up the crash report @ ~/Library/Logs/DiagnosticReports
+            NSLog(@"crashing in AnotherTarget… get crash report @ ~/Library/Logs/DiagnosticReports");
+            [self crashingInDifferentTargetMethod];
+            break;
+
+        case 2:
+            // Hang on one thread, this should generate a short format sample when sampled via Activity Monitor where lines
+            // will start with spaces
+            NSLog(@"hanging…");
+            [self hangingMethod];
+            break;
+        case 3:
+            // Hang in 2 threads, this should generate a multithreaded format sample when sampled via Activity Monitor
+            // where lines will start with "+"
+            NSLog(@"background hanging…");
+            [self backgroundHangingMethod];
+            break;
+        default:
+            // Crash; pick up the crash report @ ~/Library/Logs/DiagnosticReports
+            NSLog(@"crashing in main target… get crash report @ ~/Library/Logs/DiagnosticReports");
+            [self crashingMethod];
+            break;
     }
 }
 
@@ -59,6 +71,10 @@
 - (void)crashingMethod {
     int* p = (int*)1;
     *p = 0;
+}
+
+- (void)crashingInDifferentTargetMethod {
+    [CrashingClass crash];
 }
 
 @end
