@@ -78,7 +78,12 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
             let (output, error) = command.run()
 
             if let errorOutput = error?.trimmed, !errorOutput.isEmpty {
-                errorHandler?(["\(command):\n\(errorOutput)"])
+                // dwarfdump --uuid on /Users/x/Library/Developer/Xcode/Archives seems to output the dsym identifier
+                // correctly followed by an stderr message about not being able to open macho file due to
+                // "Too many levels of symbolic links". Seems safe to ignore.
+                if !errorOutput.contains("Too many levels of symbolic links") {
+                    errorHandler?(["\(command):\n\(errorOutput)"])
+                }
             }
 
             guard
