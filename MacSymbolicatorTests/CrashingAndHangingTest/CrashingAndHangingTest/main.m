@@ -6,13 +6,20 @@
 @import Foundation;
 #import <stdlib.h>
 
+#import "AnotherTarget/AnotherTarget-Swift.h"
+
 @interface MyClass: NSObject
 @end
 
 @implementation MyClass
 
 - (void)start {
-    int r = arc4random_uniform(3);
+    int r = arc4random_uniform(4);
+
+    if (NSProcessInfo.processInfo.arguments.count > 1) {
+        r = NSProcessInfo.processInfo.arguments[1].intValue;
+    }
+
     if (r == 1) {
         // Hang on one thread, this should generate a short format sample when sampled via Activity Monitor where lines
         // will start with spaces
@@ -23,6 +30,10 @@
         // where lines will start with "+"
         NSLog(@"background hanging…");
         [self backgroundHangingMethod];
+    } else if (r == 3) {
+        // Crash; pick up the crash report @ ~/Library/Logs/DiagnosticReports
+        NSLog(@"crashing in AnotherTarget…");
+        [CrashingClass crash];
     } else {
         // Crash; pick up the crash report @ ~/Library/Logs/DiagnosticReports
         NSLog(@"crashing…");
