@@ -39,7 +39,31 @@ class SymbolicatorTests: XCTestCase {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
         let testFile = TestFile(path: "Crashes/single-target-crash.crash")
         let dsymFile = DSYMFile(
-            path: testBundle.url(forResource: "dSYMs/CrashingAndHangingTest", withExtension: "dSYM")!
+            path: testBundle.url(forResource: "dSYMs/CrashingTest", withExtension: "dSYM")!
+        )
+
+        let crashFile = CrashFile(path: testFile.originalURL)!
+
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+
+        XCTAssert(symbolicator.symbolicate())
+        let result = symbolicator.symbolicatedContent
+
+        // swiftlint:disable:next force_try
+        try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
+
+        // swiftlint:disable:next force_try
+        let expectedContent = try! String(contentsOf: testFile.expectationURL)
+
+        XCTAssertEqual(result, expectedContent)
+        XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+    }
+
+    func testMultiTargetCrashSymbolication() {
+        let testBundle = Bundle(for: MacSymbolicatorTests.self)
+        let testFile = TestFile(path: "Crashes/multi-target-crash.crash")
+        let dsymFile = DSYMFile(
+            path: testBundle.url(forResource: "dSYMs/CrashingInAnotherTargetTest", withExtension: "dSYM")!
         )
 
         let crashFile = CrashFile(path: testFile.originalURL)!
@@ -63,7 +87,7 @@ class SymbolicatorTests: XCTestCase {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
         let testFile = TestFile(path: "Samples/singlethread-sample.txt")
         let dsymFile = DSYMFile(
-            path: testBundle.url(forResource: "dSYMs/CrashingAndHangingTest", withExtension: "dSYM")!
+            path: testBundle.url(forResource: "dSYMs/SingleThreadHangingTest", withExtension: "dSYM")!
         )
 
         let crashFile = CrashFile(path: testFile.originalURL)!
@@ -86,7 +110,9 @@ class SymbolicatorTests: XCTestCase {
     func testMultiThreadSampleSymbolication() {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
         let testFile = TestFile(path: "Samples/multithread-sample.txt")
-        let dsymFile = DSYMFile(path: testBundle.url(forResource: "dSYMs/iOSCrashingTest.app", withExtension: "dSYM")!)
+        let dsymFile = DSYMFile(
+            path: testBundle.url(forResource: "dSYMs/MultiThreadHangingTest", withExtension: "dSYM")!
+        )
 
         let crashFile = CrashFile(path: testFile.originalURL)!
 
@@ -107,7 +133,7 @@ class SymbolicatorTests: XCTestCase {
 
     func testiOSSymbolication() {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
-        let testFile = TestFile(path: "Crashes/ios-report.crash")
+        let testFile = TestFile(path: "Crashes/ios-crash.crash")
         let dsymFile = DSYMFile(path: testBundle.url(forResource: "dSYMs/iOSCrashingTest.app", withExtension: "dSYM")!)
 
         let crashFile = CrashFile(path: testFile.originalURL)!
