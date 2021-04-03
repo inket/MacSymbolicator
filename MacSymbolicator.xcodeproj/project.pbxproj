@@ -11,6 +11,9 @@
 		B212510F20CD123900F36050 /* MacSymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */; };
 		B212511720CD125E00F36050 /* SymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212511620CD125E00F36050 /* SymbolicatorTests.swift */; };
 		B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */; };
+		B23646872618178400AB9486 /* BinaryImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23646862618178400AB9486 /* BinaryImage.swift */; };
+		B236468A261818B700AB9486 /* ScanningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2364689261818B700AB9486 /* ScanningTests.swift */; };
+		B236468E2618214F00AB9486 /* StackTraceCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236468D2618214F00AB9486 /* StackTraceCall.swift */; };
 		B25A35CD1EF9211F00F52E00 /* Symbolicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */; };
 		B26D624F232D497400DF1D1E /* ErrorsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D624E232D497400DF1D1E /* ErrorsController.swift */; };
 		B272E3C2235F26C500B33076 /* Architecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C1235F26C500B33076 /* Architecture.swift */; };
@@ -70,6 +73,9 @@
 		B212511020CD123900F36050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B212511620CD125E00F36050 /* SymbolicatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicatorTests.swift; sourceTree = "<group>"; };
 		B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearch.swift; sourceTree = "<group>"; };
+		B23646862618178400AB9486 /* BinaryImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryImage.swift; sourceTree = "<group>"; };
+		B2364689261818B700AB9486 /* ScanningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningTests.swift; sourceTree = "<group>"; };
+		B236468D2618214F00AB9486 /* StackTraceCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackTraceCall.swift; sourceTree = "<group>"; };
 		B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbolicator.swift; sourceTree = "<group>"; };
 		B26D624E232D497400DF1D1E /* ErrorsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorsController.swift; sourceTree = "<group>"; };
 		B272E3C1235F26C500B33076 /* Architecture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Architecture.swift; sourceTree = "<group>"; };
@@ -122,6 +128,7 @@
 			children = (
 				B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */,
 				B212511620CD125E00F36050 /* SymbolicatorTests.swift */,
+				B2364689261818B700AB9486 /* ScanningTests.swift */,
 				B212511820CD12D600F36050 /* Resources */,
 			);
 			path = MacSymbolicatorTests;
@@ -185,6 +192,8 @@
 				B272E3C3235F2F6500B33076 /* BinaryUUID.swift */,
 				B2B74D8C1EF8E925000BBFD6 /* DSYMFile.swift */,
 				B2B74D901EF8F7B6000BBFD6 /* CrashFile.swift */,
+				B23646862618178400AB9486 /* BinaryImage.swift */,
+				B236468D2618214F00AB9486 /* StackTraceCall.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -390,6 +399,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B212510F20CD123900F36050 /* MacSymbolicatorTests.swift in Sources */,
+				B236468A261818B700AB9486 /* ScanningTests.swift in Sources */,
 				B212511720CD125E00F36050 /* SymbolicatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,10 +412,12 @@
 				B2B74D8D1EF8E925000BBFD6 /* DSYMFile.swift in Sources */,
 				B2B74D8B1EF8BF70000BBFD6 /* MainController.swift in Sources */,
 				B295FFB3232DDCE8002791BF /* TextWindowController.swift in Sources */,
+				B23646872618178400AB9486 /* BinaryImage.swift in Sources */,
 				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
 				B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */,
 				B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */,
 				B26D624F232D497400DF1D1E /* ErrorsController.swift in Sources */,
+				B236468E2618214F00AB9486 /* StackTraceCall.swift in Sources */,
 				B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */,
 				B25A35CD1EF9211F00F52E00 /* Symbolicator.swift in Sources */,
 				B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */,

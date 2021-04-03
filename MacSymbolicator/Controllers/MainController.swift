@@ -129,7 +129,7 @@ class MainController {
 
         isSymbolicating = true
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
 
         DispatchQueue.global(qos: .userInitiated).async {
             let success = symbolicator.symbolicate()
@@ -155,7 +155,7 @@ class MainController {
     func startSearchForDSYM() {
         guard
             let crashFile = crashFile,
-            let crashFileUUID = crashFile.uuid
+            let crashFileUUID = BinaryUUID("TODO") // crashFile.uuid
         else {
             let alert = NSAlert()
             alert.informativeText = "Couldn't retrieve UUID from crash report"
@@ -190,7 +190,7 @@ class MainController {
             let dsymFilePath = dsymFile.path.path
 
             let uuidMismatch: Bool
-            if let crashFileUUID = crashFile?.uuid {
+            if let crashFileUUID = BinaryUUID("TODO") { // crashFile?.uuid {
                 let dsymUUIDs = dsymFile.uuids.values
                 uuidMismatch = !dsymUUIDs.isEmpty && !dsymUUIDs.contains(crashFileUUID)
             } else {

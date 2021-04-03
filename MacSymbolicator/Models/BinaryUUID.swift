@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct BinaryUUID: Equatable {
+struct BinaryUUID: Equatable, Hashable {
     let raw: String
 
     var pretty: String {

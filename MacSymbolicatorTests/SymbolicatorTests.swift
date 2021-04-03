@@ -44,7 +44,7 @@ class SymbolicatorTests: XCTestCase {
 
         let crashFile = CrashFile(path: testFile.originalURL)!
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
@@ -62,13 +62,14 @@ class SymbolicatorTests: XCTestCase {
     func testMultiTargetCrashSymbolication() {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
         let testFile = TestFile(path: "Crashes/multi-target-crash.crash")
-        let dsymFile = DSYMFile(
-            path: testBundle.url(forResource: "dSYMs/CrashingInAnotherTargetTest", withExtension: "dSYM")!
-        )
+        let dsymFiles = [
+            DSYMFile(path: testBundle.url(forResource: "dSYMs/CrashingInAnotherTargetTest", withExtension: "dSYM")!),
+            DSYMFile(path: testBundle.url(forResource: "dSYMs/AnotherTarget.framework", withExtension: "dSYM")!)
+        ]
 
         let crashFile = CrashFile(path: testFile.originalURL)!
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: dsymFiles)
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
@@ -92,7 +93,7 @@ class SymbolicatorTests: XCTestCase {
 
         let crashFile = CrashFile(path: testFile.originalURL)!
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
@@ -116,7 +117,7 @@ class SymbolicatorTests: XCTestCase {
 
         let crashFile = CrashFile(path: testFile.originalURL)!
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
@@ -138,7 +139,7 @@ class SymbolicatorTests: XCTestCase {
 
         let crashFile = CrashFile(path: testFile.originalURL)!
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent

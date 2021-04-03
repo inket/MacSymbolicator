@@ -5,12 +5,17 @@
 
 import Cocoa
 
+struct CommandResult {
+    let output: String?
+    let error: String?
+}
+
 extension String {
     var trimmed: String {
         return trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    func run() -> (output: String?, error: String?) {
+    func run() -> CommandResult {
         let pipe = Pipe()
         let errorPipe = Pipe()
 
@@ -24,14 +29,15 @@ extension String {
         let errFileHandle = errorPipe.fileHandleForReading
         process.launch()
 
-        return (
-            String(data: outFileHandle.readDataToEndOfFile(), encoding: .utf8),
-            String(data: errFileHandle.readDataToEndOfFile(), encoding: .utf8)
+        return CommandResult(
+            output: String(data: outFileHandle.readDataToEndOfFile(), encoding: .utf8),
+            error: String(data: errFileHandle.readDataToEndOfFile(), encoding: .utf8)
         )
     }
 
     func scan(
-        pattern: String, options: NSRegularExpression.Options = [.caseInsensitive, .anchorsMatchLines]
+        pattern: String,
+        options: NSRegularExpression.Options = [.caseInsensitive, .anchorsMatchLines]
     ) -> [[String]] {
         // swiftlint:disable:next force_try
         let regularExpression = try! NSRegularExpression(pattern: pattern, options: options)

@@ -75,9 +75,9 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
     func firstMatching(uuid: String) -> String? {
         return results.first { file in
             let command = "dwarfdump --uuid \"\(file)\""
-            let (output, error) = command.run()
+            let commandResult = command.run()
 
-            if let errorOutput = error?.trimmed, !errorOutput.isEmpty {
+            if let errorOutput = commandResult.error?.trimmed, !errorOutput.isEmpty {
                 // dwarfdump --uuid on /Users/x/Library/Developer/Xcode/Archives seems to output the dsym identifier
                 // correctly followed by an stderr message about not being able to open macho file due to
                 // "Too many levels of symbolic links". Seems safe to ignore.
@@ -87,7 +87,7 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
             }
 
             guard
-                let dwarfDumpOutput = output?.trimmed,
+                let dwarfDumpOutput = commandResult.output?.trimmed,
                 let foundUUID = dwarfDumpOutput.scan(pattern: "UUID: (.*) \\(").first?.first
             else {
                 return false

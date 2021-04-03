@@ -46,7 +46,7 @@ public struct DSYMFile {
     /// Returns nil when it cannot be determined (no uuids in dsym / crash file without uuid)
     func canSymbolicate(_ crashFile: CrashFile) -> Bool? {
         guard
-            let crashUUID = crashFile.uuid,
+            let crashUUID = BinaryUUID("TODO"), // crashFile.uuid,
             !uuids.values.isEmpty
         else { return nil }
 
