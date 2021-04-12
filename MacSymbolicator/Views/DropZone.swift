@@ -6,12 +6,30 @@
 import Cocoa
 
 protocol DropZoneDelegate: class {
-    func receivedFile(dropZone: DropZone, fileURL: URL)
+    func receivedFiles(dropZone: DropZone, fileURLs: [URL])
 }
 
 class DropZone: NSView {
+    enum State {
+        case oneFileEmpty
+        case oneFile
+        case multipleFilesEmpty
+        case multipleFiles
+    }
+
     // MARK: Properties
     weak var delegate: DropZoneDelegate?
+
+    var state: State {
+        didSet {
+            layoutElements()
+
+            tableViewScrollView.isHidden = files.isEmpty
+            tableView.reloadData()
+
+            display()
+        }
+    }
 
     private var isHoveringFile = false {
         didSet {
@@ -21,21 +39,7 @@ class DropZone: NSView {
 
     private var _fileTypes: [String] = [] {
         didSet {
-            guard !_fileTypes.isEmpty else {
-                icon = nil
-                fileTypeTextField.attributedStringValue = NSAttributedString()
-                unregisterDraggedTypes()
-                return
-            }
-
-            registerForDraggedTypes([(kUTTypeFileURL as NSPasteboard.PasteboardType)])
-
-            let primaryFileType = _fileTypes[0]
-            icon = NSWorkspace.shared.icon(forFileType: primaryFileType)
-            fileTypeTextField.attributedStringValue = NSAttributedString(
-                string: primaryFileType,
-                attributes: Style.textAttributes(size: 16, color: .labelColor)
-            )
+            updateRegisteredFileTypes()
         }
     }
 
@@ -56,33 +60,13 @@ class DropZone: NSView {
 
     var text: String? {
         didSet {
-            guard let newText = text else {
-                textTextField.stringValue = ""
-                textTextFieldHeightConstraint?.constant = 0
-                return
-            }
-
-            textTextField.attributedStringValue = NSAttributedString(
-                string: newText,
-                attributes: Style.textAttributes(size: 14, color: .secondaryLabelColor)
-            )
-            textTextFieldHeightConstraint?.constant = 40
+            updateText()
         }
     }
 
     var detailText: String? {
         didSet {
-            guard let newDetailText = detailText else {
-                detailTextTextField.stringValue = ""
-                detailTextTextFieldHeightConstraint?.constant = 0
-                return
-            }
-
-            detailTextTextField.attributedStringValue = NSAttributedString(
-                string: newDetailText,
-                attributes: Style.textAttributes(size: 12, color: .tertiaryLabelColor)
-            )
-            detailTextTextFieldHeightConstraint?.constant = 70
+            updateText()
         }
     }
 
@@ -94,30 +78,35 @@ class DropZone: NSView {
         }
     }
 
-    private var _file: URL?
-    var file: URL? {
-        get { return _file }
-        set {
-            guard let value = newValue,
-                      value != _file else { return }
-
-            _file = value
-            self.text = value.lastPathComponent
-            display()
+    var files = Set<URL>() {
+        didSet {
+            if allowsMultipleFiles {
+                state = files.isEmpty ? .multipleFilesEmpty : .multipleFiles
+            } else {
+                state = files.isEmpty ? .oneFileEmpty : .oneFile
+            }
         }
     }
 
+    private let allowsMultipleFiles: Bool
+
     private let containerView = NSView()
+    private let textContainerStackView = NSStackView()
     private let fileTypeTextField = NSTextField()
     private let textTextField = NSTextField()
     private let detailTextTextField = NSTextField()
     private let iconImageView = NSImageView()
 
-    private var textTextFieldHeightConstraint: NSLayoutConstraint?
-    private var detailTextTextFieldHeightConstraint: NSLayoutConstraint?
+    private let tableViewScrollView = NSScrollView()
+    private let tableView = NSTableView()
+
+    private var layoutConstraints: [NSLayoutConstraint] = []
 
     // MARK: Methods
-    init(fileTypes: [String], text: String? = nil, detailText: String? = nil) {
+    init(fileTypes: [String], allowsMultipleFiles: Bool, text: String? = nil, detailText: String? = nil) {
+        self.allowsMultipleFiles = allowsMultipleFiles
+        state = allowsMultipleFiles ? .multipleFilesEmpty : .oneFileEmpty
+
         super.init(frame: .zero)
 
         DispatchQueue.main.async { // So that all didSet do trigger
@@ -135,100 +124,274 @@ class DropZone: NSView {
 
     private func setup() {
         addSubview(containerView)
-        containerView.addSubview(fileTypeTextField)
-        containerView.addSubview(textTextField)
-        containerView.addSubview(detailTextTextField)
         containerView.addSubview(iconImageView)
+        containerView.addSubview(textContainerStackView)
+
+        [fileTypeTextField, textTextField, detailTextTextField].forEach {
+            textContainerStackView.addArrangedSubview($0)
+        }
 
         wantsLayer = true
         layer?.cornerRadius = 14
         translatesAutoresizingMaskIntoConstraints = false
 
         containerView.translatesAutoresizingMaskIntoConstraints = false
+
+        textContainerStackView.orientation = .vertical
+        textContainerStackView.distribution = .equalCentering
+        textContainerStackView.translatesAutoresizingMaskIntoConstraints = false
+
         fileTypeTextField.drawsBackground = false
         fileTypeTextField.isBezeled = false
         fileTypeTextField.isEditable = false
         fileTypeTextField.isSelectable = false
-        fileTypeTextField.translatesAutoresizingMaskIntoConstraints = false
+
         textTextField.drawsBackground = false
         textTextField.isBezeled = false
         textTextField.isEditable = false
         textTextField.isSelectable = false
         textTextField.cell?.lineBreakMode = .byTruncatingMiddle
-        textTextField.translatesAutoresizingMaskIntoConstraints = false
+
         detailTextTextField.drawsBackground = false
         detailTextTextField.isBezeled = false
         detailTextTextField.isEditable = false
         detailTextTextField.isSelectable = false
-        detailTextTextField.translatesAutoresizingMaskIntoConstraints = false
         detailTextTextField.cell?.truncatesLastVisibleLine = true
+
         iconImageView.unregisterDraggedTypes()
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
 
-        let textTextFieldConstraint = textTextField.heightAnchor.constraint(lessThanOrEqualToConstant: 40)
-        textTextFieldHeightConstraint = textTextFieldConstraint
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.focusRingType = .none
+        tableView.usesAlternatingRowBackgroundColors = true
+        tableView.headerView = nil
 
-        let detailTextTextFieldConstraint = detailTextTextField.heightAnchor.constraint(lessThanOrEqualToConstant: 70)
-        detailTextTextFieldHeightConstraint = detailTextTextFieldConstraint
+        tableViewScrollView.documentView = tableView
+        tableViewScrollView.translatesAutoresizingMaskIntoConstraints = false
+        tableViewScrollView.automaticallyAdjustsContentInsets = false
+        tableViewScrollView.contentInsets = NSEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
+        tableViewScrollView.wantsLayer = true
+        tableViewScrollView.layer?.cornerRadius = 8
 
-        NSLayoutConstraint.activate([
-            containerView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            containerView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            containerView.widthAnchor.constraint(equalTo: self.widthAnchor, constant: -40),
+        let column = NSTableColumn(identifier: .init(rawValue: "name"))
+        column.width = CGFloat(300)
+        tableView.addTableColumn(column)
 
-            iconImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            iconImageView.topAnchor.constraint(equalTo: containerView.topAnchor),
-            iconImageView.heightAnchor.constraint(equalToConstant: 64),
-            iconImageView.widthAnchor.constraint(equalToConstant: 64),
+        layoutElements()
 
-            fileTypeTextField.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            fileTypeTextField.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 4),
-            fileTypeTextField.heightAnchor.constraint(lessThanOrEqualToConstant: 26),
-            fileTypeTextField.widthAnchor.constraint(lessThanOrEqualTo: containerView.widthAnchor),
+        if allowsMultipleFiles {
+            addSubview(tableViewScrollView)
 
-            textTextField.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            textTextField.topAnchor.constraint(equalTo: fileTypeTextField.bottomAnchor, constant: 12),
-            textTextFieldConstraint,
-            textTextField.widthAnchor.constraint(lessThanOrEqualTo: containerView.widthAnchor),
+            NSLayoutConstraint.activate([
+                tableViewScrollView.topAnchor.constraint(equalTo: topAnchor, constant: 6.5 + 60),
+                tableViewScrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6.5),
+                tableViewScrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6.5),
+                tableViewScrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6.5)
+            ])
 
-            detailTextTextField.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            detailTextTextField.topAnchor.constraint(equalTo: textTextField.bottomAnchor),
-            detailTextTextField.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-            detailTextTextFieldConstraint,
-            detailTextTextField.widthAnchor.constraint(lessThanOrEqualTo: containerView.widthAnchor)
-        ])
+            tableViewScrollView.isHidden = true
+        }
+    }
+
+    private func layoutElements() {
+        NSLayoutConstraint.deactivate(layoutConstraints)
+
+        switch state {
+        case .multipleFiles:
+            layoutConstraints = [
+                containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
+                containerView.topAnchor.constraint(equalTo: topAnchor),
+                containerView.heightAnchor.constraint(equalToConstant: 60),
+                containerView.widthAnchor.constraint(equalTo: widthAnchor),
+
+                iconImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                iconImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+                iconImageView.heightAnchor.constraint(equalToConstant: 32),
+                iconImageView.widthAnchor.constraint(equalToConstant: 32),
+
+                textContainerStackView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 10),
+                textContainerStackView.topAnchor.constraint(equalTo: iconImageView.topAnchor),
+                textContainerStackView.bottomAnchor.constraint(equalTo: iconImageView.bottomAnchor),
+                textContainerStackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -12)
+            ]
+
+            textContainerStackView.spacing = 0
+            textContainerStackView.alignment = .leading
+            NSLayoutConstraint.activate(layoutConstraints)
+        case .oneFile, .oneFileEmpty, .multipleFilesEmpty:
+            layoutConstraints = [
+                containerView.topAnchor.constraint(equalTo: topAnchor),
+                containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+                containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+                containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+
+                iconImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                iconImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor, constant: -46),
+                iconImageView.heightAnchor.constraint(equalToConstant: 64),
+                iconImageView.widthAnchor.constraint(equalToConstant: 64),
+
+                textContainerStackView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                textContainerStackView.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 8),
+                textContainerStackView.widthAnchor.constraint(equalTo: containerView.widthAnchor)
+            ]
+
+            textContainerStackView.spacing = 8
+            textContainerStackView.alignment = .centerX
+            NSLayoutConstraint.activate(layoutConstraints)
+        }
+
+        updateRegisteredFileTypes()
+    }
+
+    private func updateRegisteredFileTypes() {
+        // Make sure to use _fileTypes
+
+        guard !_fileTypes.isEmpty else {
+            icon = nil
+            unregisterDraggedTypes()
+            updateText()
+            return
+        }
+
+        registerForDraggedTypes([(kUTTypeFileURL as NSPasteboard.PasteboardType)])
+
+        let primaryFileType = _fileTypes[0]
+        icon = NSWorkspace.shared.icon(forFileType: primaryFileType)
+        updateText()
+    }
+
+    private func updateText() {
+        let mainLabelText: String?
+        let fileTypeLabelText: String?
+        let detailLabelText: String?
+
+        switch state {
+        case .multipleFiles:
+            if let primaryFileType = _fileTypes.first {
+                if let text = text {
+                    mainLabelText = "\(text) (\(primaryFileType))"
+                } else {
+                    mainLabelText = primaryFileType
+                }
+            } else {
+                mainLabelText = text
+            }
+
+            fileTypeLabelText = nil
+            detailLabelText = detailText
+        case .multipleFilesEmpty, .oneFile, .oneFileEmpty:
+            mainLabelText = text
+            fileTypeLabelText = _fileTypes.first
+            detailLabelText = detailText
+        }
+
+        if let text = mainLabelText {
+            textTextField.attributedStringValue = NSAttributedString(
+                string: text,
+                attributes: Style.textAttributes(size: 14, color: .secondaryLabelColor)
+            )
+            textTextField.isHidden = false
+        } else {
+            textTextField.stringValue = ""
+            textTextField.isHidden = true
+        }
+
+        if let text = fileTypeLabelText {
+            fileTypeTextField.attributedStringValue = NSAttributedString(
+                string: text,
+                attributes: Style.textAttributes(size: 16, color: .labelColor)
+            )
+            fileTypeTextField.isHidden = false
+        } else {
+            fileTypeTextField.stringValue = ""
+            fileTypeTextField.isHidden = true
+        }
+
+        if let text = detailLabelText {
+            detailTextTextField.attributedStringValue = NSAttributedString(
+                string: text,
+                attributes: Style.textAttributes(size: 12, color: .tertiaryLabelColor)
+            )
+            detailTextTextField.isHidden = false
+        } else {
+            detailTextTextField.stringValue = ""
+            detailTextTextField.isHidden = true
+        }
     }
 
     override func draw(_ dirtyRect: NSRect) {
         // Background
-        (isHoveringFile ? Colors.shade : NSColor.clear).setFill()
+        (isHoveringFile ? Colors.backgroundHover : NSColor.clear).setFill()
         dirtyRect.fill()
 
         // Padding
         let borderPadding: CGFloat = 6
-        let drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
+
+        let drawRect: CGRect
 
         // Drop area outline drawing
-        let alpha: CGFloat = file == nil ? 1 : 0.05
-        let dashed = file == nil
+        let drawTableViewBorder: Bool
+        let isFilled: Bool
 
-        (isHoveringFile ? Colors.gray2 : Colors.gray1).withAlphaComponent(alpha).setStroke()
+        switch state {
+        case .oneFileEmpty:
+            drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
+            isFilled = false
+            drawTableViewBorder = false
+        case .oneFile:
+            drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
+            isFilled = true
+            drawTableViewBorder = false
+        case .multipleFilesEmpty:
+            drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
+            isFilled = false
+            drawTableViewBorder = false
+        case .multipleFiles:
+            var rect = containerView.frame
+
+            let newHeight: CGFloat = 60
+            rect.origin.y += (rect.size.height - newHeight)
+            rect.size.height = newHeight
+
+            drawRect = rect.insetBy(dx: borderPadding, dy: borderPadding)
+
+            isFilled = true
+            drawTableViewBorder = true
+        }
+
+        if isFilled {
+            (isHoveringFile ? Colors.borderFilledHover : Colors.borderFilled).setStroke()
+        } else {
+            (isHoveringFile ? Colors.borderHover : Colors.border).setStroke()
+        }
 
         let roundedRectanglePath = NSBezierPath(roundedRect: drawRect, xRadius: 8, yRadius: 8)
         roundedRectanglePath.lineWidth = 1.5
 
-        if dashed {
+        if !isFilled {
             roundedRectanglePath.setLineDash([6, 6, 6, 6], count: 4, phase: 0)
         }
 
         roundedRectanglePath.stroke()
+
+        if drawTableViewBorder {
+            let borderRect = tableViewScrollView.frame.insetBy(dx: -0.5, dy: -0.5)
+            let tableViewBorderPath = NSBezierPath(roundedRect: borderRect, xRadius: 8, yRadius: 8)
+            tableViewBorderPath.lineWidth = 1.5
+            tableViewBorderPath.stroke()
+        }
     }
 
     func acceptFile(url fileURL: URL) -> Bool {
         guard validFileURL(fileURL) else { return false }
 
-        self.file = fileURL
-        delegate?.receivedFile(dropZone: self, fileURL: fileURL)
+        if allowsMultipleFiles {
+            files.insert(fileURL)
+        } else {
+            files = Set<URL>(arrayLiteral: fileURL)
+        }
+        delegate?.receivedFiles(dropZone: self, fileURLs: [fileURL])
 
         return true
     }
@@ -237,7 +400,7 @@ class DropZone: NSView {
 // MARK: NSDraggingDestination
 extension DropZone {
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
-        self.isHoveringFile = (validDraggedFileURL(from: sender) != nil)
+        self.isHoveringFile = !validDraggedFileURLs(from: sender).isEmpty
         return isHoveringFile ? .copy : []
     }
 
@@ -250,26 +413,26 @@ extension DropZone {
     }
 
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
-        defer { self.isHoveringFile = false }
-        guard let draggedFileURL = validDraggedFileURL(from: sender) else { return false }
+        let draggedFileURLs = validDraggedFileURLs(from: sender)
 
-        self.file = draggedFileURL
-        delegate?.receivedFile(dropZone: self, fileURL: draggedFileURL)
+        if allowsMultipleFiles {
+            files.formUnion(draggedFileURLs)
+            delegate?.receivedFiles(dropZone: self, fileURLs: draggedFileURLs)
+        } else if let lastValidURL = draggedFileURLs.last {
+            files = Set<URL>(arrayLiteral: lastValidURL)
+            delegate?.receivedFiles(dropZone: self, fileURLs: [lastValidURL])
+        }
+
+        isHoveringFile = false
 
         return true
     }
 
-    private func validDraggedFileURL(from draggingInfo: NSDraggingInfo) -> URL? {
-        guard
-            let draggedFile = draggingInfo.draggingPasteboard.string(
-                forType: kUTTypeFileURL as NSPasteboard.PasteboardType
-            ),
-            let draggedFileURL = URL(string: draggedFile)
-        else {
-            return nil
-        }
+    private func validDraggedFileURLs(from draggingInfo: NSDraggingInfo) -> [URL] {
+        let draggedFileURLs = draggingInfo.draggingPasteboard.readObjects(forClasses: [NSURL.self], options: [:])
+        let fileURLs: [URL] = draggedFileURLs?.compactMap { $0 as? URL } ?? []
 
-        return validFileURL(draggedFileURL) ? draggedFileURL : nil
+        return fileURLs.filter { validFileURL($0) }
     }
 
     private func validFileURL(_ url: URL) -> Bool {
@@ -277,15 +440,82 @@ extension DropZone {
     }
 }
 
-// MARK: Helpers
-extension DropZone {
-    private struct Colors {
-        static let gray1 = NSColor(calibratedWhite: 0.7, alpha: 1)
-        static let gray2 = NSColor(calibratedWhite: 0.4, alpha: 1)
-        static let shade = NSColor(calibratedWhite: 0.0, alpha: 0.025)
+extension DropZone: NSTableViewDataSource, NSTableViewDelegate {
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        files.count
     }
 
-    private struct Style {
+    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
+        let rowIndex = files.index(files.startIndex, offsetBy: row)
+        return files[rowIndex].lastPathComponent
+    }
+
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let rowIndex = files.index(files.startIndex, offsetBy: row)
+
+        let view = NSView()
+        let textField = NSTextField(labelWithString: files[rowIndex].lastPathComponent)
+
+        view.translatesAutoresizingMaskIntoConstraints = false
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(textField)
+
+        NSLayoutConstraint.activate([
+            textField.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -1),
+            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4)
+        ])
+
+        return view
+    }
+}
+
+// MARK: Helpers
+extension DropZone {
+    private enum Appearance {
+        static var isDark: Bool {
+            ![NSAppearance.Name.aqua, NSAppearance.Name.vibrantLight].contains(NSApp.effectiveAppearance.name)
+        }
+    }
+
+    private enum Colors {
+        static var border: NSColor {
+            if Appearance.isDark {
+                return NSColor(calibratedWhite: 0.5, alpha: 1)
+            } else {
+                return NSColor(calibratedWhite: 0.7, alpha: 1)
+            }
+        }
+
+        static var borderFilled: NSColor {
+            if Appearance.isDark {
+                return border.withAlphaComponent(0.25)
+            } else {
+                return border.withAlphaComponent(0.5)
+            }
+        }
+
+        static var borderHover: NSColor {
+            border.withAlphaComponent(0.6)
+        }
+
+        static var borderFilledHover: NSColor {
+            if Appearance.isDark {
+                return border.withAlphaComponent(0.15)
+            } else {
+                return border.withAlphaComponent(0.25)
+            }
+        }
+
+        static var backgroundHover: NSColor {
+            if Appearance.isDark {
+                return NSColor(calibratedWhite: 1, alpha: 0.015)
+            } else {
+                return NSColor(calibratedWhite: 0, alpha: 0.025)
+            }
+        }
+    }
+
+    private enum Style {
         private static var _centeredTextStyle: NSMutableParagraphStyle?
         static var centeredTextStyle: NSMutableParagraphStyle {
             guard let style = _centeredTextStyle else {

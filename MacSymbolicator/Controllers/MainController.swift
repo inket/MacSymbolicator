@@ -6,16 +6,21 @@
 import Cocoa
 
 class MainController {
-    private let mainWindow = CenteredWindow(width: 600, height: 300)
+    private let mainWindow = CenteredWindow(width: 800, height: 400)
     private let textWindowController = TextWindowController(title: "Symbolicated Content")
 
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
     private let statusTextField = NSTextField()
-    private let crashFileDropZone = DropZone(fileTypes: [".crash", ".txt"], text: "Drop Crash Report or Sample")
+    private let crashFileDropZone = DropZone(
+        fileTypes: [".crash", ".txt"],
+        allowsMultipleFiles: false,
+        text: "Drop Crash Report or Sample"
+    )
     private let dsymFileDropZone = DropZone(
         fileTypes: [".dSYM"],
-        text: "Drop App DSYM",
+        allowsMultipleFiles: true,
+        text: "Drop App DSYMs",
         detailText: "(if not found automatically)"
     )
     private let symbolicateButton = NSButton()
@@ -60,6 +65,11 @@ class MainController {
         viewErrorsButton.isHidden = true
 
         let contentView = mainWindow.contentView!
+        contentView.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        contentView.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        contentView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        contentView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
 
         contentView.addSubview(dropZonesContainerView)
         contentView.addSubview(statusView)
@@ -78,6 +88,9 @@ class MainController {
         viewErrorsButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
+            contentView.heightAnchor.constraint(equalToConstant: 400),
+            contentView.widthAnchor.constraint(equalToConstant: 800),
+
             dropZonesContainerView.topAnchor.constraint(equalTo: contentView.topAnchor),
             dropZonesContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             dropZonesContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -153,6 +166,8 @@ class MainController {
     }
 
     func startSearchForDSYM() {
+        return
+
         guard
             let crashFile = crashFile,
             let crashFileUUID = BinaryUUID("TODO") // crashFile.uuid
@@ -181,14 +196,12 @@ class MainController {
 
             let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
             self?.dsymFile = DSYMFile(path: foundDSYMURL)
-            self?.dsymFileDropZone.file = foundDSYMURL
+            self?.dsymFileDropZone.files = [foundDSYMURL] // TODO: find all dsyms
         }
     }
 
     func updateDSYMDetailText() {
         if let dsymFile = dsymFile {
-            let dsymFilePath = dsymFile.path.path
-
             let uuidMismatch: Bool
             if let crashFileUUID = BinaryUUID("TODO") { // crashFile?.uuid {
                 let dsymUUIDs = dsymFile.uuids.values
@@ -199,7 +212,7 @@ class MainController {
             }
 
             statusTextField.stringValue = uuidMismatch ? "⚠️ UUID mismatch" : ""
-            dsymFileDropZone.detailText = dsymFilePath
+            dsymFileDropZone.detailText = nil
         } else {
             dsymFileDropZone.detailText = nil
         }
@@ -212,7 +225,9 @@ class MainController {
 }
 
 extension MainController: DropZoneDelegate {
-    func receivedFile(dropZone: DropZone, fileURL: URL) {
+    func receivedFiles(dropZone: DropZone, fileURLs: [URL]) {
+        let fileURL = fileURLs.first! // TODO: fix me
+
         if dropZone == crashFileDropZone {
             crashFile = CrashFile(path: fileURL)
 
