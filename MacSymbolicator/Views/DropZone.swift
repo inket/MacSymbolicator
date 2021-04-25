@@ -5,7 +5,7 @@
 
 import Cocoa
 
-protocol DropZoneDelegate: class {
+protocol DropZoneDelegate: AnyObject {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL])
 }
 
@@ -88,6 +88,8 @@ class DropZone: NSView {
         }
     }
 
+    var activatesAppAfterDrop: Bool
+
     private let allowsMultipleFiles: Bool
 
     private let containerView = NSView()
@@ -103,7 +105,14 @@ class DropZone: NSView {
     private var layoutConstraints: [NSLayoutConstraint] = []
 
     // MARK: Methods
-    init(fileTypes: [String], allowsMultipleFiles: Bool, text: String? = nil, detailText: String? = nil) {
+    init(
+        fileTypes: [String],
+        allowsMultipleFiles: Bool,
+        text: String? = nil,
+        detailText: String? = nil,
+        activatesAppAfterDrop: Bool = false
+    ) {
+        self.activatesAppAfterDrop = activatesAppAfterDrop
         self.allowsMultipleFiles = allowsMultipleFiles
         state = allowsMultipleFiles ? .multipleFilesEmpty : .oneFileEmpty
 
@@ -166,6 +175,7 @@ class DropZone: NSView {
         tableView.focusRingType = .none
         tableView.usesAlternatingRowBackgroundColors = true
         tableView.headerView = nil
+        tableView.rowHeight = 44
 
         tableViewScrollView.documentView = tableView
         tableViewScrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -280,7 +290,11 @@ class DropZone: NSView {
 
             fileTypeLabelText = nil
             detailLabelText = detailText
-        case .multipleFilesEmpty, .oneFile, .oneFileEmpty:
+        case .oneFile:
+            mainLabelText = files.first?.lastPathComponent ?? text
+            fileTypeLabelText = _fileTypes.first
+            detailLabelText = detailText
+        case .multipleFilesEmpty, .oneFileEmpty:
             mainLabelText = text
             fileTypeLabelText = _fileTypes.first
             detailLabelText = detailText
@@ -383,6 +397,7 @@ class DropZone: NSView {
         }
     }
 
+    @discardableResult
     func acceptFile(url fileURL: URL) -> Bool {
         guard validFileURL(fileURL) else { return false }
 
@@ -425,6 +440,11 @@ extension DropZone {
 
         isHoveringFile = false
 
+        if activatesAppAfterDrop {
+            // It's a bit weird if we drag a file to this app but it doesn't become active
+            NSApp.activate(ignoringOtherApps: true)
+        }
+
         return true
     }
 
@@ -453,19 +473,37 @@ extension DropZone: NSTableViewDataSource, NSTableViewDelegate {
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
         let rowIndex = files.index(files.startIndex, offsetBy: row)
 
-        let view = NSView()
-        let textField = NSTextField(labelWithString: files[rowIndex].lastPathComponent)
+        let fileURL = files[rowIndex]
+        let filename = fileURL.lastPathComponent
+        let containingPath = (fileURL.deletingLastPathComponent().path as NSString).abbreviatingWithTildeInPath
 
-        view.translatesAutoresizingMaskIntoConstraints = false
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(textField)
+        let filenameLabel = NSTextField(labelWithString: filename)
+        filenameLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        let pathLabel = NSTextField(labelWithString: containingPath)
+        pathLabel.textColor = NSColor.secondaryLabelColor
+        pathLabel.font = NSFont.controlContentFont(ofSize: NSFont.smallSystemFontSize)
+        pathLabel.lineBreakMode = .byTruncatingMiddle
+        pathLabel.toolTip = containingPath
+
+        let paddingView = NSView()
+
+        let stackView = NSStackView(views: [filenameLabel, pathLabel])
+        stackView.orientation = .vertical
+        stackView.distribution = .equalCentering
+        stackView.alignment = .leading
+        stackView.spacing = 0
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        paddingView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            textField.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -1),
-            textField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 4)
+            stackView.topAnchor.constraint(equalTo: paddingView.topAnchor, constant: 6),
+            stackView.leadingAnchor.constraint(equalTo: paddingView.leadingAnchor, constant: 4),
+            stackView.trailingAnchor.constraint(equalTo: paddingView.trailingAnchor, constant: -4),
+            stackView.bottomAnchor.constraint(equalTo: paddingView.bottomAnchor, constant: -6)
         ])
 
-        return view
+        return paddingView
     }
 }
 
