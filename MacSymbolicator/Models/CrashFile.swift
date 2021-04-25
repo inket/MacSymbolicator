@@ -5,13 +5,25 @@
 
 import Foundation
 
-public struct CrashFile {
+public class CrashFile {
     let path: URL
     let filename: String
 
-    var architecture: Architecture?
-    var binaryImages: [BinaryImage]
-    var calls: [StackTraceCall]
+    private(set) var architecture: Architecture?
+    let binaryImages: [BinaryImage]
+    let calls: [StackTraceCall]
+
+    lazy var uuidsForSymbolication: [BinaryUUID] = {
+        var images: [String: BinaryImage] = [:]
+
+        calls.forEach { call in
+            if images[call.loadAddress] == nil {
+                images[call.loadAddress] = binaryImages.first(where: { $0.loadAddress == call.loadAddress })
+            }
+        }
+
+        return images.values.map { $0.uuid }
+    }()
 
     let content: String
     var symbolicatedContent: String?

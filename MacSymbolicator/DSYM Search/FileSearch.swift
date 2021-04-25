@@ -14,9 +14,14 @@ protocol FileSearchQuery {
 
 protocol FileSearchResults {
     var results: [String] { get }
-    func firstMatching(uuid: String) -> String?
+    func matching(uuids: [String]) -> [FileSearchResult]
 
     func sorted() -> FileSearchResults
+}
+
+struct FileSearchResult {
+    let path: String
+    let matchedUUID: String
 }
 
 private class InternalFileSearch: FileSearchResults, FileSearchQuery {
@@ -72,8 +77,8 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
         return self
     }
 
-    func firstMatching(uuid: String) -> String? {
-        return results.first { file in
+    func matching(uuids: [String]) -> [FileSearchResult] {
+        return results.compactMap { file in
             let command = "dwarfdump --uuid \"\(file)\""
             let commandResult = command.run()
 
@@ -86,14 +91,16 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
                 }
             }
 
-            guard
-                let dwarfDumpOutput = commandResult.output?.trimmed,
-                let foundUUID = dwarfDumpOutput.scan(pattern: "UUID: (.*) \\(").first?.first
-            else {
-                return false
+            guard let dwarfDumpOutput = commandResult.output?.trimmed else { return nil }
+
+            let foundUUIDs = dwarfDumpOutput.scan(pattern: "UUID: (.*) \\(").flatMap({ $0 })
+            for foundUUID in foundUUIDs {
+                if uuids.contains(foundUUID) {
+                    return FileSearchResult(path: file, matchedUUID: foundUUID)
+                }
             }
 
-            return foundUUID == uuid
+            return nil
         }
     }
 }
