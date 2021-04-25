@@ -12,22 +12,11 @@ class MainController {
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
     private let statusTextField = NSTextField()
-    private let crashFileDropZone = DropZone(
-        fileTypes: [".crash", ".txt"],
-        allowsMultipleFiles: false,
-        text: "Drop Crash Report or Sample"
-    )
-    private let dsymFileDropZone = DropZone(
-        fileTypes: [".dSYM"],
-        allowsMultipleFiles: true,
-        text: "Drop App DSYMs",
-        detailText: "(if not found automatically)"
-    )
+
     private let symbolicateButton = NSButton()
     private let viewErrorsButton = NSButton()
 
-    private var crashFile: CrashFile?
-    private var dsymFile: DSYMFile?
+    private let inputCoordinator = InputCoordinator()
 
     private var isSymbolicating: Bool = false {
         didSet {
@@ -39,10 +28,10 @@ class MainController {
     private let logController = LogController()
 
     init() {
-        crashFileDropZone.delegate = self
-        dsymFileDropZone.delegate = self
         logController.delegate = self
 
+        let crashFileDropZone = inputCoordinator.crashFileDropZone
+        let dsymFilesDropZone = inputCoordinator.dsymFilesDropZone
         mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
         mainWindow.title = "MacSymbolicator"
 
@@ -74,14 +63,14 @@ class MainController {
         contentView.addSubview(dropZonesContainerView)
         contentView.addSubview(statusView)
         dropZonesContainerView.addSubview(crashFileDropZone)
-        dropZonesContainerView.addSubview(dsymFileDropZone)
+        dropZonesContainerView.addSubview(dsymFilesDropZone)
         statusView.addSubview(statusTextField)
         statusView.addSubview(symbolicateButton)
         statusView.addSubview(viewErrorsButton)
 
         dropZonesContainerView.translatesAutoresizingMaskIntoConstraints = false
         crashFileDropZone.translatesAutoresizingMaskIntoConstraints = false
-        dsymFileDropZone.translatesAutoresizingMaskIntoConstraints = false
+        dsymFilesDropZone.translatesAutoresizingMaskIntoConstraints = false
         statusView.translatesAutoresizingMaskIntoConstraints = false
         statusTextField.translatesAutoresizingMaskIntoConstraints = false
         symbolicateButton.translatesAutoresizingMaskIntoConstraints = false
@@ -109,11 +98,11 @@ class MainController {
             crashFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
             crashFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
 
-            dsymFileDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
-            dsymFileDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
-            dsymFileDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
-            dsymFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
-            dsymFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
+            dsymFilesDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
+            dsymFilesDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
+            dsymFilesDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
+            dsymFilesDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
+            dsymFilesDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
 
             statusTextField.leadingAnchor.constraint(equalTo: statusView.leadingAnchor, constant: 20),
             statusTextField.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
@@ -132,17 +121,14 @@ class MainController {
     }
 
     @objc func symbolicate() {
-        guard
-            !isSymbolicating,
-            let crashFile = crashFile,
-            let dsymFile = dsymFile
-        else {
+        guard !isSymbolicating, let crashFile = inputCoordinator.crashFile else {
             return
         }
 
         isSymbolicating = true
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+        let dsymFiles = inputCoordinator.dsymFiles
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: dsymFiles)
 
         DispatchQueue.global(qos: .userInitiated).async {
             let success = symbolicator.symbolicate()
@@ -165,79 +151,19 @@ class MainController {
         }
     }
 
-    func startSearchForDSYM() {
-        return
-
-        guard
-            let crashFile = crashFile,
-            let crashFileUUID = BinaryUUID("TODO") // crashFile.uuid
-        else {
-            let alert = NSAlert()
-            alert.informativeText = "Couldn't retrieve UUID from crash report"
-            alert.alertStyle = .critical
-            alert.addButton(withTitle: "OK")
-            alert.runModal()
-            return
-        }
-
-        dsymFileDropZone.detailText = "Searching…"
-        errorsController.resetErrors()
-
-        DSYMSearch.search(
-            forUUID: crashFileUUID.pretty,
-            crashFileDirectory: crashFile.path.deletingLastPathComponent().path,
-            fileSearchErrorHandler: errorsController.addErrors
-        ) { [weak self] result in
-            defer {
-                self?.updateDSYMDetailText()
-            }
-
-            guard let foundDSYMPath = result else { return }
-
-            let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
-            self?.dsymFile = DSYMFile(path: foundDSYMURL)
-            self?.dsymFileDropZone.files = [foundDSYMURL] // TODO: find all dsyms
-        }
-    }
-
-    func updateDSYMDetailText() {
-        if let dsymFile = dsymFile {
-            let uuidMismatch: Bool
-            if let crashFileUUID = BinaryUUID("TODO") { // crashFile?.uuid {
-                let dsymUUIDs = dsymFile.uuids.values
-                uuidMismatch = !dsymUUIDs.isEmpty && !dsymUUIDs.contains(crashFileUUID)
-            } else {
-                // We don't have enough data to decide that, let's just say it's not…
-                uuidMismatch = false
-            }
-
-            statusTextField.stringValue = uuidMismatch ? "⚠️ UUID mismatch" : ""
-            dsymFileDropZone.detailText = nil
-        } else {
-            dsymFileDropZone.detailText = nil
-        }
-    }
-
     func openFile(_ path: String) -> Bool {
         let fileURL = URL(fileURLWithPath: path)
-        return crashFileDropZone.acceptFile(url: fileURL) || dsymFileDropZone.acceptFile(url: fileURL)
-    }
-}
 
-extension MainController: DropZoneDelegate {
-    func receivedFiles(dropZone: DropZone, fileURLs: [URL]) {
-        let fileURL = fileURLs.first! // TODO: fix me
+        if inputCoordinator.acceptCrashFile(url: fileURL) {
+            // New crash file, old logs probably don't apply anymore so we need to reset them
+            logController.resetLogs()
 
-        if dropZone == crashFileDropZone {
-            crashFile = CrashFile(path: fileURL)
-
-            if let crashFile = crashFile, dsymFile?.canSymbolicate(crashFile) != true {
-                startSearchForDSYM()
-            }
-        } else if dropZone == dsymFileDropZone {
-            dsymFile = DSYMFile(path: fileURL)
-            updateDSYMDetailText()
+            return true
+        } else if inputCoordinator.acceptDSYMFile(url: fileURL) {
+            return true
         }
+
+        return false
     }
 }
 

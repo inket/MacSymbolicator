@@ -1,0 +1,120 @@
+//
+//  InputCoordinator.swift
+//  MacSymbolicator
+//
+
+import Foundation
+
+class InputCoordinator {
+    let crashFileDropZone = DropZone(
+        fileTypes: [".crash", ".txt"],
+        allowsMultipleFiles: false,
+        text: "Drop Crash Report or Sample",
+        activatesAppAfterDrop: true
+    )
+
+    let dsymFilesDropZone = DropZone(
+        fileTypes: [".dSYM"],
+        allowsMultipleFiles: true,
+        text: "Drop App DSYMs",
+        detailText: "(if not found automatically)",
+        activatesAppAfterDrop: true
+    )
+
+    private(set) var crashFile: CrashFile?
+    private(set) var dsymFiles: [DSYMFile] = []
+
+    private var isSearchingForDSYMs = false
+
+    let logController = LogController()
+
+    private var expectedDSYMUUIDs: Set<String> {
+        guard let crashFile = crashFile else { return Set<String>() }
+
+        return Set<String>(crashFile.uuidsForSymbolication.map { $0.pretty })
+    }
+
+    private var foundDSYMUUIDs: Set<String> {
+        let addedDSYMUUIDs = dsymFiles.flatMap { $0.uuids.values }.map { $0.pretty }
+        return expectedDSYMUUIDs.intersection(addedDSYMUUIDs)
+    }
+
+    private var remainingDSYMUUIDs: Set<String> {
+        expectedDSYMUUIDs.subtracting(foundDSYMUUIDs)
+    }
+
+    init() {
+        crashFileDropZone.delegate = self
+        dsymFilesDropZone.delegate = self
+    }
+
+    func acceptCrashFile(url fileURL: URL) -> Bool {
+        crashFileDropZone.acceptFile(url: fileURL)
+    }
+
+    func acceptDSYMFile(url fileURL: URL) -> Bool {
+        dsymFilesDropZone.acceptFile(url: fileURL)
+    }
+
+    func startSearchForDSYMs() {
+        guard let crashFile = crashFile else { return }
+
+        let remainingUUIDs = Array(remainingDSYMUUIDs)
+
+        guard !remainingUUIDs.isEmpty else { return }
+
+        isSearchingForDSYMs = true
+        updateDSYMDetailText()
+
+        logController.resetLogs()
+
+        DSYMSearch.search(
+            forUUIDs: remainingUUIDs,
+            crashFileDirectory: crashFile.path.deletingLastPathComponent().path,
+            fileSearchErrorHandler: logController.addLogMessages,
+            callback: { [weak self] finished, results in
+                DispatchQueue.main.async {
+                    results?.forEach { dsymResult in
+                        let dsymURL = URL(fileURLWithPath: dsymResult.path)
+                        self?.dsymFilesDropZone.acceptFile(url: dsymURL)
+                    }
+
+                    if finished {
+                        self?.isSearchingForDSYMs = false
+                    }
+
+                    self?.updateDSYMDetailText()
+                }
+            }
+        )
+    }
+
+    func updateDSYMDetailText() {
+        guard crashFile != nil else {
+            dsymFilesDropZone.detailText = "(if not found automatically)"
+            return
+        }
+
+        let prefix = isSearchingForDSYMs ? "Searching…" : "Found"
+        let count = "(\(foundDSYMUUIDs.count)/\(expectedDSYMUUIDs.count))"
+
+        dsymFilesDropZone.detailText = "\(prefix) \(count)"
+    }
+}
+
+extension InputCoordinator: DropZoneDelegate {
+    func receivedFiles(dropZone: DropZone, fileURLs: [URL]) {
+        if dropZone == crashFileDropZone, let fileURL = fileURLs.last {
+            crashFile = CrashFile(path: fileURL)
+
+            if crashFile != nil {
+                startSearchForDSYMs()
+            }
+        } else if dropZone == dsymFilesDropZone {
+            let dsymFiles = fileURLs.map { DSYMFile(path: $0) }
+            self.dsymFiles.append(contentsOf: dsymFiles)
+
+            updateDSYMDetailText()
+        }
+    }
+}
