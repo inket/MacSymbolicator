@@ -36,12 +36,12 @@ class MainController {
         }
     }
 
-    private let errorsController = ErrorsController()
+    private let logController = LogController()
 
     init() {
         crashFileDropZone.delegate = self
         dsymFileDropZone.delegate = self
-        errorsController.delegate = self
+        logController.delegate = self
 
         mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
         mainWindow.title = "MacSymbolicator"
@@ -60,8 +60,8 @@ class MainController {
         viewErrorsButton.title = "View Errors…"
         viewErrorsButton.bezelStyle = .rounded
         viewErrorsButton.focusRingType = .none
-        viewErrorsButton.target = errorsController
-        viewErrorsButton.action = #selector(ErrorsController.viewErrors)
+        viewErrorsButton.target = logController
+        viewErrorsButton.action = #selector(LogController.viewLogs)
         viewErrorsButton.isHidden = true
 
         let contentView = mainWindow.contentView!
@@ -241,8 +241,8 @@ extension MainController: DropZoneDelegate {
     }
 }
 
-extension MainController: ErrorsControllerDelegate {
-    func errorsController(_ controller: ErrorsController, errorsUpdated errors: [String]) {
+extension MainController: LogControllerDelegate {
+    func logController(_ controller: LogController, logsUpdated errors: [String]) {
         DispatchQueue.main.async {
             self.viewErrorsButton.isHidden = errors.isEmpty
         }
