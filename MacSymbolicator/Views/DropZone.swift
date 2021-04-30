@@ -5,6 +5,8 @@
 
 import Cocoa
 
+// swiftlint:disable file_length
+
 protocol DropZoneDelegate: AnyObject {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL])
 }
@@ -101,6 +103,8 @@ class DropZone: NSView {
 
     private let tableViewScrollView = NSScrollView()
     private let tableView = NSTableView()
+
+    private var isFlashing: Bool = false
 
     private var layoutConstraints: [NSLayoutConstraint] = []
 
@@ -383,7 +387,7 @@ class DropZone: NSView {
         let roundedRectanglePath = NSBezierPath(roundedRect: drawRect, xRadius: 8, yRadius: 8)
         roundedRectanglePath.lineWidth = 1.5
 
-        if !isFilled {
+        if !isFilled && !isFlashing {
             roundedRectanglePath.setLineDash([6, 6, 6, 6], count: 4, phase: 0)
         }
 
@@ -409,6 +413,16 @@ class DropZone: NSView {
         delegate?.receivedFiles(dropZone: self, fileURLs: [fileURL])
 
         return true
+    }
+
+    func flash() {
+        isFlashing = true
+        display()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(200)) {
+            self.isFlashing = false
+            self.display()
+        }
     }
 }
 
@@ -460,6 +474,7 @@ extension DropZone {
     }
 }
 
+// MARK: NSTableViewDataSource & NSTableViewDelegate
 extension DropZone: NSTableViewDataSource, NSTableViewDelegate {
     func numberOfRows(in tableView: NSTableView) -> Int {
         files.count

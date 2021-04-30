@@ -121,7 +121,15 @@ class MainController {
     }
 
     @objc func symbolicate() {
-        guard !isSymbolicating, let crashFile = inputCoordinator.crashFile else {
+        guard !isSymbolicating else { return }
+
+        guard let crashFile = inputCoordinator.crashFile else {
+            inputCoordinator.crashFileDropZone.flash()
+            return
+        }
+
+        guard !inputCoordinator.dsymFiles.isEmpty else {
+            inputCoordinator.dsymFilesDropZone.flash()
             return
         }
 
