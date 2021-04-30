@@ -30,10 +30,9 @@ class DSYMSearch {
         fileSearchErrorHandler: @escaping FileSearchErrorHandler,
         callback: @escaping Callback
     ) {
-        // This method needs to be async, but also cannot be on a background thread since NSMetadataQuery requires
-        // the main thread to function.
-        DispatchQueue.main.async {
-            spotlightSearch.search(forUUIDs: uuids) { results in
+        spotlightSearch.search(forUUIDs: uuids) { results in
+            // Processing of results and file searches should be on a background thread to not block main
+            DispatchQueue.global().async {
                 // Deduplicate the results. Some DSYMs might be duplicated in other locations
                 var foundItems: [String: SearchResult] = [:]
                 results?.forEach {

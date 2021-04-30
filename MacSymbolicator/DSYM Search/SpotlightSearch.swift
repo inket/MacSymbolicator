@@ -18,6 +18,14 @@ class SpotlightSearch {
     private var completion: CompletionHandler?
 
     func search(forUUIDs uuids: [String], completion: @escaping CompletionHandler) {
+        // Spotlight searches needs to be async, but also cannot be on a background thread since NSMetadataQuery
+        // requires the main thread to function.
+        DispatchQueue.main.async {
+            self.mainSearch(forUUIDs: uuids, completion: completion)
+        }
+    }
+
+    private func mainSearch(forUUIDs uuids: [String], completion: @escaping CompletionHandler) {
         query?.stop()
 
         self.uuids = uuids
