@@ -61,7 +61,10 @@ class InputCoordinator {
 
         let remainingUUIDs = Array(remainingDSYMUUIDs)
 
-        guard !remainingUUIDs.isEmpty else { return }
+        guard !remainingUUIDs.isEmpty else {
+            updateDSYMDetailText()
+            return
+        }
 
         isSearchingForDSYMs = true
         updateDSYMDetailText()
@@ -89,14 +92,36 @@ class InputCoordinator {
         )
     }
 
+    func updateCrashDetailText() {
+        guard crashFile != nil else {
+            crashFileDropZone.detailText = ""
+            return
+        }
+
+        let expectedCount = expectedDSYMUUIDs.count
+        switch expectedCount {
+        case 0:
+            crashFileDropZone.detailText = "(Symbolication not needed)"
+        case 1:
+            crashFileDropZone.detailText = "(1 DSYM necessary)"
+        default:
+            crashFileDropZone.detailText = "(\(expectedCount) DSYMs necessary)"
+        }
+    }
+
     func updateDSYMDetailText() {
         guard crashFile != nil else {
             dsymFilesDropZone.detailText = "(if not found automatically)"
             return
         }
 
+        guard !expectedDSYMUUIDs.isEmpty else {
+            dsymFilesDropZone.detailText = ""
+            return
+        }
+
         let prefix = isSearchingForDSYMs ? "Searching…" : "Found"
-        let count = "(\(foundDSYMUUIDs.count)/\(expectedDSYMUUIDs.count))"
+        let count = "\(foundDSYMUUIDs.count)/\(expectedDSYMUUIDs.count)"
 
         dsymFilesDropZone.detailText = "\(prefix) \(count)"
     }
@@ -106,6 +131,8 @@ extension InputCoordinator: DropZoneDelegate {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL]) {
         if dropZone == crashFileDropZone, let fileURL = fileURLs.last {
             crashFile = CrashFile(path: fileURL)
+
+            updateCrashDetailText()
 
             if crashFile != nil {
                 startSearchForDSYMs()
