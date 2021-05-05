@@ -5,6 +5,10 @@
 
 import Foundation
 
+protocol InputCoordinatorDelegate: AnyObject {
+    func inputCoordinator(_ inputCoordinator: InputCoordinator, receivedNewInput newInput: Any?)
+}
+
 class InputCoordinator {
     let crashFileDropZone = DropZone(
         fileTypes: [".crash", ".txt"],
@@ -25,6 +29,8 @@ class InputCoordinator {
     private(set) var dsymFiles: [DSYMFile] = []
 
     private var isSearchingForDSYMs = false
+
+    weak var delegate: InputCoordinatorDelegate?
 
     let logController = LogController()
 
@@ -69,12 +75,10 @@ class InputCoordinator {
         isSearchingForDSYMs = true
         updateDSYMDetailText()
 
-        logController.resetLogs()
-
         DSYMSearch.search(
             forUUIDs: remainingUUIDs,
             crashFileDirectory: crashFile.path.deletingLastPathComponent().path,
-            fileSearchErrorHandler: logController.addLogMessages,
+            logHandler: logController.addLogMessages,
             callback: { [weak self] finished, results in
                 DispatchQueue.main.async {
                     results?.forEach { dsymResult in
@@ -132,7 +136,10 @@ extension InputCoordinator: DropZoneDelegate {
         if dropZone == crashFileDropZone, let fileURL = fileURLs.last {
             crashFile = CrashFile(path: fileURL)
 
+            logController.resetLogs()
             updateCrashDetailText()
+
+            delegate?.inputCoordinator(self, receivedNewInput: crashFile)
 
             if crashFile != nil {
                 startSearchForDSYMs()
@@ -142,6 +149,8 @@ extension InputCoordinator: DropZoneDelegate {
             self.dsymFiles.append(contentsOf: dsymFiles)
 
             updateDSYMDetailText()
+
+            delegate?.inputCoordinator(self, receivedNewInput: dsymFiles)
         }
     }
 }

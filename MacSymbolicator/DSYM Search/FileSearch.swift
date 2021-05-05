@@ -5,10 +5,10 @@
 
 import Foundation
 
-typealias FileSearchErrorHandler = ([String]) -> Void
+typealias LogHandler = ([String]) -> Void
 
 protocol FileSearchQuery {
-    func with(errorHandler: @escaping FileSearchErrorHandler) -> FileSearchQuery
+    func with(logHandler: @escaping LogHandler) -> FileSearchQuery
     func search(fileExtension: String) -> FileSearchResults
 }
 
@@ -28,7 +28,7 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
     var directory: String?
     var recursive = true
     var results = [String]()
-    var errorHandler: FileSearchErrorHandler?
+    var logHandler: LogHandler?
 
     private var enumerator: FileManager.DirectoryEnumerator? {
         let enumerationURL: URL
@@ -51,8 +51,8 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
         )
     }
 
-    func with(errorHandler: @escaping FileSearchErrorHandler) -> FileSearchQuery {
-        self.errorHandler = errorHandler
+    func with(logHandler: @escaping LogHandler) -> FileSearchQuery {
+        self.logHandler = logHandler
         return self
     }
 
@@ -87,7 +87,7 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
                 // correctly followed by an stderr message about not being able to open macho file due to
                 // "Too many levels of symbolic links". Seems safe to ignore.
                 if !errorOutput.contains("Too many levels of symbolic links") {
-                    errorHandler?(["\(command):\n\(errorOutput)"])
+                    logHandler?(["\(command):\n\(errorOutput)"])
                 }
             }
 
