@@ -21,3 +21,5 @@ echo "Done!"
 echo "Use the binaries in Binaries/ to create your crash logs & samples on macOS."
 echo "For iOS, install the .app on your device using Xcode."
 echo "The dSYMs are in Resources/dSYMs/"
+echo
+echo "(Current crash logs & samples will not symbolicate due to the difference in UUIDs)"
