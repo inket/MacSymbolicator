@@ -7,7 +7,7 @@ import Foundation
 
 enum Architecture: Hashable {
     case x86
-    case x86_64
+    case x86_64 // swiftlint:disable:this identifier_name
     case arm64
     case arm(String?)
 

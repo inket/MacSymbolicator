@@ -6,23 +6,17 @@
 import Cocoa
 
 class MainController {
-    private let mainWindow = CenteredWindow(width: 600, height: 300)
+    private let mainWindow = CenteredWindow(width: 800, height: 400)
     private let textWindowController = TextWindowController(title: "Symbolicated Content")
 
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
     private let statusTextField = NSTextField()
-    private let crashFileDropZone = DropZone(fileTypes: [".crash", ".txt"], text: "Drop Crash Report or Sample")
-    private let dsymFileDropZone = DropZone(
-        fileTypes: [".dSYM"],
-        text: "Drop App DSYM",
-        detailText: "(if not found automatically)"
-    )
-    private let symbolicateButton = NSButton()
-    private let viewErrorsButton = NSButton()
 
-    private var crashFile: CrashFile?
-    private var dsymFile: DSYMFile?
+    private let symbolicateButton = NSButton()
+    private let viewLogsButton = NSButton()
+
+    private let inputCoordinator = InputCoordinator()
 
     private var isSymbolicating: Bool = false {
         didSet {
@@ -31,13 +25,14 @@ class MainController {
         }
     }
 
-    private let errorsController = ErrorsController()
+    private let logController = LogController()
 
     init() {
-        crashFileDropZone.delegate = self
-        dsymFileDropZone.delegate = self
-        errorsController.delegate = self
+        logController.delegate = self
+        inputCoordinator.delegate = self
 
+        let crashFileDropZone = inputCoordinator.crashFileDropZone
+        let dsymFilesDropZone = inputCoordinator.dsymFilesDropZone
         mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
         mainWindow.title = "MacSymbolicator"
 
@@ -52,32 +47,40 @@ class MainController {
         symbolicateButton.target = self
         symbolicateButton.action = #selector(MainController.symbolicate)
 
-        viewErrorsButton.title = "View Errors…"
-        viewErrorsButton.bezelStyle = .rounded
-        viewErrorsButton.focusRingType = .none
-        viewErrorsButton.target = errorsController
-        viewErrorsButton.action = #selector(ErrorsController.viewErrors)
-        viewErrorsButton.isHidden = true
+        viewLogsButton.title = "View Logs…"
+        viewLogsButton.bezelStyle = .rounded
+        viewLogsButton.focusRingType = .none
+        viewLogsButton.target = logController
+        viewLogsButton.action = #selector(LogController.viewLogs)
+        viewLogsButton.isHidden = true
 
         let contentView = mainWindow.contentView!
+        contentView.setContentCompressionResistancePriority(.defaultHigh, for: .horizontal)
+        contentView.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+        contentView.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        contentView.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
 
         contentView.addSubview(dropZonesContainerView)
         contentView.addSubview(statusView)
         dropZonesContainerView.addSubview(crashFileDropZone)
-        dropZonesContainerView.addSubview(dsymFileDropZone)
+        dropZonesContainerView.addSubview(dsymFilesDropZone)
         statusView.addSubview(statusTextField)
         statusView.addSubview(symbolicateButton)
-        statusView.addSubview(viewErrorsButton)
+        statusView.addSubview(viewLogsButton)
 
         dropZonesContainerView.translatesAutoresizingMaskIntoConstraints = false
         crashFileDropZone.translatesAutoresizingMaskIntoConstraints = false
-        dsymFileDropZone.translatesAutoresizingMaskIntoConstraints = false
+        dsymFilesDropZone.translatesAutoresizingMaskIntoConstraints = false
         statusView.translatesAutoresizingMaskIntoConstraints = false
         statusTextField.translatesAutoresizingMaskIntoConstraints = false
         symbolicateButton.translatesAutoresizingMaskIntoConstraints = false
-        viewErrorsButton.translatesAutoresizingMaskIntoConstraints = false
+        viewLogsButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
+            contentView.heightAnchor.constraint(equalToConstant: 400),
+            contentView.widthAnchor.constraint(equalToConstant: 800),
+
             dropZonesContainerView.topAnchor.constraint(equalTo: contentView.topAnchor),
             dropZonesContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             dropZonesContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -96,11 +99,11 @@ class MainController {
             crashFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
             crashFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
 
-            dsymFileDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
-            dsymFileDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
-            dsymFileDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
-            dsymFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
-            dsymFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
+            dsymFilesDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
+            dsymFilesDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
+            dsymFilesDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
+            dsymFilesDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
+            dsymFilesDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
 
             statusTextField.leadingAnchor.constraint(equalTo: statusView.leadingAnchor, constant: 20),
             statusTextField.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
@@ -110,41 +113,56 @@ class MainController {
             symbolicateButton.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
             symbolicateButton.widthAnchor.constraint(equalToConstant: 120),
 
-            viewErrorsButton.trailingAnchor.constraint(equalTo: statusView.trailingAnchor, constant: -20),
-            viewErrorsButton.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
-            viewErrorsButton.widthAnchor.constraint(equalToConstant: 120)
+            viewLogsButton.trailingAnchor.constraint(equalTo: statusView.trailingAnchor, constant: -20),
+            viewLogsButton.centerYAnchor.constraint(equalTo: statusView.centerYAnchor),
+            viewLogsButton.widthAnchor.constraint(equalToConstant: 120)
         ])
 
         mainWindow.makeKeyAndOrderFront(nil)
     }
 
     @objc func symbolicate() {
-        guard
-            !isSymbolicating,
-            let crashFile = crashFile,
-            let dsymFile = dsymFile
-        else {
+        guard !isSymbolicating else { return }
+
+        guard let crashFile = inputCoordinator.crashFile else {
+            inputCoordinator.crashFileDropZone.flash()
             return
         }
 
+        guard !inputCoordinator.dsymFiles.isEmpty else {
+            inputCoordinator.dsymFilesDropZone.flash()
+            return
+        }
+
+        logController.resetLogs()
+
         isSymbolicating = true
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        let dsymFiles = inputCoordinator.dsymFiles
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: dsymFiles)
 
         DispatchQueue.global(qos: .userInitiated).async {
             let success = symbolicator.symbolicate()
 
             DispatchQueue.main.async {
+                self.logController.merge(self.inputCoordinator.logController)
+                self.logController.merge(symbolicator.logController)
+
                 if success {
                     self.textWindowController.text = symbolicator.symbolicatedContent ?? ""
                     self.textWindowController.defaultSaveURL = crashFile.symbolicatedContentSaveURL
                     self.textWindowController.showWindow()
                 } else {
                     let alert = NSAlert()
-                    alert.informativeText = symbolicator.errors.joined(separator: "\n")
+                    alert.informativeText = "Symbolication failed. See logs for more info."
                     alert.alertStyle = .critical
+
                     alert.addButton(withTitle: "OK")
-                    alert.runModal()
+                    alert.addButton(withTitle: "View Logs…")
+
+                    if alert.runModal() == .alertSecondButtonReturn {
+                        self.logController.viewLogs()
+                    }
                 }
 
                 self.isSymbolicating = false
@@ -152,84 +170,23 @@ class MainController {
         }
     }
 
-    func startSearchForDSYM() {
-        guard
-            let crashFile = crashFile,
-            let crashFileUUID = crashFile.uuid
-        else {
-            let alert = NSAlert()
-            alert.informativeText = "Couldn't retrieve UUID from crash report"
-            alert.alertStyle = .critical
-            alert.addButton(withTitle: "OK")
-            alert.runModal()
-            return
-        }
-
-        dsymFileDropZone.detailText = "Searching…"
-        errorsController.resetErrors()
-
-        DSYMSearch.search(
-            forUUID: crashFileUUID.pretty,
-            crashFileDirectory: crashFile.path.deletingLastPathComponent().path,
-            fileSearchErrorHandler: errorsController.addErrors
-        ) { [weak self] result in
-            defer {
-                self?.updateDSYMDetailText()
-            }
-
-            guard let foundDSYMPath = result else { return }
-
-            let foundDSYMURL = URL(fileURLWithPath: foundDSYMPath)
-            self?.dsymFile = DSYMFile(path: foundDSYMURL)
-            self?.dsymFileDropZone.file = foundDSYMURL
-        }
-    }
-
-    func updateDSYMDetailText() {
-        if let dsymFile = dsymFile {
-            let dsymFilePath = dsymFile.path.path
-
-            let uuidMismatch: Bool
-            if let crashFileUUID = crashFile?.uuid {
-                let dsymUUIDs = dsymFile.uuids.values
-                uuidMismatch = !dsymUUIDs.isEmpty && !dsymUUIDs.contains(crashFileUUID)
-            } else {
-                // We don't have enough data to decide that, let's just say it's not…
-                uuidMismatch = false
-            }
-
-            statusTextField.stringValue = uuidMismatch ? "⚠️ UUID mismatch" : ""
-            dsymFileDropZone.detailText = dsymFilePath
-        } else {
-            dsymFileDropZone.detailText = nil
-        }
-    }
-
     func openFile(_ path: String) -> Bool {
         let fileURL = URL(fileURLWithPath: path)
-        return crashFileDropZone.acceptFile(url: fileURL) || dsymFileDropZone.acceptFile(url: fileURL)
+        return inputCoordinator.acceptCrashFile(url: fileURL) || inputCoordinator.acceptDSYMFile(url: fileURL)
     }
 }
 
-extension MainController: DropZoneDelegate {
-    func receivedFile(dropZone: DropZone, fileURL: URL) {
-        if dropZone == crashFileDropZone {
-            crashFile = CrashFile(path: fileURL)
-
-            if let crashFile = crashFile, dsymFile?.canSymbolicate(crashFile) != true {
-                startSearchForDSYM()
-            }
-        } else if dropZone == dsymFileDropZone {
-            dsymFile = DSYMFile(path: fileURL)
-            updateDSYMDetailText()
-        }
-    }
-}
-
-extension MainController: ErrorsControllerDelegate {
-    func errorsController(_ controller: ErrorsController, errorsUpdated errors: [String]) {
+extension MainController: LogControllerDelegate {
+    func logController(_ controller: LogController, logsUpdated logMessages: [String]) {
         DispatchQueue.main.async {
-            self.viewErrorsButton.isHidden = errors.isEmpty
+            self.viewLogsButton.isHidden = logMessages.isEmpty
         }
+    }
+}
+
+extension MainController: InputCoordinatorDelegate {
+    func inputCoordinator(_ inputCoordinator: InputCoordinator, receivedNewInput newInput: Any?) {
+        logController.resetLogs()
+        logController.merge(inputCoordinator.logController)
     }
 }

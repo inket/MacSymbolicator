@@ -7,70 +7,150 @@ import Foundation
 import XCTest
 @testable import MacSymbolicator
 
-class SymbolicatorTests: XCTestCase {
-    func testSymbolication() {
+class TestFile {
+    let originalURL: URL
+    let expectationURL: URL
+
+    var resultURL: URL {
+        URL(string: expectationURL.absoluteString.replacingOccurrences(of: "_symbolicated", with: "_result"))!
+    }
+
+    init(path: String) {
         let testBundle = Bundle(for: MacSymbolicatorTests.self)
 
-        // macOS crash reports
-        let macCombinations: [(URL, URL)] = [
-            (
-                testBundle.url(forResource: "report", withExtension: "crash")!,
-                testBundle.url(forResource: "report_symbolicated", withExtension: "crash")!
-            ),
-            (
-                testBundle.url(forResource: "singlethread-sample", withExtension: "txt")!,
-                testBundle.url(forResource: "singlethread-sample_symbolicated", withExtension: "txt")!
-            ),
-            (
-                testBundle.url(forResource: "multithread-sample", withExtension: "txt")!,
-                testBundle.url(forResource: "multithread-sample_symbolicated", withExtension: "txt")!
-            )
+        let pathExtension = (path as NSString).pathExtension
+        let originalFilename = ((path as NSString).lastPathComponent as NSString).deletingPathExtension
+        let expectationFilename = "\(originalFilename)_symbolicated"
+        let directory = (path as NSString).deletingLastPathComponent
+
+        originalURL = testBundle.url(
+            forResource: [directory, originalFilename].joined(separator: "/"),
+            withExtension: pathExtension
+        )!
+        expectationURL = testBundle.url(
+            forResource: [directory, expectationFilename].joined(separator: "/"),
+            withExtension: pathExtension
+        )!
+    }
+}
+
+class SymbolicatorTests: XCTestCase {
+    func testSingleTargetCrashSymbolication() {
+        let testBundle = Bundle(for: MacSymbolicatorTests.self)
+        let testFile = TestFile(path: "Crashes/single-target-crash.crash")
+        let dsymFile = DSYMFile(
+            path: testBundle.url(forResource: "dSYMs/CrashingTest", withExtension: "dSYM")!
+        )!
+
+        let crashFile = CrashFile(path: testFile.originalURL)!
+
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+
+        XCTAssert(symbolicator.symbolicate())
+        let result = symbolicator.symbolicatedContent
+
+        // swiftlint:disable:next force_try
+        try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
+
+        // swiftlint:disable:next force_try
+        let expectedContent = try! String(contentsOf: testFile.expectationURL)
+
+        XCTAssertEqual(result, expectedContent)
+        XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+    }
+
+    func testMultiTargetCrashSymbolication() {
+        let testBundle = Bundle(for: MacSymbolicatorTests.self)
+        let testFile = TestFile(path: "Crashes/multi-target-crash.crash")
+        let dsymFiles = [
+            DSYMFile(path: testBundle.url(forResource: "dSYMs/CrashingInAnotherTargetTest", withExtension: "dSYM")!)!,
+            DSYMFile(path: testBundle.url(forResource: "dSYMs/AnotherTarget.framework", withExtension: "dSYM")!)!
         ]
 
-        // iOS crash reports
-        let iOSCombinations: [(URL, URL)] = [
-            (
-                testBundle.url(forResource: "ios-report", withExtension: "crash")!,
-                testBundle.url(forResource: "ios-report_symbolicated", withExtension: "crash")!
-            )
-        ]
+        let crashFile = CrashFile(path: testFile.originalURL)!
 
-        var dsymFile = DSYMFile(
-            path: testBundle.url(forResource: "CrashingAndHangingTest", withExtension: "dSYM")!
-        )
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: dsymFiles)
 
-        macCombinations.forEach { combination in
-            let (beforeSymbolicationURL, afterSymbolicationURL) = combination
-            let crashFile = CrashFile(path: beforeSymbolicationURL)!
+        XCTAssert(symbolicator.symbolicate())
+        let result = symbolicator.symbolicatedContent
 
-            var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        // swiftlint:disable:next force_try
+        try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-            XCTAssert(symbolicator.symbolicate())
+        // swiftlint:disable:next force_try
+        let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
-            // swiftlint:disable:next force_try
-            let symbolicatedContent = try! String(contentsOf: afterSymbolicationURL)
+        XCTAssertEqual(result, expectedContent)
+        XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+    }
 
-            XCTAssertEqual(symbolicator.symbolicatedContent, symbolicatedContent)
-            XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
-        }
+    func testSingleThreadSampleSymbolication() {
+        let testBundle = Bundle(for: MacSymbolicatorTests.self)
+        let testFile = TestFile(path: "Samples/singlethread-sample.txt")
+        let dsymFile = DSYMFile(
+            path: testBundle.url(forResource: "dSYMs/SingleThreadHangingTest", withExtension: "dSYM")!
+        )!
 
-        dsymFile = DSYMFile(
-            path: testBundle.url(forResource: "iOSCrashingTest.app", withExtension: "dSYM")!
-        )
+        let crashFile = CrashFile(path: testFile.originalURL)!
 
-        iOSCombinations.forEach { combination in
-            let (beforeSymbolicationURL, afterSymbolicationURL) = combination
-            let crashFile = CrashFile(path: beforeSymbolicationURL)!
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
 
-            var symbolicator = Symbolicator(crashFile: crashFile, dsymFile: dsymFile)
+        XCTAssert(symbolicator.symbolicate())
+        let result = symbolicator.symbolicatedContent
 
-            XCTAssert(symbolicator.symbolicate())
+        // swiftlint:disable:next force_try
+        try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-            // swiftlint:disable:next force_try
-            let symbolicatedContent = try! String(contentsOf: afterSymbolicationURL)
+        // swiftlint:disable:next force_try
+        let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
-            XCTAssertEqual(symbolicator.symbolicatedContent, symbolicatedContent)
-            XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
-        }
+        XCTAssertEqual(result, expectedContent)
+        XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+    }
+
+    func testMultiThreadSampleSymbolication() {
+        let testBundle = Bundle(for: MacSymbolicatorTests.self)
+        let testFile = TestFile(path: "Samples/multithread-sample.txt")
+        let dsymFile = DSYMFile(
+            path: testBundle.url(forResource: "dSYMs/MultiThreadHangingTest", withExtension: "dSYM")!
+        )!
+
+        let crashFile = CrashFile(path: testFile.originalURL)!
+
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+
+        XCTAssert(symbolicator.symbolicate())
+        let result = symbolicator.symbolicatedContent
+
+        // swiftlint:disable:next force_try
+        try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
+
+        // swiftlint:disable:next force_try
+        let expectedContent = try! String(contentsOf: testFile.expectationURL)
+
+        XCTAssertEqual(result, expectedContent)
+        XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+    }
+
+    func testiOSSymbolication() {
+        let testBundle = Bundle(for: MacSymbolicatorTests.self)
+        let testFile = TestFile(path: "Crashes/ios-crash.crash")
+        let dsymFile = DSYMFile(path: testBundle.url(forResource: "dSYMs/iOSCrashingTest.app", withExtension: "dSYM")!)!
+
+        let crashFile = CrashFile(path: testFile.originalURL)!
+
+        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+
+        XCTAssert(symbolicator.symbolicate())
+        let result = symbolicator.symbolicatedContent
+
+        // swiftlint:disable:next force_try
+        try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
+
+        // swiftlint:disable:next force_try
+        let expectedContent = try! String(contentsOf: testFile.expectationURL)
+
+        XCTAssertEqual(result, expectedContent)
+        XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
     }
 }

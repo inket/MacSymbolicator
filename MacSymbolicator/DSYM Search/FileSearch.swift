@@ -5,25 +5,30 @@
 
 import Foundation
 
-typealias FileSearchErrorHandler = ([String]) -> Void
+typealias LogHandler = ([String]) -> Void
 
 protocol FileSearchQuery {
-    func with(errorHandler: @escaping FileSearchErrorHandler) -> FileSearchQuery
+    func with(logHandler: @escaping LogHandler) -> FileSearchQuery
     func search(fileExtension: String) -> FileSearchResults
 }
 
 protocol FileSearchResults {
     var results: [String] { get }
-    func firstMatching(uuid: String) -> String?
+    func matching(uuids: [String]) -> [FileSearchResult]
 
     func sorted() -> FileSearchResults
+}
+
+struct FileSearchResult {
+    let path: String
+    let matchedUUID: String
 }
 
 private class InternalFileSearch: FileSearchResults, FileSearchQuery {
     var directory: String?
     var recursive = true
     var results = [String]()
-    var errorHandler: FileSearchErrorHandler?
+    var logHandler: LogHandler?
 
     private var enumerator: FileManager.DirectoryEnumerator? {
         let enumerationURL: URL
@@ -46,8 +51,8 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
         )
     }
 
-    func with(errorHandler: @escaping FileSearchErrorHandler) -> FileSearchQuery {
-        self.errorHandler = errorHandler
+    func with(logHandler: @escaping LogHandler) -> FileSearchQuery {
+        self.logHandler = logHandler
         return self
     }
 
@@ -72,23 +77,30 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
         return self
     }
 
-    func firstMatching(uuid: String) -> String? {
-        return results.first { file in
+    func matching(uuids: [String]) -> [FileSearchResult] {
+        return results.compactMap { file in
             let command = "dwarfdump --uuid \"\(file)\""
-            let (output, error) = command.run()
+            let commandResult = command.run()
 
-            if let errorOutput = error?.trimmed, !errorOutput.isEmpty {
-                errorHandler?(["\(command):\n\(errorOutput)"])
+            if let errorOutput = commandResult.error?.trimmed, !errorOutput.isEmpty {
+                // dwarfdump --uuid on /Users/x/Library/Developer/Xcode/Archives seems to output the dsym identifier
+                // correctly followed by an stderr message about not being able to open macho file due to
+                // "Too many levels of symbolic links". Seems safe to ignore.
+                if !errorOutput.contains("Too many levels of symbolic links") {
+                    logHandler?(["\(command):\n\(errorOutput)"])
+                }
             }
 
-            guard
-                let dwarfDumpOutput = output?.trimmed,
-                let foundUUID = dwarfDumpOutput.scan(pattern: "UUID: (.*) \\(").first?.first
-            else {
-                return false
+            guard let dwarfDumpOutput = commandResult.output?.trimmed else { return nil }
+
+            let foundUUIDs = dwarfDumpOutput.scan(pattern: "UUID: (.*) \\(").flatMap({ $0 })
+            for foundUUID in foundUUIDs {
+                if uuids.contains(foundUUID) {
+                    return FileSearchResult(path: file, matchedUUID: foundUUID)
+                }
             }
 
-            return foundUUID == uuid
+            return nil
         }
     }
 }

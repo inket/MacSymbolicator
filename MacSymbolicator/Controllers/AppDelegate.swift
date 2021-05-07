@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func application(_ sender: NSApplication, openFile filename: String) -> Bool {
-        return mainController.openFile(filename)
+        mainController.openFile(filename)
     }
 
     func setupUpdater() {
