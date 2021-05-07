@@ -8,6 +8,7 @@ rm -rf Resources/dSYMs/
 mkdir -p Resources/dSYMs/
 mv TestProject/build/Release/*.dSYM Resources/dSYMs/
 mv TestProject/build/Release-iphoneos/*.dSYM Resources/dSYMs/
+cp -r Embedded.app.dSYM Resources/dSYMs/
 
 rm -rf Binaries
 mkdir -p Binaries

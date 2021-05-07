@@ -132,7 +132,7 @@ class InputCoordinator {
 }
 
 extension InputCoordinator: DropZoneDelegate {
-    func receivedFiles(dropZone: DropZone, fileURLs: [URL]) {
+    func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL] {
         if dropZone == crashFileDropZone, let fileURL = fileURLs.last {
             crashFile = CrashFile(path: fileURL)
 
@@ -144,13 +144,19 @@ extension InputCoordinator: DropZoneDelegate {
             if crashFile != nil {
                 startSearchForDSYMs()
             }
+
+            return fileURLs
         } else if dropZone == dsymFilesDropZone {
-            let dsymFiles = fileURLs.map { DSYMFile(path: $0) }
+            let dsymFiles = fileURLs.flatMap { DSYMFile.dsymFiles(from: $0) }
             self.dsymFiles.append(contentsOf: dsymFiles)
 
             updateDSYMDetailText()
 
             delegate?.inputCoordinator(self, receivedNewInput: dsymFiles)
+
+            return dsymFiles.map { $0.path }
         }
+
+        return []
     }
 }

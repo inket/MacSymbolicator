@@ -8,7 +8,7 @@ import Cocoa
 // swiftlint:disable file_length
 
 protocol DropZoneDelegate: AnyObject {
-    func receivedFiles(dropZone: DropZone, fileURLs: [URL])
+    func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL]
 }
 
 class DropZone: NSView {
@@ -405,12 +405,13 @@ class DropZone: NSView {
     func acceptFile(url fileURL: URL) -> Bool {
         guard validFileURL(fileURL) else { return false }
 
+        let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: [fileURL]) ?? [fileURL]
+
         if allowsMultipleFiles {
-            files.insert(fileURL)
+            files.formUnion(acceptedFileURLs)
         } else {
-            files = Set<URL>(arrayLiteral: fileURL)
+            files = acceptedFileURLs.last.flatMap { Set<URL>(arrayLiteral: $0) } ?? Set<URL>()
         }
-        delegate?.receivedFiles(dropZone: self, fileURLs: [fileURL])
 
         return true
     }
@@ -445,11 +446,11 @@ extension DropZone {
         let draggedFileURLs = validDraggedFileURLs(from: sender)
 
         if allowsMultipleFiles {
-            files.formUnion(draggedFileURLs)
-            delegate?.receivedFiles(dropZone: self, fileURLs: draggedFileURLs)
+            let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: draggedFileURLs) ?? draggedFileURLs
+            files.formUnion(acceptedFileURLs)
         } else if let lastValidURL = draggedFileURLs.last {
-            files = Set<URL>(arrayLiteral: lastValidURL)
-            delegate?.receivedFiles(dropZone: self, fileURLs: [lastValidURL])
+            let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: [lastValidURL]) ?? [lastValidURL]
+            files = acceptedFileURLs.last.flatMap { Set<URL>(arrayLiteral: $0) } ?? Set<URL>()
         }
 
         isHoveringFile = false

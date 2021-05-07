@@ -33,6 +33,7 @@
 		B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BC4CB31EF22A6400B3189A /* CenteredWindow.swift */; };
 		B2C229231EF223C50015AB33 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C229221EF223C50015AB33 /* AppDelegate.swift */; };
 		B2C229271EF223C50015AB33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C229261EF223C50015AB33 /* Assets.xcassets */; };
+		B2EC0F4126450D0B00E5473C /* DSYMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EC0F4026450D0B00E5473C /* DSYMTests.swift */; };
 		B2F6104A232DF654001375E1 /* Squirrel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2F61049232DF654001375E1 /* Squirrel.framework */; };
 		B2F6104D232DF664001375E1 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2F6104B232DF664001375E1 /* Mantle.framework */; };
 		B2F6104E232DF664001375E1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2F6104C232DF664001375E1 /* ReactiveCocoa.framework */; };
@@ -99,6 +100,7 @@
 		B2C229261EF223C50015AB33 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2C2292B1EF223C50015AB33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C2292C1EF223C50015AB33 /* MacSymbolicator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacSymbolicator.entitlements; sourceTree = "<group>"; };
+		B2EC0F4026450D0B00E5473C /* DSYMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMTests.swift; sourceTree = "<group>"; };
 		B2F61049232DF654001375E1 /* Squirrel.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Squirrel.framework; path = Carthage/Build/Mac/Squirrel.framework; sourceTree = SOURCE_ROOT; };
 		B2F6104B232DF664001375E1 /* Mantle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mantle.framework; path = Carthage/Build/Mac/Mantle.framework; sourceTree = SOURCE_ROOT; };
 		B2F6104C232DF664001375E1 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/Mac/ReactiveCocoa.framework; sourceTree = SOURCE_ROOT; };
@@ -131,6 +133,7 @@
 				B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */,
 				B212511620CD125E00F36050 /* SymbolicatorTests.swift */,
 				B2364689261818B700AB9486 /* ScanningTests.swift */,
+				B2EC0F4026450D0B00E5473C /* DSYMTests.swift */,
 				B212511820CD12D600F36050 /* Resources */,
 			);
 			path = MacSymbolicatorTests;
@@ -403,6 +406,7 @@
 			files = (
 				B212510F20CD123900F36050 /* MacSymbolicatorTests.swift in Sources */,
 				B236468A261818B700AB9486 /* ScanningTests.swift in Sources */,
+				B2EC0F4126450D0B00E5473C /* DSYMTests.swift in Sources */,
 				B212511720CD125E00F36050 /* SymbolicatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
