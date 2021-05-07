@@ -10,6 +10,7 @@
 ## Build generated
 build/
 DerivedData/
+*.mobileprovision
 
 ## Various settings
 *.pbxuser
