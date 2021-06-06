@@ -9,8 +9,8 @@ struct BinaryImage {
     let uuid: BinaryUUID
     let loadAddress: String
 
-    private static let binaryImagesSectionRegex = "Binary Images:.*"
-    private static let binaryImagesLineRegex = "(0x.*?)\\s.*?<(.*?)>"
+    private static let binaryImagesSectionRegex = #"Binary Images:.*"#
+    private static let binaryImagesLineRegex = #"(0x.*?)\s.*?<(.*?)>"#
 
     static func find(in content: String) -> [BinaryImage] {
         let binaryImagesSection = content.scan(

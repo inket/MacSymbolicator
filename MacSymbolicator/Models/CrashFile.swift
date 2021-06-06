@@ -51,13 +51,13 @@ public class CrashFile {
         self.path = path
         self.filename = path.lastPathComponent
 
-        self.architecture = content.scan(pattern: "^Code Type:(.*?)(\\(.*\\))?$").first?.first?.trimmed
+        self.architecture = content.scan(pattern: #"^Code Type:(.*?)(\(.*\))?$"#).first?.first?.trimmed
             .components(separatedBy: " ").first.flatMap(Architecture.init)
 
         // In the case of "ARM" the actual architecture is on the first line of Binary Images
         if self.architecture?.isIncomplete == true {
             self.architecture = (content.scan(
-                pattern: "Binary Images:.*\\s+([^\\s]+)\\s+<",
+                pattern: #"Binary Images:.*\s+([^\s]+)\s+<"#,
                 options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
             ).first?.first?.trimmed).flatMap(Architecture.init)
         }

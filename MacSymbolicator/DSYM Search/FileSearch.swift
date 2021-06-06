@@ -93,7 +93,7 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
 
             guard let dwarfDumpOutput = commandResult.output?.trimmed else { return nil }
 
-            let foundUUIDs = dwarfDumpOutput.scan(pattern: "UUID: (.*) \\(").flatMap({ $0 })
+            let foundUUIDs = dwarfDumpOutput.scan(pattern: #"UUID: (.*) \("#).flatMap({ $0 })
             for foundUUID in foundUUIDs {
                 if uuids.contains(foundUUID) {
                     return FileSearchResult(path: file, matchedUUID: foundUUID)

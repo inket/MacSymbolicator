@@ -9,18 +9,18 @@ struct StackTraceCall {
     let address: String
     let loadAddress: String
 
-    private static let crashLineRegex = "^\\d+\\s+.*?0x.*?\\s0x.*?\\s"
-    private static let crashAddressRegex = "^\\d+\\s+.*?(0x.*?)\\s(0x.*?)\\s"
+    private static let crashLineRegex = #"^\d+\s+.*?0x.*?\s0x.*?\s"#
+    private static let crashAddressRegex = #"^\d+\s+.*?(0x.*?)\s(0x.*?)\s"#
 
     static func crashReplacementRegex(address: String) -> String {
-        "\(address)\\s0x.*?$"
+        #"\#(address)\s0x.*?$"#
     }
 
-    private static let sampleLineRegex = "\\?{3}\\s+\\(in\\s.*?\\)\\s+load\\saddress.*?\\[0x.*?\\]"
-    private static let sampleAddressRegex = "\\?{3}\\s+\\(in\\s.*?\\)\\s+load\\saddress\\s*(0x.*?)\\s.*?\\[(0x.*?)\\]"
+    private static let sampleLineRegex = #"\?{3}\s+\(in\s.*?\)\s+load\saddress.*?\[0x.*?\]"#
+    private static let sampleAddressRegex = #"\?{3}\s+\(in\s.*?\)\s+load\saddress\s*(0x.*?)\s.*?\[(0x.*?)\]"#
 
     static func sampleReplacementRegex(address: String) -> String {
-        "\\?{3}.*?\\[\(address)\\]"
+      #"\?{3}.*?\[\#(address)\]"#
     }
 
     static func find(in content: String) -> [StackTraceCall] {

@@ -51,7 +51,7 @@ public struct DSYMFile: Equatable {
 
         output?.components(separatedBy: .newlines).forEach { line in
             guard
-                let match = line.scan(pattern: "UUID: (.*) \\((.*)\\)").first, match.count == 2,
+                let match = line.scan(pattern: #"UUID: (.*) \((.*)\)"#).first, match.count == 2,
                 let uuid = match.first.flatMap(BinaryUUID.init),
                 let architecture = match.last.flatMap(Architecture.init)
             else { return }
