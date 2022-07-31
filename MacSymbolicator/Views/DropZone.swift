@@ -296,11 +296,11 @@ class DropZone: NSView {
             detailLabelText = detailText
         case .oneFile:
             mainLabelText = files.first?.lastPathComponent ?? text
-            fileTypeLabelText = _fileTypes.first
+            fileTypeLabelText = _fileTypes.joined(separator: " / ")
             detailLabelText = detailText
         case .multipleFilesEmpty, .oneFileEmpty:
             mainLabelText = text
-            fileTypeLabelText = _fileTypes.first
+            fileTypeLabelText = _fileTypes.joined(separator: " / ")
             detailLabelText = detailText
         }
 

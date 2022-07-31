@@ -6,6 +6,12 @@
 import Foundation
 
 public class CrashFile {
+    enum InitializationError: Error {
+        case emptyFile
+        case translation(Translator.Error)
+        case other(Error)
+    }
+
     let path: URL
     let filename: String
 
@@ -38,12 +44,29 @@ public class CrashFile {
             .appendingPathExtension(originalPathExtension)
     }
 
-    public init?(path: URL) {
+    public init(path: URL) throws {
         guard
-            let content = try? String(contentsOf: path, encoding: .utf8),
-            content.trimmingCharacters(in: .whitespacesAndNewlines) != ""
+            let originalContent = try? String(contentsOf: path, encoding: .utf8),
+            originalContent.trimmingCharacters(in: .whitespacesAndNewlines) != ""
         else {
-            return nil
+            throw InitializationError.emptyFile
+        }
+
+        let content: String
+
+        // .ips format is JSON and needs to be translated to the old crash format before symbolicating
+        if originalContent.hasPrefix("{") {
+            do {
+                content = try Translator.translatedCrash(forIPSAt: path)
+            } catch {
+                if let translationError = error as? Translator.Error {
+                    throw InitializationError.translation(translationError)
+                } else {
+                    throw InitializationError.other(error)
+                }
+            }
+        } else {
+            content = originalContent
         }
 
         self.content = content

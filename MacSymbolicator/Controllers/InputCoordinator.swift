@@ -11,7 +11,7 @@ protocol InputCoordinatorDelegate: AnyObject {
 
 class InputCoordinator {
     let crashFileDropZone = DropZone(
-        fileTypes: [".crash", ".txt"],
+        fileTypes: [".crash", ".ips", ".txt"],
         allowsMultipleFiles: false,
         text: "Drop Crash Report or Sample",
         activatesAppAfterDrop: true
@@ -98,7 +98,13 @@ class InputCoordinator {
 
     func updateCrashDetailText() {
         guard crashFile != nil else {
-            crashFileDropZone.detailText = ""
+            // Is it nil because we couldn't initialize the crashFile or because no files have been dropped in?
+            if crashFileDropZone.files.isEmpty {
+                crashFileDropZone.detailText = ""
+            } else {
+                crashFileDropZone.detailText = "Unexpected format"
+            }
+
             return
         }
 
@@ -133,11 +139,25 @@ class InputCoordinator {
 
 extension InputCoordinator: DropZoneDelegate {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL] {
-        if dropZone == crashFileDropZone, let fileURL = fileURLs.last {
-            crashFile = CrashFile(path: fileURL)
+        defer {
+            // Delay updating the UI until this method has returned and the drop zone's files list is updated
+            if dropZone == crashFileDropZone {
+                DispatchQueue.main.async(execute: self.updateCrashDetailText)
+            } else if dropZone == dsymFilesDropZone {
+                DispatchQueue.main.async(execute: self.updateDSYMDetailText)
+            }
+        }
 
+        if dropZone == crashFileDropZone, let fileURL = fileURLs.last {
             logController.resetLogs()
-            updateCrashDetailText()
+
+            crashFile = nil
+
+            do {
+                crashFile = try CrashFile(path: fileURL)
+            } catch {
+                logController.addLogMessage("Error loading crash file: \(error)")
+            }
 
             delegate?.inputCoordinator(self, receivedNewInput: crashFile)
 
@@ -149,8 +169,6 @@ extension InputCoordinator: DropZoneDelegate {
         } else if dropZone == dsymFilesDropZone {
             let dsymFiles = fileURLs.flatMap { DSYMFile.dsymFiles(from: $0) }
             self.dsymFiles.append(contentsOf: dsymFiles)
-
-            updateDSYMDetailText()
 
             delegate?.inputCoordinator(self, receivedNewInput: dsymFiles)
 
