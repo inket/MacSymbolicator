@@ -9,6 +9,9 @@ class MainController {
     private let mainWindow = CenteredWindow(width: 800, height: 400)
     private let textWindowController = TextWindowController(title: "Symbolicated Content")
 
+    private var updateButton: NSButton?
+    private var availableUpdateURL: URL?
+
     private let dropZonesContainerView = NSView()
     private let statusView = NSView()
     private let statusTextField = NSTextField()
@@ -173,6 +176,34 @@ class MainController {
     func openFile(_ path: String) -> Bool {
         let fileURL = URL(fileURLWithPath: path)
         return inputCoordinator.acceptCrashFile(url: fileURL) || inputCoordinator.acceptDSYMFile(url: fileURL)
+    }
+
+    func suggestUpdate(version: String, url: URL) {
+        availableUpdateURL = url
+
+        let updateButton = self.updateButton ?? NSButton()
+        updateButton.title = "Update available: \(version)"
+        updateButton.controlSize = .small
+        updateButton.bezelStyle = .roundRect
+        updateButton.target = self
+        updateButton.action = #selector(self.tappedUpdateButton(_:))
+
+        guard let frameView = mainWindow.contentView?.superview else {
+            return
+        }
+
+        frameView.addSubview(updateButton)
+        updateButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            updateButton.trailingAnchor.constraint(equalTo: frameView.trailingAnchor, constant: -6),
+            updateButton.topAnchor.constraint(equalTo: frameView.topAnchor, constant: 6)
+        ])
+    }
+
+    @objc
+    private func tappedUpdateButton(_ sender: AnyObject?) {
+        guard let availableUpdateURL = availableUpdateURL else { return }
+        NSWorkspace.shared.open(availableUpdateURL)
     }
 }
 

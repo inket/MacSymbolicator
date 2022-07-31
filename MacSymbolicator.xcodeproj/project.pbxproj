@@ -16,6 +16,7 @@
 		B236468A261818B700AB9486 /* ScanningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2364689261818B700AB9486 /* ScanningTests.swift */; };
 		B236468E2618214F00AB9486 /* StackTraceCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236468D2618214F00AB9486 /* StackTraceCall.swift */; };
 		B2421B852896E887008B59EB /* Translator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2421B842896E887008B59EB /* Translator.swift */; };
+		B2421B8A2896F64D008B59EB /* Updates.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2421B892896F64D008B59EB /* Updates.swift */; };
 		B25A35CD1EF9211F00F52E00 /* Symbolicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */; };
 		B26D624F232D497400DF1D1E /* LogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D624E232D497400DF1D1E /* LogController.swift */; };
 		B272E3C2235F26C500B33076 /* Architecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C1235F26C500B33076 /* Architecture.swift */; };
@@ -59,6 +60,7 @@
 		B2364689261818B700AB9486 /* ScanningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningTests.swift; sourceTree = "<group>"; };
 		B236468D2618214F00AB9486 /* StackTraceCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackTraceCall.swift; sourceTree = "<group>"; };
 		B2421B842896E887008B59EB /* Translator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Translator.swift; sourceTree = "<group>"; };
+		B2421B892896F64D008B59EB /* Updates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updates.swift; sourceTree = "<group>"; };
 		B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Symbolicator.swift; sourceTree = "<group>"; };
 		B26D624E232D497400DF1D1E /* LogController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogController.swift; sourceTree = "<group>"; };
 		B272E3C1235F26C500B33076 /* Architecture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Architecture.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				B2C229221EF223C50015AB33 /* AppDelegate.swift */,
+				B2421B892896F64D008B59EB /* Updates.swift */,
 				B2B74D8A1EF8BF70000BBFD6 /* MainController.swift */,
 				B227F8CC263512E2004131A2 /* InputCoordinator.swift */,
 				B26D624E232D497400DF1D1E /* LogController.swift */,
@@ -373,6 +376,7 @@
 				B2B74D8B1EF8BF70000BBFD6 /* MainController.swift in Sources */,
 				B295FFB3232DDCE8002791BF /* TextWindowController.swift in Sources */,
 				B23646872618178400AB9486 /* BinaryImage.swift in Sources */,
+				B2421B8A2896F64D008B59EB /* Updates.swift in Sources */,
 				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
 				B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */,
 				B2421B852896E887008B59EB /* Translator.swift in Sources */,
