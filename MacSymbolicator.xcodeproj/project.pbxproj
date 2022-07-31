@@ -35,12 +35,6 @@
 		B2C229231EF223C50015AB33 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C229221EF223C50015AB33 /* AppDelegate.swift */; };
 		B2C229271EF223C50015AB33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C229261EF223C50015AB33 /* Assets.xcassets */; };
 		B2EC0F4126450D0B00E5473C /* DSYMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EC0F4026450D0B00E5473C /* DSYMTests.swift */; };
-		B2F6104A232DF654001375E1 /* Squirrel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2F61049232DF654001375E1 /* Squirrel.framework */; };
-		B2F6104D232DF664001375E1 /* Mantle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2F6104B232DF664001375E1 /* Mantle.framework */; };
-		B2F6104E232DF664001375E1 /* ReactiveCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2F6104C232DF664001375E1 /* ReactiveCocoa.framework */; };
-		B2F6104F232DF673001375E1 /* Mantle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B2F6104B232DF664001375E1 /* Mantle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B2F61050232DF673001375E1 /* ReactiveCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B2F6104C232DF664001375E1 /* ReactiveCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B2F61051232DF673001375E1 /* Squirrel.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B2F61049232DF654001375E1 /* Squirrel.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,22 +46,6 @@
 			remoteInfo = MacSymbolicator;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		B2B74D891EF7761E000BBFD6 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				B2F6104F232DF673001375E1 /* Mantle.framework in Embed Frameworks */,
-				B2F61050232DF673001375E1 /* ReactiveCocoa.framework in Embed Frameworks */,
-				B2F61051232DF673001375E1 /* Squirrel.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		B200A3AB1EF23244006CD542 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -103,9 +81,6 @@
 		B2C2292B1EF223C50015AB33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C2292C1EF223C50015AB33 /* MacSymbolicator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacSymbolicator.entitlements; sourceTree = "<group>"; };
 		B2EC0F4026450D0B00E5473C /* DSYMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMTests.swift; sourceTree = "<group>"; };
-		B2F61049232DF654001375E1 /* Squirrel.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Squirrel.framework; path = Carthage/Build/Mac/Squirrel.framework; sourceTree = SOURCE_ROOT; };
-		B2F6104B232DF664001375E1 /* Mantle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Mantle.framework; path = Carthage/Build/Mac/Mantle.framework; sourceTree = SOURCE_ROOT; };
-		B2F6104C232DF664001375E1 /* ReactiveCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveCocoa.framework; path = Carthage/Build/Mac/ReactiveCocoa.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,9 +95,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2F6104A232DF654001375E1 /* Squirrel.framework in Frameworks */,
-				B2F6104E232DF664001375E1 /* ReactiveCocoa.framework in Frameworks */,
-				B2F6104D232DF664001375E1 /* Mantle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -176,9 +148,6 @@
 		B2B74D851EF775F0000BBFD6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B2F6104B232DF664001375E1 /* Mantle.framework */,
-				B2F6104C232DF664001375E1 /* ReactiveCocoa.framework */,
-				B2F61049232DF654001375E1 /* Squirrel.framework */,
 			);
 			name = Frameworks;
 			path = MacSymbolicator;
@@ -289,8 +258,6 @@
 				B23E161420CD07FB0020DD37 /* ShellScript */,
 				B2C2291C1EF223C50015AB33 /* Frameworks */,
 				B2C2291D1EF223C50015AB33 /* Resources */,
-				B2B74D891EF7761E000BBFD6 /* Embed Frameworks */,
-				B2F61052232E10F3001375E1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -382,23 +349,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
-		B2F61052232E10F3001375E1 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script fixes the ShipIt hardened runtime issue to allow us\n# to notarize the app\n\n# Skip if debug, as this is not needed then\nif [[ \"${CONFIGURATION}\" == \"Debug\" ]]; then\n    exit 0\nfi\n\nLOCATION=\"${BUILT_PRODUCTS_DIR}\"/\"${FRAMEWORKS_FOLDER_PATH}\"\n\n# By default, use the configured code signing identity for the project/target\nIDENTITY=\"${CODE_SIGN_IDENTITY}\"\nif [ \"$IDENTITY\" == \"\" ]\nthen\n# If a code signing identity is not specified, use ad hoc signing\nIDENTITY=\"-\"\nfi\n\ncodesign --verbose --force --deep -o runtime --sign \"$IDENTITY\" \"$LOCATION/Squirrel.framework/Resources/Shipit\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -625,10 +575,6 @@
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				EXCLUDED_ARCHS = arm64;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MARKETING_VERSION = 2.3;
@@ -651,10 +597,6 @@
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				EXCLUDED_ARCHS = arm64;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/Mac",
-				);
 				INFOPLIST_FILE = Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				MARKETING_VERSION = 2.3;

@@ -18,13 +18,7 @@ A simple Mac app for symbolicating macOS/iOS crash reports.
 
 ## Building from source
 
-Before building, make sure to run
-
-```bash
-carthage bootstrap --platform osx
-```
-
-Project should build with Xcode 12.3
+Just clone and build with Xcode 13+
 
 ## License
 
