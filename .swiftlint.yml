@@ -1,6 +1,7 @@
 excluded:
   - Pods
   - Carthage
+  - DerivedData
 line_length: 120
 file_length: 500
 disabled_rules:
