@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,6 +11,19 @@
 		B212510F20CD123900F36050 /* MacSymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */; };
 		B212511720CD125E00F36050 /* SymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212511620CD125E00F36050 /* SymbolicatorTests.swift */; };
 		B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */; };
+		B21EFA58289A981400CA69B1 /* CLI.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21EFA57289A981400CA69B1 /* CLI.swift */; };
+		B21EFA5C289A983200CA69B1 /* Symbolicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */; };
+		B21EFA5D289A983B00CA69B1 /* DSYMFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B74D8C1EF8E925000BBFD6 /* DSYMFile.swift */; };
+		B21EFA5E289A983B00CA69B1 /* BinaryImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23646862618178400AB9486 /* BinaryImage.swift */; };
+		B21EFA5F289A983B00CA69B1 /* StackTraceCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236468D2618214F00AB9486 /* StackTraceCall.swift */; };
+		B21EFA60289A983B00CA69B1 /* Architecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C1235F26C500B33076 /* Architecture.swift */; };
+		B21EFA61289A983B00CA69B1 /* CrashFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B74D901EF8F7B6000BBFD6 /* CrashFile.swift */; };
+		B21EFA62289A983B00CA69B1 /* BinaryUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C3235F2F6500B33076 /* BinaryUUID.swift */; };
+		B21EFA63289A984000CA69B1 /* Translator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2421B842896E887008B59EB /* Translator.swift */; };
+		B21EFA64289A986C00CA69B1 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B74D8E1EF8E9CC000BBFD6 /* StringExtensions.swift */; };
+		B21EFA67289A98AF00CA69B1 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = B21EFA66289A98AF00CA69B1 /* ArgumentParser */; };
+		B21EFA68289A98DA00CA69B1 /* LogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D624E232D497400DF1D1E /* LogController.swift */; };
+		B21EFA6A289AAB6600CA69B1 /* ViewableLogController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21EFA69289AAB6600CA69B1 /* ViewableLogController.swift */; };
 		B227F8CD263512E2004131A2 /* InputCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B227F8CC263512E2004131A2 /* InputCoordinator.swift */; };
 		B23646872618178400AB9486 /* BinaryImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23646862618178400AB9486 /* BinaryImage.swift */; };
 		B236468A261818B700AB9486 /* ScanningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2364689261818B700AB9486 /* ScanningTests.swift */; };
@@ -35,6 +48,7 @@
 		B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2BC4CB31EF22A6400B3189A /* CenteredWindow.swift */; };
 		B2C229231EF223C50015AB33 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C229221EF223C50015AB33 /* AppDelegate.swift */; };
 		B2C229271EF223C50015AB33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C229261EF223C50015AB33 /* Assets.xcassets */; };
+		B2C2ED8C289AC09900B7FA40 /* MacSymbolicatorCLI in CopyFiles */ = {isa = PBXBuildFile; fileRef = B21EFA55289A981400CA69B1 /* MacSymbolicatorCLI */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B2EC0F4126450D0B00E5473C /* DSYMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EC0F4026450D0B00E5473C /* DSYMTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,7 +60,36 @@
 			remoteGlobalIDString = B2C2291E1EF223C50015AB33;
 			remoteInfo = MacSymbolicator;
 		};
+		B2C2ED8D289AC0A500B7FA40 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B2C229171EF223C40015AB33 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B21EFA54289A981400CA69B1;
+			remoteInfo = MacSymbolicatorCLI;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B21EFA53289A981400CA69B1 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		B2C2ED8B289ABFFF00B7FA40 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				B2C2ED8C289AC09900B7FA40 /* MacSymbolicatorCLI in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		B200A3AB1EF23244006CD542 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -55,6 +98,9 @@
 		B212511020CD123900F36050 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B212511620CD125E00F36050 /* SymbolicatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicatorTests.swift; sourceTree = "<group>"; };
 		B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSearch.swift; sourceTree = "<group>"; };
+		B21EFA55289A981400CA69B1 /* MacSymbolicatorCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MacSymbolicatorCLI; sourceTree = BUILT_PRODUCTS_DIR; };
+		B21EFA57289A981400CA69B1 /* CLI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLI.swift; sourceTree = "<group>"; };
+		B21EFA69289AAB6600CA69B1 /* ViewableLogController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewableLogController.swift; sourceTree = "<group>"; };
 		B227F8CC263512E2004131A2 /* InputCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputCoordinator.swift; sourceTree = "<group>"; };
 		B23646862618178400AB9486 /* BinaryImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryImage.swift; sourceTree = "<group>"; };
 		B2364689261818B700AB9486 /* ScanningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningTests.swift; sourceTree = "<group>"; };
@@ -93,6 +139,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B21EFA52289A981400CA69B1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B21EFA67289A98AF00CA69B1 /* ArgumentParser in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B2C2291C1EF223C50015AB33 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,6 +178,14 @@
 				B212511020CD123900F36050 /* Info.plist */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		B21EFA56289A981400CA69B1 /* MacSymbolicatorCLI */ = {
+			isa = PBXGroup;
+			children = (
+				B21EFA57289A981400CA69B1 /* CLI.swift */,
+			);
+			path = MacSymbolicatorCLI;
 			sourceTree = "<group>";
 		};
 		B27931321EF2872700DDAA7D /* Resources */ = {
@@ -193,6 +255,7 @@
 				B2B74D8A1EF8BF70000BBFD6 /* MainController.swift */,
 				B227F8CC263512E2004131A2 /* InputCoordinator.swift */,
 				B26D624E232D497400DF1D1E /* LogController.swift */,
+				B21EFA69289AAB6600CA69B1 /* ViewableLogController.swift */,
 				B295FFB2232DDCE8002791BF /* TextWindowController.swift */,
 				B25A35CC1EF9211F00F52E00 /* Symbolicator.swift */,
 				B2421B842896E887008B59EB /* Translator.swift */,
@@ -205,6 +268,7 @@
 			children = (
 				B2C229211EF223C50015AB33 /* MacSymbolicator */,
 				B212510D20CD123900F36050 /* MacSymbolicatorTests */,
+				B21EFA56289A981400CA69B1 /* MacSymbolicatorCLI */,
 				B2B74D851EF775F0000BBFD6 /* Frameworks */,
 				B27931321EF2872700DDAA7D /* Resources */,
 				B2C229201EF223C50015AB33 /* Products */,
@@ -216,6 +280,7 @@
 			children = (
 				B2C2291F1EF223C50015AB33 /* MacSymbolicator.app */,
 				B212510C20CD123800F36050 /* MacSymbolicatorTests.xctest */,
+				B21EFA55289A981400CA69B1 /* MacSymbolicatorCLI */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -253,6 +318,26 @@
 			productReference = B212510C20CD123800F36050 /* MacSymbolicatorTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		B21EFA54289A981400CA69B1 /* MacSymbolicatorCLI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B21EFA5B289A981400CA69B1 /* Build configuration list for PBXNativeTarget "MacSymbolicatorCLI" */;
+			buildPhases = (
+				B21EFA51289A981400CA69B1 /* Sources */,
+				B21EFA52289A981400CA69B1 /* Frameworks */,
+				B21EFA53289A981400CA69B1 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MacSymbolicatorCLI;
+			packageProductDependencies = (
+				B21EFA66289A98AF00CA69B1 /* ArgumentParser */,
+			);
+			productName = MacSymbolicatorCLI;
+			productReference = B21EFA55289A981400CA69B1 /* MacSymbolicatorCLI */;
+			productType = "com.apple.product-type.tool";
+		};
 		B2C2291E1EF223C50015AB33 /* MacSymbolicator */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B2C2292F1EF223C50015AB33 /* Build configuration list for PBXNativeTarget "MacSymbolicator" */;
@@ -261,10 +346,12 @@
 				B23E161420CD07FB0020DD37 /* ShellScript */,
 				B2C2291C1EF223C50015AB33 /* Frameworks */,
 				B2C2291D1EF223C50015AB33 /* Resources */,
+				B2C2ED8B289ABFFF00B7FA40 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B2C2ED8E289AC0A500B7FA40 /* PBXTargetDependency */,
 			);
 			name = MacSymbolicator;
 			productName = MacSymbolicator;
@@ -277,8 +364,8 @@
 		B2C229171EF223C40015AB33 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1000;
-				LastUpgradeCheck = 1250;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = "Mahdi Bchatnia";
 				TargetAttributes = {
 					B212510B20CD123800F36050 = {
@@ -286,6 +373,9 @@
 						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
 						TestTargetID = B2C2291E1EF223C50015AB33;
+					};
+					B21EFA54289A981400CA69B1 = {
+						CreatedOnToolsVersion = 13.2;
 					};
 					B2C2291E1EF223C50015AB33 = {
 						CreatedOnToolsVersion = 9.0;
@@ -303,12 +393,16 @@
 				Base,
 			);
 			mainGroup = B2C229161EF223C40015AB33;
+			packageReferences = (
+				B21EFA65289A98AF00CA69B1 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+			);
 			productRefGroup = B2C229201EF223C50015AB33 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				B2C2291E1EF223C50015AB33 /* MacSymbolicator */,
 				B212510B20CD123800F36050 /* MacSymbolicatorTests */,
+				B21EFA54289A981400CA69B1 /* MacSymbolicatorCLI */,
 			);
 		};
 /* End PBXProject section */
@@ -367,6 +461,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B21EFA51289A981400CA69B1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B21EFA5E289A983B00CA69B1 /* BinaryImage.swift in Sources */,
+				B21EFA58289A981400CA69B1 /* CLI.swift in Sources */,
+				B21EFA64289A986C00CA69B1 /* StringExtensions.swift in Sources */,
+				B21EFA68289A98DA00CA69B1 /* LogController.swift in Sources */,
+				B21EFA5F289A983B00CA69B1 /* StackTraceCall.swift in Sources */,
+				B21EFA5C289A983200CA69B1 /* Symbolicator.swift in Sources */,
+				B21EFA63289A984000CA69B1 /* Translator.swift in Sources */,
+				B21EFA60289A983B00CA69B1 /* Architecture.swift in Sources */,
+				B21EFA5D289A983B00CA69B1 /* DSYMFile.swift in Sources */,
+				B21EFA61289A983B00CA69B1 /* CrashFile.swift in Sources */,
+				B21EFA62289A983B00CA69B1 /* BinaryUUID.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B2C2291B1EF223C50015AB33 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -380,6 +492,7 @@
 				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
 				B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */,
 				B2421B852896E887008B59EB /* Translator.swift in Sources */,
+				B21EFA6A289AAB6600CA69B1 /* ViewableLogController.swift in Sources */,
 				B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */,
 				B26D624F232D497400DF1D1E /* LogController.swift in Sources */,
 				B227F8CD263512E2004131A2 /* InputCoordinator.swift in Sources */,
@@ -401,6 +514,11 @@
 			isa = PBXTargetDependency;
 			target = B2C2291E1EF223C50015AB33 /* MacSymbolicator */;
 			targetProxy = B212511120CD123900F36050 /* PBXContainerItemProxy */;
+		};
+		B2C2ED8E289AC0A500B7FA40 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B21EFA54289A981400CA69B1 /* MacSymbolicatorCLI */;
+			targetProxy = B2C2ED8D289AC0A500B7FA40 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -427,7 +545,11 @@
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				INFOPLIST_FILE = MacSymbolicatorTests/Resources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicatorTests;
@@ -448,12 +570,51 @@
 				COPY_PHASE_STRIP = NO;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				INFOPLIST_FILE = MacSymbolicatorTests/Resources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MacSymbolicator.app/Contents/MacOS/MacSymbolicator";
+			};
+			name = Release;
+		};
+		B21EFA59289A981400CA69B1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = PP5UYHJQCD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		B21EFA5A289A981400CA69B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = PP5UYHJQCD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.1;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -563,7 +724,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;
 		};
@@ -575,11 +737,15 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -596,11 +762,15 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -617,6 +787,15 @@
 			buildConfigurations = (
 				B212511420CD123900F36050 /* Debug */,
 				B212511520CD123900F36050 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B21EFA5B289A981400CA69B1 /* Build configuration list for PBXNativeTarget "MacSymbolicatorCLI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B21EFA59289A981400CA69B1 /* Debug */,
+				B21EFA5A289A981400CA69B1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -640,6 +819,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B21EFA65289A98AF00CA69B1 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B21EFA66289A98AF00CA69B1 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B21EFA65289A98AF00CA69B1 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B2C229171EF223C40015AB33 /* Project object */;
 }

@@ -5,19 +5,20 @@
 
 import Cocoa
 
-public struct Symbolicator {
+struct Symbolicator {
     let crashFile: CrashFile
     let dsymFiles: [DSYMFile]
 
-    public var symbolicatedContent: String?
-    var logController = LogController()
+    var symbolicatedContent: String?
+    var logController: LogController
 
-    public init(crashFile: CrashFile, dsymFiles: [DSYMFile]) {
+    init(crashFile: CrashFile, dsymFiles: [DSYMFile], logController: LogController) {
         self.crashFile = crashFile
         self.dsymFiles = dsymFiles
+        self.logController = logController
     }
 
-    public mutating func symbolicate() -> Bool {
+    mutating func symbolicate() -> Bool {
         logController.resetLogs()
 
         guard let architecture = crashFile.architecture else {

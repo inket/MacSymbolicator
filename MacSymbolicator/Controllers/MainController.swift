@@ -28,7 +28,7 @@ class MainController {
         }
     }
 
-    private let logController = LogController()
+    private let logController: ViewableLogController = DefaultViewableLogController()
 
     init() {
         logController.delegate = self
@@ -54,7 +54,7 @@ class MainController {
         viewLogsButton.bezelStyle = .rounded
         viewLogsButton.focusRingType = .none
         viewLogsButton.target = logController
-        viewLogsButton.action = #selector(LogController.viewLogs)
+        viewLogsButton.action = #selector(ViewableLogController.viewLogs)
         viewLogsButton.isHidden = true
 
         let contentView = mainWindow.contentView!
@@ -142,7 +142,11 @@ class MainController {
         isSymbolicating = true
 
         let dsymFiles = inputCoordinator.dsymFiles
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: dsymFiles)
+        var symbolicator = Symbolicator(
+            crashFile: crashFile,
+            dsymFiles: dsymFiles,
+            logController: DefaultLogController()
+        )
 
         DispatchQueue.global(qos: .userInitiated).async {
             let success = symbolicator.symbolicate()

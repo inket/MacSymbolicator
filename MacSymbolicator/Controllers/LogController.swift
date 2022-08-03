@@ -5,28 +5,30 @@
 
 import Cocoa
 
+@objc
 protocol LogControllerDelegate: AnyObject {
     func logController(_ controller: LogController, logsUpdated logMessages: [String])
 }
 
-class LogController: NSObject {
-    private let textWindowController = TextWindowController(title: "Logs")
+@objc
+protocol LogController: AnyObject {
+    var delegate: LogControllerDelegate? { get set }
 
+    var logMessages: [String] { get set }
+
+    func addLogMessage(_ message: String)
+    func addLogMessages(_ newMessages: [String])
+    func merge(_ logController: LogController)
+    func resetLogs()
+}
+
+class DefaultLogController: NSObject, LogController {
     weak var delegate: LogControllerDelegate?
 
-    private var logMessages = [String]() {
+    var logMessages = [String]() {
         didSet {
             delegate?.logController(self, logsUpdated: logMessages)
-
-            // Update the text here so that if the window is already open, the text gets updated
-            DispatchQueue.main.async {
-                self.textWindowController.text = self.logMessages.joined(separator: "\n")
-            }
         }
-    }
-
-    @objc func viewLogs() {
-        textWindowController.showWindow()
     }
 
     func addLogMessage(_ message: String) {

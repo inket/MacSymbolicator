@@ -32,7 +32,7 @@ class InputCoordinator {
 
     weak var delegate: InputCoordinatorDelegate?
 
-    let logController = LogController()
+    let logController: LogController = DefaultLogController()
 
     private var expectedDSYMUUIDs: Set<String> {
         guard let crashFile = crashFile else { return Set<String>() }
