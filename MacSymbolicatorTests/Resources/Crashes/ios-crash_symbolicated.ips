@@ -1,0 +1,223 @@
+
+Incident Identifier: 6251125F-0919-4879-B36B-F5F2D1E6902E
+CrashReporter Key:   3f2d8930a7fa3eff84ad721f6866b9b4791238c5
+Hardware Model:      iPhone14,2
+Process:             iOSCrashingTest [1730]
+Path:                /private/var/containers/Bundle/Application/AB277537-5693-4954-A817-36659132B179/iOSCrashingTest.app/iOSCrashingTest
+Identifier:          jp.mahdi.iOSCrashingTest
+Version:             1.0 (1)
+Code Type:           ARM-64 (Native)
+Role:                Foreground
+Parent Process:      launchd [1]
+Coalition:           jp.mahdi.iOSCrashingTest [970]
+
+Date/Time:           2022-08-04 01:11:01.2455 +0900
+Launch Time:         2022-08-04 01:11:01.0147 +0900
+OS Version:          iPhone OS 15.5 (19F77)
+Release Type:        User
+Baseband Version:    1.61.00
+Report Version:      104
+
+Exception Type:  EXC_BREAKPOINT (SIGTRAP)
+Exception Codes: 0x0000000000000001, 0x00000001ad98ab74
+Exception Note:  EXC_CORPSE_NOTIFY
+Termination Reason: SIGNAL 5 Trace/BPT trap: 5
+Terminating Process: exc handler [1730]
+
+Triggered by Thread:  0
+
+Kernel Triage:
+VM - pmap_enter failed with resource shortage
+VM - pmap_enter failed with resource shortage
+VM - pmap_enter failed with resource shortage
+VM - pmap_enter failed with resource shortage
+VM - pmap_enter failed with resource shortage
+
+
+Thread 0 name:   Dispatch queue: com.apple.main-thread
+Thread 0 Crashed:
+0   libswiftCore.dylib            	       0x1ad98ab74 _assertionFailure(_:_:file:line:flags:) + 308
+1   libswiftCore.dylib            	       0x1ad98ab74 _assertionFailure(_:_:file:line:flags:) + 308
+2   iOSCrashingTest               	       0x1007da4bc specialized static CrashClass.pleaseCrash() (in iOSCrashingTest) (<compiler-generated>:0)
+3   iOSCrashingTest               	       0x1007da1cc @objc ViewController.viewDidLoad() (in iOSCrashingTest) (<compiler-generated>:0)
+4   UIKitCore                     	       0x1ab4ade34 -[UIViewController _sendViewDidLoadWithAppearanceProxyObjectTaggingEnabled] + 108
+5   UIKitCore                     	       0x1ab4b0984 -[UIViewController loadViewIfRequired] + 1048
+6   UIKitCore                     	       0x1ab4839e4 -[UIViewController view] + 32
+7   UIKitCore                     	       0x1ab5c5bf4 -[UIWindow addRootViewControllerViewIfPossible] + 180
+8   UIKitCore                     	       0x1ab51b5ac -[UIWindow _updateLayerOrderingAndSetLayerHidden:actionBlock:] + 232
+9   UIKitCore                     	       0x1ab5b1fd0 -[UIWindow _setHidden:forced:] + 280
+10  UIKit                         	       0x21ab08170 -[UIWindowAccessibility _orderFrontWithoutMakingKey] + 120
+11  UIKitCore                     	       0x1ab5cc66c -[UIWindow _mainQueue_makeKeyAndVisible] + 56
+12  UIKitCore                     	       0x1ab80e61c -[UIApplication _callInitializationDelegatesWithActions:forCanvas:payload:fromOriginatingProcess:] + 3756
+13  UIKitCore                     	       0x1ab7f7118 -[UIApplication _runWithMainScene:transitionContext:completion:] + 1180
+14  UIKitCore                     	       0x1ab654d34 -[_UISceneLifecycleMultiplexer completeApplicationLaunchWithFBSScene:transitionContext:] + 152
+15  UIKitCore                     	       0x1ab4af3b4 _UIScenePerformActionsWithLifecycleActionMask + 104
+16  UIKitCore                     	       0x1ab5d9d90 __101-[_UISceneLifecycleMultiplexer _evalTransitionToSettings:fromSettings:forceExit:withTransitionStore:]_block_invoke + 216
+17  UIKitCore                     	       0x1ab6f9aa0 -[_UISceneLifecycleMultiplexer _performBlock:withApplicationOfDeactivationReasons:fromReasons:] + 248
+18  UIKitCore                     	       0x1ab938764 -[_UISceneLifecycleMultiplexer _evalTransitionToSettings:fromSettings:forceExit:withTransitionStore:] + 772
+19  UIKitCore                     	       0x1ab8c3d14 -[_UISceneLifecycleMultiplexer uiScene:transitionedFromState:withTransitionContext:] + 340
+20  UIKitCore                     	       0x1ab4b01a0 __186-[_UIWindowSceneFBSSceneTransitionContextDrivenLifecycleSettingsDiffAction _performActionsForUIScene:withUpdatedFBSScene:settingsDiff:fromSettings:transitionContext:lifecycleActionType:]_block_invoke + 196
+21  UIKitCore                     	       0x1ab5700d8 +[BSAnimationSettings(UIKit) tryAnimatingWithSettings:actions:completion:] + 892
+22  UIKitCore                     	       0x1ab4b20a4 _UISceneSettingsDiffActionPerformChangesWithTransitionContext + 276
+23  UIKitCore                     	       0x1ab59c244 -[_UIWindowSceneFBSSceneTransitionContextDrivenLifecycleSettingsDiffAction _performActionsForUIScene:withUpdatedFBSScene:settingsDiff:fromSettings:transitionContext:lifecycleActionType:] + 384
+24  UIKitCore                     	       0x1aba20e60 __64-[UIScene scene:didUpdateWithDiff:transitionContext:completion:]_block_invoke.615 + 776
+25  UIKitCore                     	       0x1ab4e0484 -[UIScene _emitSceneSettingsUpdateResponseForCompletion:afterSceneUpdateWork:] + 256
+26  UIKitCore                     	       0x1ab523cc4 -[UIScene scene:didUpdateWithDiff:transitionContext:completion:] + 288
+27  UIKitCore                     	       0x1ab659b38 -[UIApplication workspace:didCreateScene:withTransitionContext:completion:] + 584
+28  UIKitCore                     	       0x1ab59a508 -[UIApplicationSceneClientAgent scene:didInitializeWithEvent:completion:] + 388
+29  FrontBoardServices            	       0x1bb12b294 -[FBSScene _callOutQueue_agent_didCreateWithTransitionContext:completion:] + 440
+30  FrontBoardServices            	       0x1bb151090 __94-[FBSWorkspaceScenesClient createWithSceneID:groupID:parameters:transitionContext:completion:]_block_invoke.215 + 128
+31  FrontBoardServices            	       0x1bb10c308 -[FBSWorkspace _calloutQueue_executeCalloutFromSource:withBlock:] + 240
+32  FrontBoardServices            	       0x1bb10d958 __94-[FBSWorkspaceScenesClient createWithSceneID:groupID:parameters:transitionContext:completion:]_block_invoke + 372
+33  libdispatch.dylib             	       0x1a8b88a30 _dispatch_client_callout + 20
+34  libdispatch.dylib             	       0x1a8b8c4e0 _dispatch_block_invoke_direct + 264
+35  FrontBoardServices            	       0x1bb10dc70 __FBSSERIALQUEUE_IS_CALLING_OUT_TO_A_BLOCK__ + 48
+36  FrontBoardServices            	       0x1bb10d040 -[FBSSerialQueue _targetQueue_performNextIfPossible] + 220
+37  FrontBoardServices            	       0x1bb111700 -[FBSSerialQueue _performNextFromRunLoopSource] + 28
+38  CoreFoundation                	       0x1a8f43414 __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE0_PERFORM_FUNCTION__ + 28
+39  CoreFoundation                	       0x1a8f541a0 __CFRunLoopDoSource0 + 208
+40  CoreFoundation                	       0x1a8e8d6f8 __CFRunLoopDoSources0 + 368
+41  CoreFoundation                	       0x1a8e9305c __CFRunLoopRun + 828
+42  CoreFoundation                	       0x1a8ea6bc8 CFRunLoopRunSpecific + 600
+43  GraphicsServices              	       0x1c4fda374 GSEventRunModal + 164
+44  UIKitCore                     	       0x1ab816648 -[UIApplication _run] + 1100
+45  UIKitCore                     	       0x1ab597d90 UIApplicationMain + 364
+46  iOSCrashingTest               	       0x1007da384 main (in iOSCrashingTest) (AppDelegate.swift:9)
+47  dyld                          	       0x1009e5ce4 start + 520
+
+Thread 1 name:   Dispatch queue: com.apple.root.default-qos
+Thread 1:
+0   libsystem_kernel.dylib        	       0x1e0ab1138 __ulock_wait + 8
+1   libdispatch.dylib             	       0x1a8b89420 _dlock_wait + 56
+2   libdispatch.dylib             	       0x1a8b891d4 _dispatch_thread_event_wait_slow + 56
+3   libdispatch.dylib             	       0x1a8b97f70 __DISPATCH_WAIT_FOR_QUEUE__ + 356
+4   libdispatch.dylib             	       0x1a8b97b28 _dispatch_sync_f_slow + 144
+5   AXCoreUtilities               	       0x1bf0f7320 AXPerformBlockSynchronouslyOnMainThread + 108
+6   libdispatch.dylib             	       0x1a8b86e6c _dispatch_call_block_and_release + 32
+7   libdispatch.dylib             	       0x1a8b88a30 _dispatch_client_callout + 20
+8   libdispatch.dylib             	       0x1a8b8bb44 _dispatch_queue_override_invoke + 784
+9   libdispatch.dylib             	       0x1a8b9a164 _dispatch_root_queue_drain + 396
+10  libdispatch.dylib             	       0x1a8b9a96c _dispatch_worker_thread2 + 164
+11  libsystem_pthread.dylib       	       0x21a7e4080 _pthread_wqthread + 228
+12  libsystem_pthread.dylib       	       0x21a7e3e5c start_wqthread + 8
+
+Thread 2:
+0   libsystem_pthread.dylib       	       0x21a7e3e54 start_wqthread + 0
+
+Thread 3:
+0   libsystem_pthread.dylib       	       0x21a7e3e54 start_wqthread + 0
+
+Thread 4 name:   Dispatch queue: com.apple.UIKit.KeyboardManagement
+Thread 4:
+0   libsystem_kernel.dylib        	       0x1e0ab1138 __ulock_wait + 8
+1   libdispatch.dylib             	       0x1a8b89420 _dlock_wait + 56
+2   libdispatch.dylib             	       0x1a8b891d4 _dispatch_thread_event_wait_slow + 56
+3   libdispatch.dylib             	       0x1a8b97f70 __DISPATCH_WAIT_FOR_QUEUE__ + 356
+4   libdispatch.dylib             	       0x1a8b97b28 _dispatch_sync_f_slow + 144
+5   UIKitCore                     	       0x1ab6705ac __37-[_UIRemoteKeyboards startConnection]_block_invoke_3 + 136
+6   CoreFoundation                	       0x1a8ea9b24 __invoking___ + 148
+7   CoreFoundation                	       0x1a8ec7610 -[NSInvocation invoke] + 468
+8   Foundation                    	       0x1aa6b1938 __NSXPCCONNECTION_IS_CALLING_OUT_TO_REPLY_BLOCK__ + 24
+9   Foundation                    	       0x1aa6d2f74 -[NSXPCConnection _decodeAndInvokeReplyBlockWithEvent:sequence:replyInfo:] + 572
+10  Foundation                    	       0x1aa6ad480 __88-[NSXPCConnection _sendInvocation:orArguments:count:methodSignature:selector:withProxy:]_block_invoke_3 + 212
+11  libxpc.dylib                  	       0x21a8196ac _xpc_connection_reply_callout + 124
+12  libxpc.dylib                  	       0x21a80cbcc _xpc_connection_call_reply_async + 88
+13  libdispatch.dylib             	       0x1a8b88ab0 _dispatch_client_callout3 + 20
+14  libdispatch.dylib             	       0x1a8ba6214 _dispatch_mach_msg_async_reply_invoke + 340
+15  libdispatch.dylib             	       0x1a8b90000 _dispatch_lane_serial_drain + 376
+16  libdispatch.dylib             	       0x1a8b90cb4 _dispatch_lane_invoke + 444
+17  libdispatch.dylib             	       0x1a8b9b500 _dispatch_workloop_worker_thread + 648
+18  libsystem_pthread.dylib       	       0x21a7e40bc _pthread_wqthread + 288
+19  libsystem_pthread.dylib       	       0x21a7e3e5c start_wqthread + 8
+
+Thread 5 name:  com.apple.uikit.eventfetch-thread
+Thread 5:
+0   libsystem_kernel.dylib        	       0x1e0ab04a0 mach_msg_trap + 8
+1   libsystem_kernel.dylib        	       0x1e0ab0ae4 mach_msg + 76
+2   CoreFoundation                	       0x1a8e8ed30 __CFRunLoopServiceMachPort + 372
+3   CoreFoundation                	       0x1a8e931bc __CFRunLoopRun + 1180
+4   CoreFoundation                	       0x1a8ea6bc8 CFRunLoopRunSpecific + 600
+5   Foundation                    	       0x1aa695464 -[NSRunLoop(NSRunLoop) runMode:beforeDate:] + 236
+6   Foundation                    	       0x1aa6d6e2c -[NSRunLoop(NSRunLoop) runUntilDate:] + 92
+7   UIKitCore                     	       0x1ab790770 -[UIEventFetcher threadMain] + 524
+8   Foundation                    	       0x1aa6e543c __NSThread__start__ + 808
+9   libsystem_pthread.dylib       	       0x21a7e49ac _pthread_start + 148
+10  libsystem_pthread.dylib       	       0x21a7e3e68 thread_start + 8
+
+Thread 6 name:   Dispatch queue: _AXDyldImageMonitor
+Thread 6:
+0   libsystem_malloc.dylib        	       0x1bb1c5158 nanov2_allocate + 116
+1   libsystem_malloc.dylib        	       0x1bb1c5750 nanov2_calloc + 160
+2   libsystem_malloc.dylib        	       0x1bb1c5750 nanov2_calloc + 160
+3   libsystem_malloc.dylib        	       0x1bb1b3e5c _malloc_zone_calloc + 88
+4   CoreFoundation                	       0x1a8eb3628 _CFRuntimeCreateInstance + 332
+5   CoreFoundation                	       0x1a8eaf838 __CFStringCreateImmutableFunnel3 + 1848
+6   CoreFoundation                	       0x1a8efab74 CFStringCreateWithCharacters + 60
+7   Foundation                    	       0x1aa6b47ac +[NSString stringWithCharacters:length:] + 48
+8   Foundation                    	       0x1aa6d3d98 _NSPathComponents + 312
+9   Foundation                    	       0x1aa6e6440 -[NSString(NSPathUtilities) pathComponents] + 188
+10  AccessibilityUtilities        	       0x1bf0829fc -[AXCodeItem _cacheLazyProperties] + 104
+11  AccessibilityUtilities        	       0x1bf082948 -[AXCodeItem type] + 48
+12  AccessibilityUtilities        	       0x1bf08300c -[AXCodeItem isAccessibilityBundle] + 24
+13  AccessibilityUtilities        	       0x1bf02c550 -[AXCodeLoader imageMonitor:didAddImage:] + 100
+14  AccessibilityUtilities        	       0x1bf03de8c -[_AXDyldImageMonitor _dyldDidAddImage:] + 196
+15  AccessibilityUtilities        	       0x1bf03e478 __AXImageMonitor_dyld_image_callback_block_invoke + 132
+16  libdispatch.dylib             	       0x1a8b86e6c _dispatch_call_block_and_release + 32
+17  libdispatch.dylib             	       0x1a8b88a30 _dispatch_client_callout + 20
+18  libdispatch.dylib             	       0x1a8b90124 _dispatch_lane_serial_drain + 668
+19  libdispatch.dylib             	       0x1a8b90cb4 _dispatch_lane_invoke + 444
+20  libdispatch.dylib             	       0x1a8b9b500 _dispatch_workloop_worker_thread + 648
+21  libsystem_pthread.dylib       	       0x21a7e40bc _pthread_wqthread + 288
+22  libsystem_pthread.dylib       	       0x21a7e3e5c start_wqthread + 8
+
+Thread 7 name:   Dispatch queue: AXCodeLoader
+Thread 7:
+0   Foundation                    	       0x1aa6a1ef8 -[NSPathStore2 length] + 0
+1   CoreFoundation                	       0x1a8ebffa0 -[__NSCFString isEqualToString:] + 404
+2   AccessibilityUtilities        	       0x1bf02ab5c -[AXCodeLoader _accessibilityCodeItemMatchingName:type:path:] + 464
+3   AccessibilityUtilities        	       0x1bf02ad58 -[AXCodeLoader _associateAccessibilityCodeItemWithLoadedCodeItem:] + 200
+4   AccessibilityUtilities        	       0x1bf029550 __36-[AXCodeLoader _addTrackedCodeItem:]_block_invoke + 216
+5   libdispatch.dylib             	       0x1a8b86e6c _dispatch_call_block_and_release + 32
+6   libdispatch.dylib             	       0x1a8b88a30 _dispatch_client_callout + 20
+7   libdispatch.dylib             	       0x1a8b90124 _dispatch_lane_serial_drain + 668
+8   libdispatch.dylib             	       0x1a8b90c80 _dispatch_lane_invoke + 392
+9   libdispatch.dylib             	       0x1a8b9b500 _dispatch_workloop_worker_thread + 648
+10  libsystem_pthread.dylib       	       0x21a7e40bc _pthread_wqthread + 288
+11  libsystem_pthread.dylib       	       0x21a7e3e5c start_wqthread + 8
+
+Thread 8:
+0   libsystem_pthread.dylib       	       0x21a7e3e54 start_wqthread + 0
+
+
+Thread 0 crashed with ARM Thread State (64-bit):
+    x0: 0x80000001007da830   x1: 0x00000002823a38a0   x2: 0x0000000000000001   x3: 0x00000001bb1c52ec
+    x4: 0x0000000000000000   x5: 0x000000016f628fa0   x6: 0x6873617263206568   x7: 0x0000000000000001
+    x8: 0x00000000000001ff   x9: 0x00000000ca2229d2  x10: 0x00000000000007fb  x11: 0x00000000000007fd
+   x12: 0x00000000000001c6  x13: 0x00000000ca2229d2  x14: 0x00000000ca423000  x15: 0x0000000000000046
+   x16: 0x0000000080000000  x17: 0x000000004a400000  x18: 0x0000000000000000  x19: 0x80000001007da830
+   x20: 0x0000000000000002  x21: 0x0000000000000018  x22: 0x0000000000000021  x23: 0x00000001007da820
+   x24: 0xd000000000000010  x25: 0x00000001007da842  x26: 0x000000000000000b  x27: 0x0000000102c08b80
+   x28: 0x0000000000000000   fp: 0x000000016f6290b0   lr: 0x00000001ad98ab74
+    sp: 0x000000016f629030   pc: 0x00000001ad98ab74 cpsr: 0x60001000
+   far: 0x00000002042fa800  esr: 0xf2000001 (Breakpoint) brk 1
+
+Binary Images:
+       0x1ad951000 -        0x1ade67fff libswiftCore.dylib arm64e  <178beeaf85dc35a7b02cb951eba169ce> /usr/lib/swift/libswiftCore.dylib
+       0x1007d4000 -        0x1007dbfff iOSCrashingTest arm64  <82d13d98219e3040b62a07a297007a7c> /private/var/containers/Bundle/Application/AB277537-5693-4954-A817-36659132B179/iOSCrashingTest.app/iOSCrashingTest
+       0x1ab302000 -        0x1acb9dfff UIKitCore arm64e  <3ed35565456d33cbb5546c567fa81585> /System/Library/PrivateFrameworks/UIKitCore.framework/UIKitCore
+       0x21aa30000 -        0x21ab69fff UIKit arm64e  <843645745373346d959393a1572d3983> /System/Library/AccessibilityBundles/UIKit.axbundle/UIKit
+       0x1bb102000 -        0x1bb1aefff FrontBoardServices arm64e  <8d4d34db2d963e20b4199e756760d079> /System/Library/PrivateFrameworks/FrontBoardServices.framework/FrontBoardServices
+       0x1a8b85000 -        0x1a8bcafff libdispatch.dylib arm64e  <355accf439173730bc55ef7003887abe> /usr/lib/system/libdispatch.dylib
+       0x1a8e88000 -        0x1a92ddfff CoreFoundation arm64e  <5198fb5756453b34a49ff32b52256cf3> /System/Library/Frameworks/CoreFoundation.framework/CoreFoundation
+       0x1c4fd9000 -        0x1c4fe1fff GraphicsServices arm64e  <260f066ec5de3844967e483985448f21> /System/Library/PrivateFrameworks/GraphicsServices.framework/GraphicsServices
+       0x1009cc000 -        0x100a23fff dyld arm64e  <7c9c7851823738a7b1eb9cd2deb4b746> /usr/lib/dyld
+       0x1e0aaf000 -        0x1e0ae4fff libsystem_kernel.dylib arm64e  <1db00c916ad8384085030c6fbffa8e0b> /usr/lib/system/libsystem_kernel.dylib
+       0x1bf0f5000 -        0x1bf10dfff AXCoreUtilities arm64e  <18307395ddff3ef4b16f41112fba3bbd> /System/Library/PrivateFrameworks/AXCoreUtilities.framework/AXCoreUtilities
+       0x21a7e3000 -        0x21a7eefff libsystem_pthread.dylib arm64e  <1026e3a4d3c03b0da552f185d6772a29> /usr/lib/system/libsystem_pthread.dylib
+       0x1aa67c000 -        0x1aa986fff Foundation arm64e  <ac6ad2f3c7b138aa858857036a663180> /System/Library/Frameworks/Foundation.framework/Foundation
+       0x21a7fe000 -        0x21a83afff libxpc.dylib arm64e  <267da60eb413307fbf47c71b78244a25> /usr/lib/system/libxpc.dylib
+       0x1bb1af000 -        0x1bb1d0fff libsystem_malloc.dylib arm64e  <7b60c468d3ed3719be47054cfcec0007> /usr/lib/system/libsystem_malloc.dylib
+       0x1befcd000 -        0x1bf0f4fff AccessibilityUtilities arm64e  <d06b8752d53336808c736a4908d3f8ad> /System/Library/PrivateFrameworks/AccessibilityUtilities.framework/AccessibilityUtilities
+
+EOF
+

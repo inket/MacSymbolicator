@@ -1,0 +1,98 @@
+{"app_name":"CrashingTest","timestamp":"2022-08-03 20:36:47.00 +0900","app_version":"","slice_uuid":"01d2a9d5-1f8a-35c8-9228-7c7cca13c5fc","build_version":"","platform":1,"share_with_app_devs":0,"is_first_party":1,"bug_type":"309","os_version":"macOS 12.4 (21F79)","incident_id":"02F8E982-2985-4720-946D-B4ECDE40DC2C","name":"CrashingTest"}
+{
+  "uptime" : 3900000,
+  "procLaunch" : "2022-08-03 20:36:43.4483 +0900",
+  "procRole" : "Unspecified",
+  "version" : 2,
+  "userID" : 501,
+  "deployVersion" : 210,
+  "modelCode" : "Macmini7,1",
+  "procStartAbsTime" : 3988146694672754,
+  "coalitionID" : 147453,
+  "osVersion" : {
+    "train" : "macOS 12.4",
+    "build" : "21F79",
+    "releaseType" : "User"
+  },
+  "captureTime" : "2022-08-03 20:36:44.3125 +0900",
+  "incident" : "02F8E982-2985-4720-946D-B4ECDE40DC2C",
+  "bug_type" : "309",
+  "pid" : 1710,
+  "procExitAbsTime" : 3988147252602924,
+  "cpuType" : "X86-64",
+  "procName" : "CrashingTest",
+  "procPath" : "\/Users\/USER\/Desktop\/*\/CrashingTest",
+  "parentProc" : "Exited process",
+  "parentPid" : 1704,
+  "coalitionName" : "com.apple.Terminal",
+  "crashReporterKey" : "792F5CBA-A072-8F48-64CE-90F08A75B14F",
+  "responsiblePid" : 1702,
+  "responsibleProc" : "Terminal",
+  "sip" : "enabled",
+  "vmRegionInfo" : "0x1 is not in any region.  Bytes before following region: 140737486839807\n      REGION TYPE                    START - END         [ VSIZE] PRT\/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      VM_ALLOCATE              7fffffe8e000-7fffffe8f000 [    4K] r-x\/r-x SM=ALI  ",
+  "isCorpse" : 1,
+  "exception" : {"codes":"0x0000000000000001, 0x0000000000000001","rawCodes":[1,1],"type":"EXC_BAD_ACCESS","signal":"SIGSEGV","subtype":"KERN_INVALID_ADDRESS at 0x0000000000000001"},
+  "termination" : {"flags":0,"code":11,"namespace":"SIGNAL","indicator":"Segmentation fault: 11","byProc":"exc handler","byPid":1710},
+  "vmregioninfo" : "0x1 is not in any region.  Bytes before following region: 140737486839807\n      REGION TYPE                    START - END         [ VSIZE] PRT\/MAX SHRMOD  REGION DETAIL\n      UNUSED SPACE AT START\n--->  \n      VM_ALLOCATE              7fffffe8e000-7fffffe8f000 [    4K] r-x\/r-x SM=ALI  ",
+  "extMods" : {"caller":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"system":{"thread_create":0,"thread_set_state":0,"task_for_pid":5},"targeted":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"warnings":0},
+  "faultingThread" : 0,
+  "threads" : [{"triggered":true,"id":16613413,"instructionState":{"instructionStream":{"bytes":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,85,72,137,229,83,80,72,137,251,72,141,61,244,1,0,0,49,192,232,109,0,0,0,72,139,53,182,66,0,0,72,137,223,72,131,196,8,91,93,255,37,191,1,0,0,85,72,137,229,199,4,37,1,0,0,0,0,0,0,0,93,195,85,72,137,229,65,86,83,232,76,0,0,0,73,137,198,72,139,61,144,66,0,0,232,49,0,0,0,72,137,195,72,139,53,121,66,0,0,72,137,199,255,21,128,1,0,0,72,137,223,255,21,127,1,0,0,76,137,247,232,19,0,0,0,49,192,91,65,94,93,195,255,37,98,65,0,0,255,37,100,65,0,0,255],"offset":96}},"threadState":{"r13":{"value":140701815740840},"rax":{"value":11961289063992066107},"rflags":{"value":66054},"cpu":{"value":2},"r14":{"value":1},"rsi":{"value":4533067650},"r8":{"value":0},"cr2":{"value":1},"rdx":{"value":0},"r10":{"value":4533084458},"r9":{"value":176},"r15":{"value":4763791376,"symbolLocation":0,"symbol":"dyld4::sConfigBuffer"},"rbx":{"value":105553137614864},"trap":{"value":14,"description":"(no mapping for user data write)"},"err":{"value":6},"r11":{"value":4533067329},"rip":{"value":4533067333,"matchesCrashFrame":1},"rbp":{"value":140701815740624},"rsp":{"value":140701815740624},"r12":{"value":4763874208,"symbolLocation":0,"symbol":"_NSConcreteStackBlock"},"rcx":{"value":140630298759232},"flavor":"x86_THREAD_STATE","rdi":{"value":105553137614864}},"queue":"com.apple.main-thread","frames":[{"imageOffset":15941,"imageIndex":0},{"imageOffset":16000,"imageIndex":0},{"imageOffset":21790,"symbol":"start","symbolLocation":462,"imageIndex":1}]}],
+  "usedImages" : [
+  {
+    "source" : "P",
+    "arch" : "x86_64",
+    "base" : 4533051392,
+    "size" : 16384,
+    "uuid" : "01d2a9d5-1f8a-35c8-9228-7c7cca13c5fc",
+    "path" : "\/Users\/USER\/Desktop\/*\/CrashingTest",
+    "name" : "CrashingTest"
+  },
+  {
+    "source" : "P",
+    "arch" : "x86_64",
+    "base" : 4763348992,
+    "size" : 442368,
+    "uuid" : "b70ce1ec-b902-3852-8268-05de00bfa8d5",
+    "path" : "\/usr\/lib\/dyld",
+    "name" : "dyld"
+  },
+  {
+    "size" : 0,
+    "source" : "A",
+    "base" : 0,
+    "uuid" : "00000000-0000-0000-0000-000000000000"
+  }
+],
+  "sharedCache" : {
+  "base" : 140703425708032,
+  "size" : 15220686848,
+  "uuid" : "398acfb4-57f6-31e0-bc82-e9959e5c92ce"
+},
+  "vmSummary" : "ReadOnly portion of Libraries: Total=393.3M resident=0K(0%) swapped_out_or_unallocated=393.3M(100%)\nWritable regions: Total=539.4M written=0K(0%) resident=0K(0%) swapped_out=0K(0%) unallocated=539.4M(100%)\n\n                                VIRTUAL   REGION \nREGION TYPE                        SIZE    COUNT (non-coalesced) \n===========                     =======  ======= \nActivity Tracing                   256K        1 \nKernel Alloc Once                    8K        1 \nMALLOC                           147.2M       14 \nMALLOC guard page                   16K        4 \nMALLOC_NANO (reserved)           384.0M        1         reserved VM address space (unallocated)\nObjC additional data                15K        1 \nSTACK GUARD                       56.0M        1 \nStack                             8192K        1 \nVM_ALLOCATE                          8K        2 \n__DATA                            1883K      117 \n__DATA_CONST                      5206K       83 \n__DATA_DIRTY                       209K       50 \n__LINKEDIT                       313.4M        6 \n__TEXT                            80.0M      130 \n__UNICODE                          592K        1 \ndyld private memory               1024K        1 \nshared memory                       12K        2 \n===========                     =======  ======= \nTOTAL                            997.6M      416 \nTOTAL, minus reserved VM space   613.6M      416 \n",
+  "legacyInfo" : {
+  "threadTriggered" : {
+    "queue" : "com.apple.main-thread"
+  }
+},
+  "trialInfo" : {
+  "rollouts" : [
+    {
+      "rolloutId" : "61af99aeda72d16a4beb7756",
+      "factorPackIds" : {
+
+      },
+      "deploymentId" : 240000290
+    },
+    {
+      "rolloutId" : "6112e14f37f5d11121dcd519",
+      "factorPackIds" : {
+        "SIRI_TEXT_TO_SPEECH" : "62d569e10c13797292a8c118"
+      },
+      "deploymentId" : 240000188
+    }
+  ],
+  "experiments" : [
+
+  ]
+}
+}

@@ -1,0 +1,111 @@
+{"app_name":"CrashingInAnotherTargetTest","timestamp":"2022-08-03 20:37:56.00 +0900","app_version":"","slice_uuid":"d7cc0747-b895-340b-b98b-ea4d30bdc429","build_version":"","platform":1,"share_with_app_devs":0,"is_first_party":1,"bug_type":"309","os_version":"macOS 12.4 (21F79)","incident_id":"22EA42EF-FD5C-498D-B2E3-4F52041FA3D8","name":"CrashingInAnotherTargetTest"}
+{
+  "uptime" : 3900000,
+  "procLaunch" : "2022-08-03 20:37:48.6346 +0900",
+  "procRole" : "Unspecified",
+  "version" : 2,
+  "userID" : 501,
+  "deployVersion" : 210,
+  "modelCode" : "Macmini7,1",
+  "procStartAbsTime" : 3988211878943174,
+  "coalitionID" : 147453,
+  "osVersion" : {
+    "train" : "macOS 12.4",
+    "build" : "21F79",
+    "releaseType" : "User"
+  },
+  "captureTime" : "2022-08-03 20:37:49.4630 +0900",
+  "incident" : "22EA42EF-FD5C-498D-B2E3-4F52041FA3D8",
+  "bug_type" : "309",
+  "pid" : 1757,
+  "procExitAbsTime" : 3988212706418658,
+  "cpuType" : "X86-64",
+  "procName" : "CrashingInAnotherTargetTest",
+  "procPath" : "\/Users\/USER\/Desktop\/*\/CrashingInAnotherTargetTest",
+  "parentProc" : "bash",
+  "parentPid" : 1751,
+  "coalitionName" : "com.apple.Terminal",
+  "crashReporterKey" : "792F5CBA-A072-8F48-64CE-90F08A75B14F",
+  "responsiblePid" : 1702,
+  "responsibleProc" : "Terminal",
+  "sip" : "enabled",
+  "isCorpse" : 1,
+  "exception" : {"codes":"0x0000000000000001, 0x0000000000000000","rawCodes":[1,0],"type":"EXC_BAD_INSTRUCTION","signal":"SIGILL"},
+  "termination" : {"flags":0,"code":4,"namespace":"SIGNAL","indicator":"Illegal instruction: 4","byProc":"exc handler","byPid":1757},
+  "extMods" : {"caller":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"system":{"thread_create":0,"thread_set_state":0,"task_for_pid":5},"targeted":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"warnings":0},
+  "faultingThread" : 0,
+  "threads" : [{"triggered":true,"id":16614219,"instructionState":{"instructionStream":{"bytes":[0,0,72,184,0,0,0,0,0,0,0,16,73,133,196,15,132,192,1,0,0,72,131,192,255,76,137,247,72,33,199,72,131,199,32,72,184,255,255,255,255,255,255,0,0,73,33,196,72,131,236,8,68,15,182,69,24,76,137,230,72,139,85,208,72,139,77,16,73,137,217,139,69,40,80,65,85,65,87,232,23,18,0,0,72,131,196,32,76,137,247,232,251,188,48,0,15,11,72,131,236,8,72,141,5,142,177,65,0,72,141,61,91,172,65,0,72,141,13,112,175,65,0,190,11,0,0,0,65,184,57,0,0,0,186,2,0,0,0,65,185,2,0,0,0,106,1,104,148,0,0,0,106,2,106,24,80,232,185,2,0,0,72,131,236,8,72,141,5,110,172,65,0,72,141,61,27,172,65,0,72,141,13,48,172,65,0,190,11,0,0,0],"offset":96}},"threadState":{"r13":{"value":12},"rax":{"value":2240407547},"rflags":{"value":66178},"cpu":{"value":0},"r14":{"value":9223372041253342848},"rsi":{"value":105553149035600},"r8":{"value":1104},"cr2":{"value":140704540027864},"rdx":{"value":2242504728},"r10":{"value":2043},"r9":{"value":48},"r15":{"value":11},"rbx":{"value":4398567058},"trap":{"value":6},"err":{"value":0},"r11":{"value":340},"rip":{"value":140703652176453,"matchesCrashFrame":1},"rbp":{"value":140701951543408},"rsp":{"value":140701951543328},"r12":{"value":24},"rcx":{"value":2240407547},"flavor":"x86_THREAD_STATE","rdi":{"value":9223372041253342848}},"queue":"com.apple.main-thread","frames":[{"imageOffset":205381,"symbol":"_assertionFailure(_:_:file:line:flags:)","symbolLocation":421,"imageIndex":0},{"imageOffset":15239,"imageIndex":1},{"imageOffset":15972,"imageIndex":2},{"imageOffset":21790,"symbol":"start","symbolLocation":462,"imageIndex":3}]}],
+  "usedImages" : [
+  {
+    "source" : "P",
+    "arch" : "x86_64",
+    "base" : 140703651971072,
+    "size" : 4694016,
+    "uuid" : "19d7b567-6d0a-356a-8a2b-b45162bd77ab",
+    "path" : "\/usr\/lib\/swift\/libswiftCore.dylib",
+    "name" : "libswiftCore.dylib"
+  },
+  {
+    "source" : "P",
+    "arch" : "x86_64",
+    "base" : 4398551040,
+    "CFBundleShortVersionString" : "1.0",
+    "CFBundleIdentifier" : "jp.mahdi.AnotherTarget",
+    "size" : 16384,
+    "uuid" : "9a36cf20-3655-3df2-b1e9-466c5cb0c9cc",
+    "path" : "\/Users\/USER\/Desktop\/*\/AnotherTarget.framework\/Versions\/A\/AnotherTarget",
+    "name" : "AnotherTarget",
+    "CFBundleVersion" : "1"
+  },
+  {
+    "source" : "P",
+    "arch" : "x86_64",
+    "base" : 4397248512,
+    "size" : 16384,
+    "uuid" : "d7cc0747-b895-340b-b98b-ea4d30bdc429",
+    "path" : "\/Users\/USER\/Desktop\/*\/CrashingInAnotherTargetTest",
+    "name" : "CrashingInAnotherTargetTest"
+  },
+  {
+    "source" : "P",
+    "arch" : "x86_64",
+    "base" : 4625768448,
+    "size" : 442368,
+    "uuid" : "b70ce1ec-b902-3852-8268-05de00bfa8d5",
+    "path" : "\/usr\/lib\/dyld",
+    "name" : "dyld"
+  }
+],
+  "sharedCache" : {
+  "base" : 140703425708032,
+  "size" : 15220686848,
+  "uuid" : "398acfb4-57f6-31e0-bc82-e9959e5c92ce"
+},
+  "vmSummary" : "ReadOnly portion of Libraries: Total=798.4M resident=0K(0%) swapped_out_or_unallocated=798.4M(100%)\nWritable regions: Total=547.4M written=0K(0%) resident=0K(0%) swapped_out=0K(0%) unallocated=547.4M(100%)\n\n                                VIRTUAL   REGION \nREGION TYPE                        SIZE    COUNT (non-coalesced) \n===========                     =======  ======= \nActivity Tracing                   256K        1 \nKernel Alloc Once                    8K        1 \nMALLOC                           155.2M       15 \nMALLOC guard page                   16K        4 \nMALLOC_NANO (reserved)           384.0M        1         reserved VM address space (unallocated)\nObjC additional data                15K        1 \nSTACK GUARD                       56.0M        1 \nStack                             8192K        1 \nVM_ALLOCATE                          8K        2 \n__DATA                            11.5M      206 \n__DATA_CONST                      8418K      141 \n__DATA_DIRTY                       418K       82 \n__FONT_DATA                          4K        1 \n__LINKEDIT                       647.9M        9 \n__TEXT                           150.5M      220 \n__UNICODE                          592K        1 \ndyld private memory               1024K        1 \nshared memory                       12K        2 \n===========                     =======  ======= \nTOTAL                              1.4G      690 \nTOTAL, minus reserved VM space     1.0G      690 \n",
+  "legacyInfo" : {
+  "threadTriggered" : {
+    "queue" : "com.apple.main-thread"
+  }
+},
+  "trialInfo" : {
+  "rollouts" : [
+    {
+      "rolloutId" : "61af99aeda72d16a4beb7756",
+      "factorPackIds" : {
+
+      },
+      "deploymentId" : 240000290
+    },
+    {
+      "rolloutId" : "6112e14f37f5d11121dcd519",
+      "factorPackIds" : {
+        "SIRI_TEXT_TO_SPEECH" : "62d569e10c13797292a8c118"
+      },
+      "deploymentId" : 240000188
+    }
+  ],
+  "experiments" : [
+
+  ]
+}
+}
