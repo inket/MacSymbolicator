@@ -3,6 +3,8 @@
 //  MacSymbolicatorTests
 //
 
+// swiftlint:disable force_try
+
 import Foundation
 import XCTest
 @testable import MacSymbolicator
@@ -42,17 +44,19 @@ class SymbolicatorTests: XCTestCase {
             path: testBundle.url(forResource: "dSYMs/CrashingTest", withExtension: "dSYM")!
         )!
 
-        let crashFile = CrashFile(path: testFile.originalURL)!
+        let crashFile = try! CrashFile(path: testFile.originalURL)
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+        var symbolicator = Symbolicator(
+            crashFile: crashFile,
+            dsymFiles: [dsymFile],
+            logController: DefaultLogController()
+        )
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
 
-        // swiftlint:disable:next force_try
         try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-        // swiftlint:disable:next force_try
         let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
         XCTAssertEqual(result, expectedContent)
@@ -67,17 +71,19 @@ class SymbolicatorTests: XCTestCase {
             DSYMFile(path: testBundle.url(forResource: "dSYMs/AnotherTarget.framework", withExtension: "dSYM")!)!
         ]
 
-        let crashFile = CrashFile(path: testFile.originalURL)!
+        let crashFile = try! CrashFile(path: testFile.originalURL)
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: dsymFiles)
+        var symbolicator = Symbolicator(
+            crashFile: crashFile,
+            dsymFiles: dsymFiles,
+            logController: DefaultLogController()
+        )
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
 
-        // swiftlint:disable:next force_try
         try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-        // swiftlint:disable:next force_try
         let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
         XCTAssertEqual(result, expectedContent)
@@ -91,17 +97,19 @@ class SymbolicatorTests: XCTestCase {
             path: testBundle.url(forResource: "dSYMs/SingleThreadHangingTest", withExtension: "dSYM")!
         )!
 
-        let crashFile = CrashFile(path: testFile.originalURL)!
+        let crashFile = try! CrashFile(path: testFile.originalURL)
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+        var symbolicator = Symbolicator(
+            crashFile: crashFile,
+            dsymFiles: [dsymFile],
+            logController: DefaultLogController()
+        )
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
 
-        // swiftlint:disable:next force_try
         try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-        // swiftlint:disable:next force_try
         let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
         XCTAssertEqual(result, expectedContent)
@@ -115,17 +123,19 @@ class SymbolicatorTests: XCTestCase {
             path: testBundle.url(forResource: "dSYMs/MultiThreadHangingTest", withExtension: "dSYM")!
         )!
 
-        let crashFile = CrashFile(path: testFile.originalURL)!
+        let crashFile = try! CrashFile(path: testFile.originalURL)
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+        var symbolicator = Symbolicator(
+            crashFile: crashFile,
+            dsymFiles: [dsymFile],
+            logController: DefaultLogController()
+        )
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
 
-        // swiftlint:disable:next force_try
         try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-        // swiftlint:disable:next force_try
         let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
         XCTAssertEqual(result, expectedContent)
@@ -137,17 +147,19 @@ class SymbolicatorTests: XCTestCase {
         let testFile = TestFile(path: "Crashes/ios-crash.crash")
         let dsymFile = DSYMFile(path: testBundle.url(forResource: "dSYMs/iOSCrashingTest.app", withExtension: "dSYM")!)!
 
-        let crashFile = CrashFile(path: testFile.originalURL)!
+        let crashFile = try! CrashFile(path: testFile.originalURL)
 
-        var symbolicator = Symbolicator(crashFile: crashFile, dsymFiles: [dsymFile])
+        var symbolicator = Symbolicator(
+            crashFile: crashFile,
+            dsymFiles: [dsymFile],
+            logController: DefaultLogController()
+        )
 
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
 
-        // swiftlint:disable:next force_try
         try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-        // swiftlint:disable:next force_try
         let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
         XCTAssertEqual(result, expectedContent)
