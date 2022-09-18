@@ -1,11 +1,11 @@
 //
-//  CrashFile.swift
+//  ReportFile.swift
 //  MacSymbolicator
 //
 
 import Foundation
 
-public class CrashFile {
+public class ReportFile {
     enum InitializationError: Error {
         case emptyFile
         case translation(Translator.Error)
@@ -14,21 +14,10 @@ public class CrashFile {
 
     let path: URL
     let filename: String
-
-    private(set) var architecture: Architecture?
-    let binaryImages: [BinaryImage]
-    let calls: [StackTraceCall]
+    let processes: [ReportProcess]
 
     lazy var uuidsForSymbolication: [BinaryUUID] = {
-        var images: [String: BinaryImage] = [:]
-
-        calls.forEach { call in
-            if images[call.loadAddress] == nil {
-                images[call.loadAddress] = binaryImages.first(where: { $0.loadAddress == call.loadAddress })
-            }
-        }
-
-        return images.values.map { $0.uuid }
+        processes.flatMap { $0.uuidsForSymbolication }
     }()
 
     let content: String
@@ -73,19 +62,6 @@ public class CrashFile {
 
         self.path = path
         self.filename = path.lastPathComponent
-
-        self.architecture = content.scan(pattern: #"^Code Type:(.*?)(\(.*\))?$"#).first?.first?.trimmed
-            .components(separatedBy: " ").first.flatMap(Architecture.init)
-
-        // In the case of "ARM" the actual architecture is on the first line of Binary Images
-        if self.architecture?.isIncomplete == true {
-            self.architecture = (content.scan(
-                pattern: #"Binary Images:.*\s+([^\s]+)\s+<"#,
-                options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
-            ).first?.first?.trimmed).flatMap(Architecture.init)
-        }
-
-        binaryImages = BinaryImage.find(in: content)
-        calls = StackTraceCall.find(in: content)
+        self.processes = ReportProcess.find(in: content)
     }
 }

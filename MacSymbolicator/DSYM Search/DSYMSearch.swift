@@ -26,7 +26,7 @@ class DSYMSearch {
 
     static func search(
         forUUIDs uuids: [String],
-        crashFileDirectory: String,
+        reportFileDirectory: String,
         logHandler: @escaping LogHandler,
         callback: @escaping Callback
     ) {
@@ -53,11 +53,11 @@ class DSYMSearch {
                 // No need to continue if we already found what we're looking for.
                 guard !notFoundUUIDs.isEmpty else { return }
 
-                logHandler(["Non-recursive file search starting at \(crashFileDirectory) for UUIDs: \(notFoundUUIDs)"])
+                logHandler(["Non-recursive file search starting at \(reportFileDirectory) for UUIDs: \(notFoundUUIDs)"])
                 foundItems = [:]
                 FileSearch
                     .nonRecursive
-                    .in(directory: crashFileDirectory)
+                    .in(directory: reportFileDirectory)
                     .with(logHandler: logHandler)
                     .search(fileExtension: "dsym").sorted().matching(uuids: Array(notFoundUUIDs))
                     .forEach {

@@ -34,7 +34,7 @@ class MainController {
         logController.delegate = self
         inputCoordinator.delegate = self
 
-        let crashFileDropZone = inputCoordinator.crashFileDropZone
+        let reportFileDropZone = inputCoordinator.reportFileDropZone
         let dsymFilesDropZone = inputCoordinator.dsymFilesDropZone
         mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
         mainWindow.title = "MacSymbolicator"
@@ -66,14 +66,14 @@ class MainController {
 
         contentView.addSubview(dropZonesContainerView)
         contentView.addSubview(statusView)
-        dropZonesContainerView.addSubview(crashFileDropZone)
+        dropZonesContainerView.addSubview(reportFileDropZone)
         dropZonesContainerView.addSubview(dsymFilesDropZone)
         statusView.addSubview(statusTextField)
         statusView.addSubview(symbolicateButton)
         statusView.addSubview(viewLogsButton)
 
         dropZonesContainerView.translatesAutoresizingMaskIntoConstraints = false
-        crashFileDropZone.translatesAutoresizingMaskIntoConstraints = false
+        reportFileDropZone.translatesAutoresizingMaskIntoConstraints = false
         dsymFilesDropZone.translatesAutoresizingMaskIntoConstraints = false
         statusView.translatesAutoresizingMaskIntoConstraints = false
         statusTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -96,11 +96,11 @@ class MainController {
             statusView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
             statusView.heightAnchor.constraint(equalToConstant: 50),
 
-            crashFileDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
-            crashFileDropZone.leadingAnchor.constraint(equalTo: dropZonesContainerView.leadingAnchor),
-            crashFileDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
-            crashFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
-            crashFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
+            reportFileDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
+            reportFileDropZone.leadingAnchor.constraint(equalTo: dropZonesContainerView.leadingAnchor),
+            reportFileDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
+            reportFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
+            reportFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
 
             dsymFilesDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
             dsymFilesDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
@@ -127,8 +127,8 @@ class MainController {
     @objc func symbolicate() {
         guard !isSymbolicating else { return }
 
-        guard let crashFile = inputCoordinator.crashFile else {
-            inputCoordinator.crashFileDropZone.flash()
+        guard let reportFile = inputCoordinator.reportFile else {
+            inputCoordinator.reportFileDropZone.flash()
             return
         }
 
@@ -143,7 +143,7 @@ class MainController {
 
         let dsymFiles = inputCoordinator.dsymFiles
         var symbolicator = Symbolicator(
-            crashFile: crashFile,
+            reportFile: reportFile,
             dsymFiles: dsymFiles,
             logController: DefaultLogController()
         )
@@ -157,7 +157,7 @@ class MainController {
 
                 if success {
                     self.textWindowController.text = symbolicator.symbolicatedContent ?? ""
-                    self.textWindowController.defaultSaveURL = crashFile.symbolicatedContentSaveURL
+                    self.textWindowController.defaultSaveURL = reportFile.symbolicatedContentSaveURL
                     self.textWindowController.showWindow()
                 } else {
                     let alert = NSAlert()
@@ -179,7 +179,7 @@ class MainController {
 
     func openFile(_ path: String) -> Bool {
         let fileURL = URL(fileURLWithPath: path)
-        return inputCoordinator.acceptCrashFile(url: fileURL) || inputCoordinator.acceptDSYMFile(url: fileURL)
+        return inputCoordinator.acceptReportFile(url: fileURL) || inputCoordinator.acceptDSYMFile(url: fileURL)
     }
 
     func suggestUpdate(version: String, url: URL) {

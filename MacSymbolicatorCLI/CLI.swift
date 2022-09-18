@@ -21,8 +21,8 @@ struct MacSymbolicatorCLI: ParsableCommand {
     @Option(name: .shortAndLong, help: "The output file to save the result to, instead of printing to stdout")
     var output: String?
 
-    @Argument(help: "The crash report or sample file (.crash/.ips/.txt)")
-    var crashReport: String
+    @Argument(help: "The report file: .crash/.ips for crash reports .txt for samples/spindumps")
+    var reportFilePath: String
 
     @Argument(help: "The dSYMs to use for symbolication")
     var dsymPath: [String] = []
@@ -34,13 +34,13 @@ struct MacSymbolicatorCLI: ParsableCommand {
             )
         }
 
-        let crashFile = try CrashFile(path: URL(fileURLWithPath: crashReport))
+        let reportFile = try ReportFile(path: URL(fileURLWithPath: reportFilePath))
 
         if translateOnly {
             if let output = output {
-                try crashFile.content.write(toFile: output, atomically: false, encoding: .utf8)
+                try reportFile.content.write(toFile: output, atomically: false, encoding: .utf8)
             } else {
-                print(crashFile.content)
+                print(reportFile.content)
             }
 
             MacSymbolicatorCLI.exit(withError: nil)
@@ -58,8 +58,8 @@ struct MacSymbolicatorCLI: ParsableCommand {
             print("---------")
             print("Symbolicating with:")
 
-            let crashUUIDs = crashFile.uuidsForSymbolication.map { $0.pretty }.joined(separator: ", ")
-            print("Crash report: \(crashFile.path.path) [\(crashUUIDs)]")
+            let reportUUIDs = reportFile.uuidsForSymbolication.map { $0.pretty }.joined(separator: ", ")
+            print("Report: \(reportFile.path.path) [\(reportUUIDs)]")
 
             let dsymDescriptions: [String] = dsymFiles.map {
                 let uuids = $0.uuids.map { "    \($0.key): \($0.value.pretty)" }
@@ -71,7 +71,7 @@ struct MacSymbolicatorCLI: ParsableCommand {
         }
 
         var symbolicator = Symbolicator(
-            crashFile: crashFile,
+            reportFile: reportFile,
             dsymFiles: dsymFiles,
             logController: DefaultLogController()
         )

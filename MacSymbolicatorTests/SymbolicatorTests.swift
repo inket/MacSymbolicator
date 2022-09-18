@@ -42,10 +42,10 @@ class SymbolicatorTests: XCTestCase {
     }
 
     private func testSymbolication(testFile: TestFile, dsymFiles: [DSYMFile]) {
-        let crashFile = try! CrashFile(path: testFile.originalURL)
+        let reportFile = try! ReportFile(path: testFile.originalURL)
 
         var symbolicator = Symbolicator(
-            crashFile: crashFile,
+            reportFile: reportFile,
             dsymFiles: dsymFiles,
             logController: DefaultLogController()
         )
@@ -58,7 +58,7 @@ class SymbolicatorTests: XCTestCase {
         let expectedContent = try! String(contentsOf: testFile.expectationURL)
 
         XCTAssertEqual(result, expectedContent)
-        XCTAssertNotEqual(symbolicator.symbolicatedContent, crashFile.content)
+        XCTAssertNotEqual(symbolicator.symbolicatedContent, reportFile.content)
     }
 
     func testSingleTargetCrashSymbolication() {

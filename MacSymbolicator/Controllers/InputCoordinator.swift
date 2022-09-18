@@ -10,10 +10,10 @@ protocol InputCoordinatorDelegate: AnyObject {
 }
 
 class InputCoordinator {
-    let crashFileDropZone = DropZone(
+    let reportFileDropZone = DropZone(
         fileTypes: [".crash", ".ips", ".txt"],
         allowsMultipleFiles: false,
-        text: "Drop Crash Report or Sample",
+        text: "Drop Report File\n(crash, sample, or spindump)",
         activatesAppAfterDrop: true
     )
 
@@ -25,7 +25,7 @@ class InputCoordinator {
         activatesAppAfterDrop: true
     )
 
-    private(set) var crashFile: CrashFile?
+    private(set) var reportFile: ReportFile?
     private(set) var dsymFiles: [DSYMFile] = []
 
     private var isSearchingForDSYMs = false
@@ -35,9 +35,9 @@ class InputCoordinator {
     let logController: LogController = DefaultLogController()
 
     private var expectedDSYMUUIDs: Set<String> {
-        guard let crashFile = crashFile else { return Set<String>() }
+        guard let reportFile = reportFile else { return Set<String>() }
 
-        return Set<String>(crashFile.uuidsForSymbolication.map { $0.pretty })
+        return Set<String>(reportFile.uuidsForSymbolication.map { $0.pretty })
     }
 
     private var foundDSYMUUIDs: Set<String> {
@@ -50,12 +50,12 @@ class InputCoordinator {
     }
 
     init() {
-        crashFileDropZone.delegate = self
+        reportFileDropZone.delegate = self
         dsymFilesDropZone.delegate = self
     }
 
-    func acceptCrashFile(url fileURL: URL) -> Bool {
-        crashFileDropZone.acceptFile(url: fileURL)
+    func acceptReportFile(url fileURL: URL) -> Bool {
+        reportFileDropZone.acceptFile(url: fileURL)
     }
 
     func acceptDSYMFile(url fileURL: URL) -> Bool {
@@ -63,7 +63,7 @@ class InputCoordinator {
     }
 
     func startSearchForDSYMs() {
-        guard let crashFile = crashFile else { return }
+        guard let reportFile = reportFile else { return }
 
         let remainingUUIDs = Array(remainingDSYMUUIDs)
 
@@ -77,7 +77,7 @@ class InputCoordinator {
 
         DSYMSearch.search(
             forUUIDs: remainingUUIDs,
-            crashFileDirectory: crashFile.path.deletingLastPathComponent().path,
+            reportFileDirectory: reportFile.path.deletingLastPathComponent().path,
             logHandler: logController.addLogMessages,
             callback: { [weak self] finished, results in
                 DispatchQueue.main.async {
@@ -97,12 +97,12 @@ class InputCoordinator {
     }
 
     func updateCrashDetailText() {
-        guard crashFile != nil else {
-            // Is it nil because we couldn't initialize the crashFile or because no files have been dropped in?
-            if crashFileDropZone.files.isEmpty {
-                crashFileDropZone.detailText = ""
+        guard reportFile != nil else {
+            // Is it nil because we couldn't initialize the reportFile or because no files have been dropped in?
+            if reportFileDropZone.files.isEmpty {
+                reportFileDropZone.detailText = ""
             } else {
-                crashFileDropZone.detailText = "Unexpected format"
+                reportFileDropZone.detailText = "Unexpected format"
             }
 
             return
@@ -111,16 +111,16 @@ class InputCoordinator {
         let expectedCount = expectedDSYMUUIDs.count
         switch expectedCount {
         case 0:
-            crashFileDropZone.detailText = "(Symbolication not needed)"
+            reportFileDropZone.detailText = "(Symbolication not needed)"
         case 1:
-            crashFileDropZone.detailText = "(1 DSYM necessary)"
+            reportFileDropZone.detailText = "(1 DSYM necessary)"
         default:
-            crashFileDropZone.detailText = "(\(expectedCount) DSYMs necessary)"
+            reportFileDropZone.detailText = "(\(expectedCount) DSYMs necessary)"
         }
     }
 
     func updateDSYMDetailText() {
-        guard crashFile != nil else {
+        guard reportFile != nil else {
             dsymFilesDropZone.detailText = "(if not found automatically)"
             return
         }
@@ -141,27 +141,27 @@ extension InputCoordinator: DropZoneDelegate {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL] {
         defer {
             // Delay updating the UI until this method has returned and the drop zone's files list is updated
-            if dropZone == crashFileDropZone {
+            if dropZone == reportFileDropZone {
                 DispatchQueue.main.async(execute: self.updateCrashDetailText)
             } else if dropZone == dsymFilesDropZone {
                 DispatchQueue.main.async(execute: self.updateDSYMDetailText)
             }
         }
 
-        if dropZone == crashFileDropZone, let fileURL = fileURLs.last {
+        if dropZone == reportFileDropZone, let fileURL = fileURLs.last {
             logController.resetLogs()
 
-            crashFile = nil
+            reportFile = nil
 
             do {
-                crashFile = try CrashFile(path: fileURL)
+                reportFile = try ReportFile(path: fileURL)
             } catch {
-                logController.addLogMessage("Error loading crash file: \(error)")
+                logController.addLogMessage("Error loading report file: \(error)")
             }
 
-            delegate?.inputCoordinator(self, receivedNewInput: crashFile)
+            delegate?.inputCoordinator(self, receivedNewInput: reportFile)
 
-            if crashFile != nil {
+            if reportFile != nil {
                 startSearchForDSYMs()
             }
 

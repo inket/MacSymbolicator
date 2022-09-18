@@ -61,15 +61,4 @@ public struct DSYMFile: Equatable {
 
         self.uuids = uuids
     }
-
-    /// Returns true when the DSYMFile contains the UUID referenced in the crash file.
-    /// Returns nil when it cannot be determined (no uuids in dsym / crash file without uuid)
-    func canSymbolicate(_ crashFile: CrashFile) -> Bool? {
-        guard
-            let crashUUID = BinaryUUID("TODO"), // crashFile.uuid,
-            !uuids.values.isEmpty
-        else { return nil }
-
-        return uuids.values.contains(crashUUID)
-    }
 }

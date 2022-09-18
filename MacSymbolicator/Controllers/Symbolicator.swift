@@ -6,14 +6,14 @@
 import Cocoa
 
 struct Symbolicator {
-    let crashFile: CrashFile
+    let reportFile: ReportFile
     let dsymFiles: [DSYMFile]
 
     var symbolicatedContent: String?
     var logController: LogController
 
-    init(crashFile: CrashFile, dsymFiles: [DSYMFile], logController: LogController) {
-        self.crashFile = crashFile
+    init(reportFile: ReportFile, dsymFiles: [DSYMFile], logController: LogController) {
+        self.reportFile = reportFile
         self.dsymFiles = dsymFiles
         self.logController = logController
     }
@@ -21,35 +21,52 @@ struct Symbolicator {
     mutating func symbolicate() -> Bool {
         logController.resetLogs()
 
-        guard let architecture = crashFile.architecture else {
-            logController.addLogMessage("Could not detect crash file architecture.")
+        var hasFailed = false
+
+        reportFile.processes.forEach { process in
+            if symbolicateProcess(process) == false {
+                hasFailed = true
+            }
+        }
+
+        return !hasFailed
+    }
+
+    mutating func symbolicateProcess(_ process: ReportProcess) -> Bool {
+        logController.addLogMessage("""
+        —————————————————————————————————————————————————
+        * Symbolicating process \(process.name ?? "<null>")
+        """)
+
+        guard let architecture = process.architecture else {
+            logController.addLogMessage("Could not detect process architecture.")
             return false
         }
 
-        guard !crashFile.binaryImages.isEmpty else {
+        guard !process.binaryImages.isEmpty else {
             logController.addLogMessage("""
-            Could not detect application binary images from crash report. Application might have crashed during launch.
+            Could not detect application binary images for reported process \(process.name ?? "<null>").\
+            Application might have crashed during launch.
             """)
             return false
         }
 
-        // There are some cases where the crash reports don't have any meaningful data to symbolicate,
+        // There are some cases where reports don't have any meaningful data to symbolicate,
         // Warn the user about them
-        guard !crashFile.calls.isEmpty else {
+        guard !process.calls.isEmpty else {
             logController.addLogMessage("""
-            Did not find any stack trace calls to symbolicate.
+            Did not find anything to symbolicate for process \(process.name ?? "<null>").
             """)
-            symbolicatedContent = crashFile.content
             return true
         }
 
         var callsByLoadAddress = [String: [StackTraceCall]]()
-        crashFile.calls.forEach { call in
+        process.calls.forEach { call in
             callsByLoadAddress[call.loadAddress] = (callsByLoadAddress[call.loadAddress] ?? []) + [call]
         }
 
         var dsymsByLoadAddress = [String: DSYMFile]()
-        crashFile.binaryImages.forEach { binaryImage in
+        process.binaryImages.forEach { binaryImage in
             let dsymFile = dsymFiles.first {
                 guard let uuidForArchitecture = $0.uuids[architecture] else { return false }
                 return uuidForArchitecture == binaryImage.uuid
@@ -60,7 +77,12 @@ struct Symbolicator {
             }
         }
 
-        let replacedContent = NSMutableString(string: crashFile.content)
+        guard !dsymsByLoadAddress.isEmpty else {
+            logController.addLogMessage("No dSYMs provided for symbolicating \(process.name ?? "<null>")")
+            return true
+        }
+
+        let replacedContent = NSMutableString(string: symbolicatedContent ?? reportFile.content)
         var hasFailed = false
 
         callsByLoadAddress.forEach { loadAddress, calls in
@@ -79,8 +101,8 @@ struct Symbolicator {
             let atosResult = command.run()
 
             logController.addLogMessages([
-                "STDOUT: \(atosResult.output?.trimmed ?? "")",
-                "STDERR: \(atosResult.error?.trimmed ?? "")"
+                "STDOUT:\n\(atosResult.output?.trimmed ?? "")",
+                "STDERR:\n\(atosResult.error?.trimmed ?? "")"
             ])
 
             var errors = [String]()
@@ -93,7 +115,7 @@ struct Symbolicator {
             logController.addLogMessages(errors)
 
             if !replacedSuccessfully {
-                logController.addLogMessage("Couldn't replace crash report entries with atos result")
+                logController.addLogMessage("Couldn't replace report entries with atos result")
                 hasFailed = true
             }
         }
@@ -144,22 +166,18 @@ struct Symbolicator {
             let address = addresses[index]
             let replacement = outputLines[index]
 
-            // Replace the entries using the sample format
-            let sampleReplacementRegex = try? NSRegularExpression(
-                pattern: StackTraceCall.sampleReplacementRegex(address: address),
-                options: [.caseInsensitive, .anchorsMatchLines]
-            )
-
-            let sampleMatches = sampleReplacementRegex?.matches(
+            // Replace the entries using the sample/spindump format
+            let sampleReplacementRegex = StackTraceCall.sampleReplacementRegex(address: address)
+            let sampleMatches = sampleReplacementRegex.matches(
                 in: content as String,
                 options: [],
                 range: NSRange(location: 0, length: content.length)
             ).map { content.substring(with: $0.range) }
             logController.addLogMessage(
-                "Replacing matches in sample report: \(String(describing: sampleMatches ?? []))"
+                "Replacing matches in sample/spindump report: \(String(describing: sampleMatches))"
             )
 
-            sampleReplacementRegex?.replaceMatches(
+            sampleReplacementRegex.replaceMatches(
                 in: content,
                 options: [],
                 range: NSRange(location: 0, length: content.length),
@@ -167,21 +185,17 @@ struct Symbolicator {
             )
 
             // Replace the entries using the crash report format
-            let crashReplacementRegex = try? NSRegularExpression(
-                pattern: StackTraceCall.crashReplacementRegex(address: address),
-                options: [.caseInsensitive, .anchorsMatchLines]
-            )
-
-            let crashMatches = crashReplacementRegex?.matches(
+            let crashReplacementRegex = StackTraceCall.crashReplacementRegex(address: address)
+            let crashMatches = crashReplacementRegex.matches(
                 in: content as String,
                 options: [],
                 range: NSRange(location: 0, length: content.length)
             ).map { content.substring(with: $0.range) }
             logController.addLogMessage(
-                "Replacing matches in crash report: \(String(describing: crashMatches ?? []))"
+                "Replacing matches in crash report: \(String(describing: crashMatches))"
             )
 
-            crashReplacementRegex?.replaceMatches(
+            crashReplacementRegex.replaceMatches(
                 in: content,
                 options: [],
                 range: NSRange(location: 0, length: content.length),
