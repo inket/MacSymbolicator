@@ -43,7 +43,9 @@ struct Symbolicator {
             return false
         }
 
-        guard !process.binaryImages.isEmpty else {
+        // Some processes in spindump reports might not have anything besides the header;
+        // Make sure to check that we have calls before dismissing it due to missing binary images section
+        if !process.calls.isEmpty && process.binaryImages.isEmpty {
             logController.addLogMessage("""
             Could not detect application binary images for reported process \(process.name ?? "<null>").\
             Application might have crashed during launch.
