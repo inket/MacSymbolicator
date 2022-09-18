@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -347,7 +347,7 @@
 			buildConfigurationList = B2C2292F1EF223C50015AB33 /* Build configuration list for PBXNativeTarget "MacSymbolicator" */;
 			buildPhases = (
 				B2C2291B1EF223C50015AB33 /* Sources */,
-				B23E161420CD07FB0020DD37 /* ShellScript */,
+				B23E161420CD07FB0020DD37 /* SwiftLint */,
 				B2C2291C1EF223C50015AB33 /* Frameworks */,
 				B2C2291D1EF223C50015AB33 /* Resources */,
 				B2C2ED8B289ABFFF00B7FA40 /* CopyFiles */,
@@ -369,7 +369,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1320;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = "Mahdi Bchatnia";
 				TargetAttributes = {
 					B212510B20CD123800F36050 = {
@@ -434,8 +434,9 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		B23E161420CD07FB0020DD37 /* ShellScript */ = {
+		B23E161420CD07FB0020DD37 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -443,6 +444,7 @@
 			);
 			inputPaths = (
 			);
+			name = SwiftLint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -549,6 +551,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				INFOPLIST_FILE = MacSymbolicatorTests/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -574,6 +577,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				INFOPLIST_FILE = MacSymbolicatorTests/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -597,6 +601,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.1;
@@ -616,6 +621,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.1;
@@ -659,6 +665,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -718,6 +725,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -747,6 +755,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 7;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
@@ -772,6 +781,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 7;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = PP5UYHJQCD;
 				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = Resources/Info.plist;
