@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 cd TestProject
 rm -rf build
-xcodebuild clean archive -configuration Release -alltargets
+xcodebuild clean
+
+if ! command -v xcbeautify &> /dev/null
+    xcodebuild archive -configuration Release -target CrashingTest -target CrashingInAnotherTargetTest
+    xcodebuild archive -configuration Release -target SingleThreadHangingTest -target MultiThreadHangingTest -target MultiTargetHangingTest
+    xcodebuild archive -configuration Release -target iOSCrashingTest
+else
+    xcodebuild archive -configuration Release -target CrashingTest -target CrashingInAnotherTargetTest | xcbeautify
+    xcodebuild archive -configuration Release -target SingleThreadHangingTest -target MultiThreadHangingTest -target MultiTargetHangingTest | xcbeautify
+    xcodebuild archive -configuration Release -target iOSCrashingTest | xcbeautify
+fi
+
 cd ..
 
 rm -rf Resources/dSYMs/
@@ -15,10 +26,13 @@ mkdir -p Binaries
 mv /tmp/TestProject.dst/usr/local/bin/* Binaries/
 mv /tmp/TestProject.dst/Applications/* Binaries/
 
-rm -rf build
+rm -rf TestProject/build
+rm -rf TestProject/DerivedData
+
+./create_payload.sh
 
 echo "Done!"
-echo "Use the binaries in Binaries/ to create your crash logs & samples on macOS."
+echo "Use the script and binaries in Payload.zip to automatically create your crash logs, samples and spindumps on macOS."
 echo "For iOS, install the .app on your device using Xcode."
 echo "The dSYMs are in Resources/dSYMs/"
 echo

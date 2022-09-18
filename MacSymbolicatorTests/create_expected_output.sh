@@ -3,7 +3,13 @@
 cd ..
 rm -rf build
 rm -rf DerivedData
-xcodebuild clean build -configuration Release -scheme MacSymbolicatorCLI
+
+if ! command -v xcbeautify &> /dev/null
+    xcodebuild clean build -configuration Release -scheme MacSymbolicatorCLI
+else
+    xcodebuild clean build -configuration Release -scheme MacSymbolicatorCLI | xcbeautify
+fi
+
 cd MacSymbolicatorTests
 
 cli="../DerivedData/MacSymbolicator/Build/Products/Release/MacSymbolicatorCLI"
@@ -27,11 +33,15 @@ $cli "./Resources/Crashes/multi-target-crash.crash" "./Resources/dSYMs/CrashingI
 $cli "./Resources/Crashes/ios-crash.ips" "./Resources/dSYMs/iOSCrashingTest.app.dSYM" -o "./Resources/Crashes/ios-crash_symbolicated.ips"
 $cli "./Resources/Crashes/ios-crash.crash" "./Resources/dSYMs/iOSCrashingTest.app.dSYM" -o "./Resources/Crashes/ios-crash_symbolicated.crash"
 
-# Single-thread sample
+# Samples
 $cli "./Resources/Samples/singlethread-sample.txt" "./Resources/dSYMs/SingleThreadHangingTest.dSYM" -o "./Resources/Samples/singlethread-sample_symbolicated.txt"
-
-# Multi-thread sample
 $cli "./Resources/Samples/multithread-sample.txt" "./Resources/dSYMs/MultiThreadHangingTest.dSYM" -o "./Resources/Samples/multithread-sample_symbolicated.txt"
+$cli "./Resources/Samples/multitarget-sample.txt" "./Resources/dSYMs/MultiTargetHangingTest.dSYM" "./Resources/dSYMs/AnotherTarget.framework.dSYM" -o "./Resources/Samples/multitarget-sample_symbolicated.txt"
+
+# Spindumps
+# $cli "./Resources/Spindumps/singlethread-spindump.txt" "./Resources/dSYMs/SingleThreadHangingTest.dSYM" -o "./Resources/Spindumps/singlethread-spindump_symbolicated.txt"
+# $cli "./Resources/Spindumps/multithread-spindump.txt" "./Resources/dSYMs/MultiThreadHangingTest.dSYM" -o "./Resources/Spindumps/multithread-spindump_symbolicated.txt"
+# $cli "./Resources/Spindumps/multitarget-spindump.txt" "./Resources/dSYMs/MultiTargetHangingTest.dSYM" "./Resources/dSYMs/AnotherTarget.framework.dSYM" -o "./Resources/Spindumps/multitarget-spindump_symbolicated.txt"
 
 echo "Done creating the symbolicated output."
 echo "Make sure to check the output files manually before using them as 'expected' output in tests."
