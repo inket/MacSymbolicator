@@ -4,7 +4,7 @@ cd ..
 rm -rf build
 rm -rf DerivedData
 
-if ! command -v xcbeautify &> /dev/null
+if ! command -v xcbeautify &> /dev/null; then
     xcodebuild clean build -configuration Release -scheme MacSymbolicatorCLI
 else
     xcodebuild clean build -configuration Release -scheme MacSymbolicatorCLI | xcbeautify

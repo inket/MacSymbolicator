@@ -3,7 +3,7 @@ cd TestProject
 rm -rf build
 xcodebuild clean
 
-if ! command -v xcbeautify &> /dev/null
+if ! command -v xcbeautify &> /dev/null; then
     xcodebuild archive -configuration Release -target CrashingTest -target CrashingInAnotherTargetTest
     xcodebuild archive -configuration Release -target SingleThreadHangingTest -target MultiThreadHangingTest -target MultiTargetHangingTest
     xcodebuild archive -configuration Release -target iOSCrashingTest
