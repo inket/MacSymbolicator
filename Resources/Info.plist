@@ -11,6 +11,7 @@
 			<array>
 				<string>dsym</string>
 				<string>crash</string>
+				<string>ips</string>
 				<string>txt</string>
 			</array>
 			<key>CFBundleTypeRole</key>
