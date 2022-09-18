@@ -19,10 +19,21 @@
 		B236464A2617F8E800AB9486 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B23646482617F8E800AB9486 /* Main.storyboard */; };
 		B236464C2617F8E800AB9486 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B236464B2617F8E800AB9486 /* Assets.xcassets */; };
 		B236464F2617F8E800AB9486 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B236464D2617F8E800AB9486 /* LaunchScreen.storyboard */; };
+		B24BB96B28ADC3BF00610CF0 /* HangingClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BB96A28ADC3BF00610CF0 /* HangingClass.swift */; };
+		B24BB97C28AF17F200610CF0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B24BB97B28AF17F200610CF0 /* main.m */; };
+		B24BB98028AF1CC500610CF0 /* AnotherTarget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B23646082617F70A00AB9486 /* AnotherTarget.framework */; };
+		B24BB98128AF1CC500610CF0 /* AnotherTarget.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B23646082617F70A00AB9486 /* AnotherTarget.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		B23646172617F71000AB9486 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B23645C72617F68700AB9486 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B23646072617F70A00AB9486;
+			remoteInfo = AnotherTarget;
+		};
+		B24BB98228AF1CC500610CF0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B23645C72617F68700AB9486 /* Project object */;
 			proxyType = 1;
@@ -79,6 +90,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		B24BB97728AF17F200610CF0 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		B24BB98428AF1CC500610CF0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B24BB98128AF1CC500610CF0 /* AnotherTarget.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -100,6 +131,9 @@
 		B236464B2617F8E800AB9486 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B236464E2617F8E800AB9486 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B23646502617F8E800AB9486 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B24BB96A28ADC3BF00610CF0 /* HangingClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HangingClass.swift; sourceTree = "<group>"; };
+		B24BB97928AF17F200610CF0 /* MultiTargetHangingTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MultiTargetHangingTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B24BB97B28AF17F200610CF0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +180,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B24BB97628AF17F200610CF0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B24BB98028AF1CC500610CF0 /* AnotherTarget.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -158,6 +200,7 @@
 				B23645ED2617F6C600AB9486 /* SingleThreadHangingTest */,
 				B236462D2617F81A00AB9486 /* MultiThreadHangingTest */,
 				B23646412617F8E800AB9486 /* iOSCrashingTest */,
+				B24BB97A28AF17F200610CF0 /* MultiTargetHangingTest */,
 				B23645D02617F68700AB9486 /* Products */,
 				B23646142617F71000AB9486 /* Frameworks */,
 			);
@@ -172,6 +215,7 @@
 				B23646082617F70A00AB9486 /* AnotherTarget.framework */,
 				B236462C2617F81A00AB9486 /* MultiThreadHangingTest */,
 				B23646402617F8E700AB9486 /* iOSCrashingTest.app */,
+				B24BB97928AF17F200610CF0 /* MultiTargetHangingTest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -206,6 +250,7 @@
 				B236460A2617F70A00AB9486 /* AnotherTarget.h */,
 				B236460B2617F70A00AB9486 /* Info.plist */,
 				B236461D2617F7CA00AB9486 /* CrashingClass.swift */,
+				B24BB96A28ADC3BF00610CF0 /* HangingClass.swift */,
 			);
 			path = AnotherTarget;
 			sourceTree = "<group>";
@@ -235,6 +280,14 @@
 				B23646502617F8E800AB9486 /* Info.plist */,
 			);
 			path = iOSCrashingTest;
+			sourceTree = "<group>";
+		};
+		B24BB97A28AF17F200610CF0 /* MultiTargetHangingTest */ = {
+			isa = PBXGroup;
+			children = (
+				B24BB97B28AF17F200610CF0 /* main.m */,
+			);
+			path = MultiTargetHangingTest;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -356,13 +409,32 @@
 			productReference = B23646402617F8E700AB9486 /* iOSCrashingTest.app */;
 			productType = "com.apple.product-type.application";
 		};
+		B24BB97828AF17F200610CF0 /* MultiTargetHangingTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B24BB97D28AF17F200610CF0 /* Build configuration list for PBXNativeTarget "MultiTargetHangingTest" */;
+			buildPhases = (
+				B24BB97528AF17F200610CF0 /* Sources */,
+				B24BB97628AF17F200610CF0 /* Frameworks */,
+				B24BB97728AF17F200610CF0 /* CopyFiles */,
+				B24BB98428AF1CC500610CF0 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B24BB98328AF1CC500610CF0 /* PBXTargetDependency */,
+			);
+			name = MultiTargetHangingTest;
+			productName = MultiTargetHangingTest;
+			productReference = B24BB97928AF17F200610CF0 /* MultiTargetHangingTest */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		B23645C72617F68700AB9486 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1230;
+				LastSwiftUpdateCheck = 1340;
 				LastUpgradeCheck = 1230;
 				TargetAttributes = {
 					B23645DF2617F6BA00AB9486 = {
@@ -384,6 +456,9 @@
 					B236463F2617F8E700AB9486 = {
 						CreatedOnToolsVersion = 12.3;
 					};
+					B24BB97828AF17F200610CF0 = {
+						CreatedOnToolsVersion = 13.4.1;
+					};
 				};
 			};
 			buildConfigurationList = B23645CA2617F68700AB9486 /* Build configuration list for PBXProject "TestProject" */;
@@ -404,6 +479,7 @@
 				B23645F82617F6F800AB9486 /* CrashingInAnotherTargetTest */,
 				B23646072617F70A00AB9486 /* AnotherTarget */,
 				B236462B2617F81A00AB9486 /* MultiThreadHangingTest */,
+				B24BB97828AF17F200610CF0 /* MultiTargetHangingTest */,
 				B236463F2617F8E700AB9486 /* iOSCrashingTest */,
 			);
 		};
@@ -459,6 +535,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B236461E2617F7CA00AB9486 /* CrashingClass.swift in Sources */,
+				B24BB96B28ADC3BF00610CF0 /* HangingClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,6 +555,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B24BB97528AF17F200610CF0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B24BB97C28AF17F200610CF0 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -485,6 +570,11 @@
 			isa = PBXTargetDependency;
 			target = B23646072617F70A00AB9486 /* AnotherTarget */;
 			targetProxy = B23646172617F71000AB9486 /* PBXContainerItemProxy */;
+		};
+		B24BB98328AF1CC500610CF0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B23646072617F70A00AB9486 /* AnotherTarget */;
+			targetProxy = B24BB98228AF1CC500610CF0 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -810,6 +900,34 @@
 			};
 			name = Release;
 		};
+		B24BB97E28AF17F200610CF0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = PP5UYHJQCD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B24BB97F28AF17F200610CF0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = PP5UYHJQCD;
+				ENABLE_HARDENED_RUNTIME = YES;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path";
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -872,6 +990,15 @@
 			buildConfigurations = (
 				B23646522617F8E800AB9486 /* Debug */,
 				B23646532617F8E800AB9486 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B24BB97D28AF17F200610CF0 /* Build configuration list for PBXNativeTarget "MultiTargetHangingTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B24BB97E28AF17F200610CF0 /* Debug */,
+				B24BB97F28AF17F200610CF0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
