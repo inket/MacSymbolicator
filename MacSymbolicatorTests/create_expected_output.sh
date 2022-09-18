@@ -39,9 +39,9 @@ $cli "./Resources/Samples/multithread-sample.txt" "./Resources/dSYMs/MultiThread
 $cli "./Resources/Samples/multitarget-sample.txt" "./Resources/dSYMs/MultiTargetHangingTest.dSYM" "./Resources/dSYMs/AnotherTarget.framework.dSYM" -o "./Resources/Samples/multitarget-sample_symbolicated.txt"
 
 # Spindumps
-# $cli "./Resources/Spindumps/singlethread-spindump.txt" "./Resources/dSYMs/SingleThreadHangingTest.dSYM" -o "./Resources/Spindumps/singlethread-spindump_symbolicated.txt"
-# $cli "./Resources/Spindumps/multithread-spindump.txt" "./Resources/dSYMs/MultiThreadHangingTest.dSYM" -o "./Resources/Spindumps/multithread-spindump_symbolicated.txt"
-# $cli "./Resources/Spindumps/multitarget-spindump.txt" "./Resources/dSYMs/MultiTargetHangingTest.dSYM" "./Resources/dSYMs/AnotherTarget.framework.dSYM" -o "./Resources/Spindumps/multitarget-spindump_symbolicated.txt"
+$cli "./Resources/Spindumps/singlethread-spindump.txt" "./Resources/dSYMs/SingleThreadHangingTest.dSYM" -o "./Resources/Spindumps/singlethread-spindump_symbolicated.txt"
+$cli "./Resources/Spindumps/multithread-spindump.txt" "./Resources/dSYMs/MultiThreadHangingTest.dSYM" -o "./Resources/Spindumps/multithread-spindump_symbolicated.txt"
+$cli "./Resources/Spindumps/multitarget-spindump.txt" "./Resources/dSYMs/MultiTargetHangingTest.dSYM" "./Resources/dSYMs/AnotherTarget.framework.dSYM" -o "./Resources/Spindumps/multitarget-spindump_symbolicated.txt"
 
 echo "Done creating the symbolicated output."
 echo "Make sure to check the output files manually before using them as 'expected' output in tests."
