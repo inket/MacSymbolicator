@@ -19,7 +19,7 @@ public enum Translator {
     /// error-prone than manually parsing/translating IPS files ourselves. Obvious downside is that this
     /// method/class/framework could change in the future, but let's deal with that when it happens.
     public static func translatedCrash(forIPSAt path: URL) throws -> String {
-        guard let bundle = Bundle(identifier: "com.apple.osanalytics.OSAnalytics") else {
+        guard let bundle = Bundle(path: "/System/Library/PrivateFrameworks/OSAnalytics.framework") else {
             throw Error.couldNotLoadOSAnalytics
         }
 
