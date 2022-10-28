@@ -1,0 +1,179 @@
+Process:          adid [99159] [unique pid 696637]
+UUID:             EEE799AA-AEAB-3BF1-AC79-C58000DAAC3A
+Path:             /System/Library/PrivateFrameworks/CoreADI.framework/Versions/A/adid
+Codesigning ID:   com.apple.adid
+Shared Cache:     398ACFB4-57F6-31E0-BC82-E9959E5C92CE slid base address 0x7ff811b54000, slide 0x11b54000
+Architecture:     x86_64
+Parent:           launchd [1]
+UID:              265
+Sudden Term:      Tracked (allows idle exit)
+Footprint:        736 KB
+Time Since Fork:  835348s
+Num samples:      1000 (1-1000)
+Note:             1 idle work queue thread omitted
+
+  Thread 0x3461855    1000 samples (1-1000)    priority 4 (base 4)
+  1000  start + 462 (dyld + 21790) [0x113f6c51e]
+    1000  ??? (adid + 535708) [0x10da97c9c]
+      1000  CFRunLoopRun + 40 (CoreFoundation + 1072619) [0x7ff811fc1deb]
+        1000  CFRunLoopRunSpecific + 562 (CoreFoundation + 515676) [0x7ff811f39e5c]
+          1000  __CFRunLoopRun + 1276 (CoreFoundation + 518680) [0x7ff811f3aa18]
+            1000  __CFRunLoopServiceMachPort + 319 (CoreFoundation + 525197) [0x7ff811f3c38d]
+              1000  <patched truncated backtrace>
+                1000  mach_msg_trap + 10 (libsystem_kernel.dylib + 6522) [0x7ff811e3897a]
+                 *1000  ipc_mqueue_receive_continue + 0 (kernel + 335600) [0xffffff8000261ef0]
+
+  Binary Images:
+           0x10da15000 -        0x10dbe0fff  adid (6)                            <EEE799AA-AEAB-3BF1-AC79-C58000DAAC3A>  /System/Library/PrivateFrameworks/CoreADI.framework/Versions/A/adid
+           0x113f67000 -        0x113feafff  dyld (957)                          <B70CE1EC-B902-3852-8268-05DE00BFA8D5>  /usr/lib/dyld
+        0x7ff811e37000 -     0x7ff811e6efff  libsystem_kernel.dylib (8020.121.3) <61711D11-E776-3BC3-B9A2-6F9F37CB8499>  /usr/lib/system/libsystem_kernel.dylib
+        0x7ff811ebc000 -     0x7ff8123befff  com.apple.CoreFoundation 6.9 (1863) <F8E45EF9-9FD2-3331-BB1B-703D5DACDAF1>  /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+   *0xffffff8000210000 - 0xffffff8000c0ffff  kernel (8020.121.3)                 <3C587984-4004-3C76-8ADF-997822977184>  /System/Library/Kernels/kernel
+
+
+Process:          AirPlayXPCHelper [114]
+UUID:             D40A55DE-695F-336F-AAB0-10A94FED349F
+Path:             /usr/libexec/AirPlayXPCHelper
+Shared Cache:     398ACFB4-57F6-31E0-BC82-E9959E5C92CE slid base address 0x7ff811b54000, slide 0x11b54000
+Architecture:     x86_64
+Parent:           launchd [1]
+UID:              0
+Footprint:        2112 KB
+Time Since Fork:  7939187s
+Num samples:      1000 (1-1000)
+CPU Time:         0.002s (5.5M cycles, 2.2M instructions, 2.46c/i)
+Note:             3 idle work queue threads omitted
+
+  Thread 0x3ec    Thread name "AMCP Logging Spool"    1000 samples (1-1000)    priority 19 (base 19)
+  1000  thread_start + 15 (libsystem_pthread.dylib + 8043) [0x7ff811e70f6b]
+    1000  _pthread_start + 125 (libsystem_pthread.dylib + 25825) [0x7ff811e754e1]
+      1000  void* caulk::thread_proxy<std::__1::tuple<caulk::thread::attributes, void (caulk::concurrent::details::worker_thread::*)(), std::__1::tuple<caulk::concurrent::details::worker_thread*> > >(void*) + 41 (caulk + 7692) [0x7ff81a954e0c]
+        1000  caulk::concurrent::details::worker_thread::run() + 36 (caulk + 8520) [0x7ff81a955148]
+          1000  <patched truncated backtrace>
+            1000  semaphore_wait_trap + 10 (libsystem_kernel.dylib + 6582) [0x7ff811e389b6]
+             *1000  ??? (kernel + 696640) [0xffffff80002ba140]
+
+  Thread 0x681    1000 samples (1-1000)    priority 55 (base 55)
+  1000  thread_start + 15 (libsystem_pthread.dylib + 8043) [0x7ff811e70f6b]
+    1000  _pthread_start + 125 (libsystem_pthread.dylib + 25825) [0x7ff811e754e1]
+      1000  void* caulk::thread_proxy<std::__1::tuple<caulk::thread::attributes, void (caulk::concurrent::details::worker_thread::*)(), std::__1::tuple<caulk::concurrent::details::worker_thread*> > >(void*) + 41 (caulk + 7692) [0x7ff81a954e0c]
+        1000  caulk::concurrent::details::worker_thread::run() + 36 (caulk + 8520) [0x7ff81a955148]
+          1000  <patched truncated backtrace>
+            1000  semaphore_wait_trap + 10 (libsystem_kernel.dylib + 6582) [0x7ff811e389b6]
+             *1000  ??? (kernel + 696640) [0xffffff80002ba140]
+
+  Thread 0x684    1000 samples (1-1000)    priority 31 (base 31)
+  1000  _dispatch_sig_thread + 49 (libdispatch.dylib + 83959) [0x7ff811ccf7f7]
+    1000  <patched truncated backtrace>
+      1000  __sigsuspend_nocancel + 10 (libsystem_kernel.dylib + 29138) [0x7ff811e3e1d2]
+       *1000  ??? (kernel + 6653584) [0xffffff8000868690]
+
+  Binary Images:
+           0x105d2e000 -                ???  AirPlayXPCHelper                     <D40A55DE-695F-336F-AAB0-10A94FED349F>  /usr/libexec/AirPlayXPCHelper
+        0x7ff811cbb000 -     0x7ff811d01fff  libdispatch.dylib (1325.120.2)       <534511B9-B3B0-33A7-B1EA-402595D28BDA>  /usr/lib/system/libdispatch.dylib
+        0x7ff811e37000 -     0x7ff811e6efff  libsystem_kernel.dylib (8020.121.3)  <61711D11-E776-3BC3-B9A2-6F9F37CB8499>  /usr/lib/system/libsystem_kernel.dylib
+        0x7ff811e6f000 -     0x7ff811e7afff  libsystem_pthread.dylib (486.100.11) <BC574849-1AAE-31E7-B350-916DDA999D97>  /usr/lib/system/libsystem_pthread.dylib
+        0x7ff81a953000 -     0x7ff81a974fff  com.apple.audio.caulk 1.0 (92)       <42FECC51-73D2-3B5C-B109-208F4CB4C3CD>  /System/Library/PrivateFrameworks/caulk.framework/Versions/A/caulk
+   *0xffffff8000210000 - 0xffffff8000c0ffff  kernel (8020.121.3)                  <3C587984-4004-3C76-8ADF-997822977184>  /System/Library/Kernels/kernel
+
+
+Process:          distnoted [102]
+UUID:             3CA57E31-5F29-3847-8DCE-328DF414B80E
+Path:             /usr/sbin/distnoted
+Codesigning ID:   com.apple.distnoted
+Shared Cache:     398ACFB4-57F6-31E0-BC82-E9959E5C92CE slid base address 0x7ff811b54000, slide 0x11b54000
+Architecture:     x86_64h
+Parent:           launchd [1]
+UID:              241
+Sudden Term:      Tracked
+Footprint:        716 KB
+Time Since Fork:  7939187s
+Num samples:      1000 (1-1000)
+CPU Time:         0.003s (8.0M cycles, 5.1M instructions, 1.59c/i)
+Note:             1 idle work queue thread omitted
+
+  Thread 0x39c    1000 samples (1-1000)    priority 31 (base 31)
+  1000  start + 462 (dyld + 21790) [0x10972a51e]
+    1000  ??? (distnoted + 32209) [0x108c7fdd1]
+      1000  CFRunLoopRun + 40 (CoreFoundation + 1072619) [0x7ff811fc1deb]
+        1000  CFRunLoopRunSpecific + 562 (CoreFoundation + 515676) [0x7ff811f39e5c]
+          1000  __CFRunLoopRun + 1276 (CoreFoundation + 518680) [0x7ff811f3aa18]
+            1000  __CFRunLoopServiceMachPort + 319 (CoreFoundation + 525197) [0x7ff811f3c38d]
+              1000  <patched truncated backtrace>
+                1000  mach_msg_trap + 10 (libsystem_kernel.dylib + 6522) [0x7ff811e3897a]
+                 *1000  ipc_mqueue_receive_continue + 0 (kernel + 335600) [0xffffff8000261ef0]
+
+  Binary Images:
+           0x108c78000 -        0x108c8bfff  distnoted (1863)                    <3CA57E31-5F29-3847-8DCE-328DF414B80E>  /usr/sbin/distnoted
+           0x109725000 -        0x1097a8fff  dyld (957)                          <B70CE1EC-B902-3852-8268-05DE00BFA8D5>  /usr/lib/dyld
+        0x7ff811e37000 -     0x7ff811e6efff  libsystem_kernel.dylib (8020.121.3) <61711D11-E776-3BC3-B9A2-6F9F37CB8499>  /usr/lib/system/libsystem_kernel.dylib
+        0x7ff811ebc000 -     0x7ff8123befff  com.apple.CoreFoundation 6.9 (1863) <F8E45EF9-9FD2-3331-BB1B-703D5DACDAF1>  /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+   *0xffffff8000210000 - 0xffffff8000c0ffff  kernel (8020.121.3)                 <3C587984-4004-3C76-8ADF-997822977184>  /System/Library/Kernels/kernel
+
+
+Process:          distnoted [195]
+UUID:             3CA57E31-5F29-3847-8DCE-328DF414B80E
+Path:             /usr/sbin/distnoted
+Codesigning ID:   com.apple.distnoted
+Shared Cache:     398ACFB4-57F6-31E0-BC82-E9959E5C92CE slid base address 0x7ff811b54000, slide 0x11b54000
+Architecture:     x86_64h
+Parent:           launchd [1]
+UID:              0
+Sudden Term:      Tracked
+Footprint:        440 KB
+Time Since Fork:  7939184s
+Num samples:      1000 (1-1000)
+CPU Time:         <0.001s (414.2K cycles, 149.2K instructions, 2.78c/i)
+Note:             1 idle work queue thread omitted
+
+  Thread 0x42e    1000 samples (1-1000)    priority 31 (base 31)
+  1000  start + 462 (dyld + 21790) [0x10799151e]
+    1000  ??? (distnoted + 32209) [0x101354dd1]
+      1000  CFRunLoopRun + 40 (CoreFoundation + 1072619) [0x7ff811fc1deb]
+        1000  CFRunLoopRunSpecific + 562 (CoreFoundation + 515676) [0x7ff811f39e5c]
+          1000  __CFRunLoopRun + 1276 (CoreFoundation + 518680) [0x7ff811f3aa18]
+            1000  __CFRunLoopServiceMachPort + 319 (CoreFoundation + 525197) [0x7ff811f3c38d]
+              1000  <patched truncated backtrace>
+                1000  mach_msg_trap + 10 (libsystem_kernel.dylib + 6522) [0x7ff811e3897a]
+                 *1000  ipc_mqueue_receive_continue + 0 (kernel + 335600) [0xffffff8000261ef0]
+
+  Binary Images:
+           0x10134d000 -        0x101360fff  distnoted (1863)                    <3CA57E31-5F29-3847-8DCE-328DF414B80E>  /usr/sbin/distnoted
+           0x10798c000 -        0x107a0ffff  dyld (957)                          <B70CE1EC-B902-3852-8268-05DE00BFA8D5>  /usr/lib/dyld
+        0x7ff811e37000 -     0x7ff811e6efff  libsystem_kernel.dylib (8020.121.3) <61711D11-E776-3BC3-B9A2-6F9F37CB8499>  /usr/lib/system/libsystem_kernel.dylib
+        0x7ff811ebc000 -     0x7ff8123befff  com.apple.CoreFoundation 6.9 (1863) <F8E45EF9-9FD2-3331-BB1B-703D5DACDAF1>  /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+   *0xffffff8000210000 - 0xffffff8000c0ffff  kernel (8020.121.3)                 <3C587984-4004-3C76-8ADF-997822977184>  /System/Library/Kernels/kernel
+
+
+Process:          distnoted [261]
+UUID:             3CA57E31-5F29-3847-8DCE-328DF414B80E
+Path:             /usr/sbin/distnoted
+Codesigning ID:   com.apple.distnoted
+Shared Cache:     398ACFB4-57F6-31E0-BC82-E9959E5C92CE slid base address 0x7ff811b54000, slide 0x11b54000
+Architecture:     x86_64h
+Parent:           launchd [1]
+UID:              202
+Sudden Term:      Tracked
+Footprint:        420 KB
+Time Since Fork:  7939182s
+Num samples:      1000 (1-1000)
+CPU Time:         <0.001s (433.6K cycles, 182.1K instructions, 2.38c/i)
+Note:             1 idle work queue thread omitted
+
+  Thread 0x50f    1000 samples (1-1000)    priority 31 (base 31)
+  1000  start + 462 (dyld + 21790) [0x112bfb51e]
+    1000  ??? (distnoted + 32209) [0x1045d6dd1]
+      1000  CFRunLoopRun + 40 (CoreFoundation + 1072619) [0x7ff811fc1deb]
+        1000  CFRunLoopRunSpecific + 562 (CoreFoundation + 515676) [0x7ff811f39e5c]
+          1000  __CFRunLoopRun + 1276 (CoreFoundation + 518680) [0x7ff811f3aa18]
+            1000  __CFRunLoopServiceMachPort + 319 (CoreFoundation + 525197) [0x7ff811f3c38d]
+              1000  <patched truncated backtrace>
+                1000  mach_msg_trap + 10 (libsystem_kernel.dylib + 6522) [0x7ff811e3897a]
+                 *1000  ipc_mqueue_receive_continue + 0 (kernel + 335600) [0xffffff8000261ef0]
+
+  Binary Images:
+           0x1045cf000 -        0x1045e2fff  distnoted (1863)                    <3CA57E31-5F29-3847-8DCE-328DF414B80E>  /usr/sbin/distnoted
+           0x112bf6000 -        0x112c79fff  dyld (957)                          <B70CE1EC-B902-3852-8268-05DE00BFA8D5>  /usr/lib/dyld
+        0x7ff811e37000 -     0x7ff811e6efff  libsystem_kernel.dylib (8020.121.3) <61711D11-E776-3BC3-B9A2-6F9F37CB8499>  /usr/lib/system/libsystem_kernel.dylib
+        0x7ff811ebc000 -     0x7ff8123befff  com.apple.CoreFoundation 6.9 (1863) <F8E45EF9-9FD2-3331-BB1B-703D5DACDAF1>  /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+   *0xffffff8000210000 - 0xffffff8000c0ffff  kernel (8020.121.3)                 <3C587984-4004-3C76-8ADF-997822977184>  /System/Library/Kernels/kernel

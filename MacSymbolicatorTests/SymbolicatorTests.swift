@@ -3,38 +3,11 @@
 //  MacSymbolicatorTests
 //
 
-// swiftlint:disable force_try
+// swiftlint:disable force_try force_unwrapping
 
 import Foundation
 import XCTest
 @testable import MacSymbolicator
-
-class TestFile {
-    let originalURL: URL
-    let expectationURL: URL
-
-    var resultURL: URL {
-        URL(string: expectationURL.absoluteString.replacingOccurrences(of: "_symbolicated", with: "_result"))!
-    }
-
-    init(path: String) {
-        let testBundle = Bundle(for: MacSymbolicatorTests.self)
-
-        let pathExtension = (path as NSString).pathExtension
-        let originalFilename = ((path as NSString).lastPathComponent as NSString).deletingPathExtension
-        let expectationFilename = "\(originalFilename)_symbolicated"
-        let directory = (path as NSString).deletingLastPathComponent
-
-        originalURL = testBundle.url(
-            forResource: [directory, originalFilename].joined(separator: "/"),
-            withExtension: pathExtension
-        )!
-        expectationURL = testBundle.url(
-            forResource: [directory, expectationFilename].joined(separator: "/"),
-            withExtension: pathExtension
-        )!
-    }
-}
 
 class SymbolicatorTests: XCTestCase {
     private var testBundle: Bundle {
@@ -53,11 +26,10 @@ class SymbolicatorTests: XCTestCase {
         XCTAssert(symbolicator.symbolicate())
         let result = symbolicator.symbolicatedContent
 
+        // Write to file for debugging when tests fail
         try! (result ?? "").write(to: testFile.resultURL, atomically: true, encoding: .utf8)
 
-        let expectedContent = try! String(contentsOf: testFile.expectationURL)
-
-        XCTAssertEqual(result, expectedContent)
+        XCTAssertEqual(result, testFile.expectationFile!.content)
         XCTAssertNotEqual(symbolicator.symbolicatedContent, reportFile.content)
     }
 
