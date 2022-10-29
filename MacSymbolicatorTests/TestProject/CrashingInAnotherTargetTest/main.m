@@ -24,8 +24,11 @@
 
 @end
 
+void uncaughtException(NSException *exception) {}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
+        NSSetUncaughtExceptionHandler(&uncaughtException);
         [[[MyClass alloc] init] start];
     }
     return 0;

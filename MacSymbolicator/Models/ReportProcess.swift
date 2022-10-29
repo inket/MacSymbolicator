@@ -9,21 +9,14 @@ public class ReportProcess {
     let name: String?
     private(set) var architecture: Architecture?
     let binaryImages: [BinaryImage]
-    let calls: [StackTraceCall]
+    let frames: [StackFrame]
 
     private static let processSectionRegex = #"^(Process:.*?)(?=\z|^Process:)"#
     private static let processNameRegex = #"^Process:\s*(.+?)\s*\["#
 
     lazy var uuidsForSymbolication: [BinaryUUID] = {
-        var images: [String: BinaryImage] = [:]
-
-        calls.forEach { call in
-            if images[call.loadAddress] == nil {
-                images[call.loadAddress] = binaryImages.first(where: { $0.loadAddress == call.loadAddress })
-            }
-        }
-
-        return images.values.map { $0.uuid }
+        let uuids = frames.map { $0.binaryImage.uuid }
+        return Array(Set<BinaryUUID>(uuids))
     }()
 
     static func find(in content: String) -> [ReportProcess] {
@@ -42,11 +35,9 @@ public class ReportProcess {
         name = content.scan(pattern: Self.processNameRegex).first?.first
         architecture = Architecture.find(in: content)
         binaryImages = BinaryImage.find(in: content)
-
-        let loadAddresses = [String: String].init(
-            binaryImages.map({ ($0.name, $0.loadAddress) }),
-            uniquingKeysWith: { one, _ in one }
+        frames = StackFrame.find(
+            in: content,
+            binaryImageMap: BinaryImageMap(binaryImages: binaryImages)
         )
-        calls = StackTraceCall.find(in: content, withLoadAddresses: loadAddresses)
     }
 }

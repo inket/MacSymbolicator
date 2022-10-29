@@ -17,14 +17,16 @@
 }
 
 - (void)crashingMethod {
-    int* p = (int*)1;
-    *p = 0;
+    [[[NSException alloc] initWithName:@"Crash" reason:nil userInfo:nil] raise];
 }
 
 @end
 
+void uncaughtException(NSException *exception) {}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
+        NSSetUncaughtExceptionHandler(&uncaughtException);
         [[[MyClass alloc] init] start];
     }
     return 0;

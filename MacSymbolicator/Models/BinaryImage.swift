@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct BinaryImage {
+struct BinaryImage: Equatable {
     let name: String
     let uuid: BinaryUUID
     let loadAddress: String

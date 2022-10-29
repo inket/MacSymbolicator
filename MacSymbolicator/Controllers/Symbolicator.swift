@@ -44,8 +44,8 @@ struct Symbolicator {
         }
 
         // Some processes in spindump reports might not have anything besides the header;
-        // Make sure to check that we have calls before dismissing it due to missing binary images section
-        if !process.calls.isEmpty && process.binaryImages.isEmpty {
+        // Make sure to check that we have frames before dismissing it due to missing binary images section
+        if !process.frames.isEmpty && process.binaryImages.isEmpty {
             logController.addLogMessage("""
             Could not detect application binary images for reported process \(process.name ?? "<null>").\
             Application might have crashed during launch.
@@ -55,16 +55,20 @@ struct Symbolicator {
 
         // There are some cases where reports don't have any meaningful data to symbolicate,
         // Warn the user about them
-        guard !process.calls.isEmpty else {
+        guard !process.frames.isEmpty else {
             logController.addLogMessage("""
             Did not find anything to symbolicate for process \(process.name ?? "<null>").
             """)
             return true
         }
 
-        var callsByLoadAddress = [String: [StackTraceCall]]()
-        process.calls.forEach { call in
-            callsByLoadAddress[call.loadAddress] = (callsByLoadAddress[call.loadAddress] ?? []) + [call]
+        var framesByLoadAddress = [String: [StackFrame]]()
+        process.frames.forEach { frame in
+            if framesByLoadAddress[frame.binaryImage.loadAddress] == nil {
+                framesByLoadAddress[frame.binaryImage.loadAddress] = []
+            }
+
+            framesByLoadAddress[frame.binaryImage.loadAddress]?.append(frame)
         }
 
         var dsymsByLoadAddress = [String: DSYMFile]()
@@ -87,8 +91,8 @@ struct Symbolicator {
         let replacedContent = NSMutableString(string: symbolicatedContent ?? reportFile.content)
         var hasFailed = false
 
-        callsByLoadAddress.forEach { loadAddress, calls in
-            let addresses = calls.map { $0.address }
+        framesByLoadAddress.forEach { loadAddress, frames in
+            let addresses = frames.map { $0.address }
 
             guard let dsymFile = dsymsByLoadAddress[loadAddress] else { return }
 
@@ -111,7 +115,7 @@ struct Symbolicator {
             let replacedSuccessfully = replaceContent(
                 replacedContent,
                 withAtosResult: atosResult,
-                forAddresses: addresses,
+                for: frames,
                 errors: &errors
             )
             logController.addLogMessages(errors)
@@ -140,7 +144,7 @@ struct Symbolicator {
     private func replaceContent(
         _ content: NSMutableString,
         withAtosResult atosResult: CommandResult,
-        forAddresses addresses: [String],
+        for frames: [StackFrame],
         errors: inout [String]
     ) -> Bool {
         if let error = atosResult.error?.trimmed, error != "" { errors.append(error) }
@@ -159,50 +163,28 @@ struct Symbolicator {
 
         let outputLines = output.components(separatedBy: .newlines)
 
-        guard addresses.count == outputLines.count else {
+        guard frames.count == outputLines.count else {
             errors.append("Unexpected result from atos command:\n\(output)")
             return false
         }
 
         for index in 0..<outputLines.count {
-            let address = addresses[index]
+            let frame = frames[index]
             let replacement = outputLines[index]
 
-            // Replace the entries using the sample/spindump format
-            let sampleReplacementRegex = StackTraceCall.sampleReplacementRegex(address: address)
-            let sampleMatches = sampleReplacementRegex.matches(
-                in: content as String,
-                options: [],
-                range: NSRange(location: 0, length: content.length)
-            ).map { content.substring(with: $0.range) }
-            logController.addLogMessage(
-                "Replacing matches in sample/spindump report: \(String(describing: sampleMatches))"
-            )
+            frame.replace(withResult: replacement)
 
-            sampleReplacementRegex.replaceMatches(
-                in: content,
-                options: [],
-                range: NSRange(location: 0, length: content.length),
-                withTemplate: "\(replacement) [\(address)]"
-            )
+            if let symbolicatedLine = frame.symbolicatedLine {
+                logController.addLogMessage(
+                    "Replacing matches in sample/spindump report: \(String(describing: frame.line))"
+                )
 
-            // Replace the entries using the crash report format
-            let crashReplacementRegex = StackTraceCall.crashReplacementRegex(address: address)
-            let crashMatches = crashReplacementRegex.matches(
-                in: content as String,
-                options: [],
-                range: NSRange(location: 0, length: content.length)
-            ).map { content.substring(with: $0.range) }
-            logController.addLogMessage(
-                "Replacing matches in crash report: \(String(describing: crashMatches))"
-            )
-
-            crashReplacementRegex.replaceMatches(
-                in: content,
-                options: [],
-                range: NSRange(location: 0, length: content.length),
-                withTemplate: "\(address) \(replacement)"
-            )
+                content.replaceOccurrences(
+                    of: frame.line,
+                    with: symbolicatedLine,
+                    range: NSRange(location: 0, length: content.length)
+                )
+            }
         }
 
         return true

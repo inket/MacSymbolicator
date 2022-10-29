@@ -9,6 +9,6 @@ import Foundation
 public class CrashingClass: NSObject {
     @objc
     public static func crash() {
-        fatalError("Crashed in AnotherTarget")
+        NSException(name: .init(rawValue: "Crash"), reason: nil).raise()
     }
 }
