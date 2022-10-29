@@ -1,6 +1,6 @@
 ![MacSymbolicator](/Resources/Assets.xcassets/AppIcon.appiconset/Icon_128x128.png?raw=true)
 
-# MacSymbolicator 2.5
+# MacSymbolicator 2.6
 	
 A simple Mac app for symbolicating macOS/iOS crash reports.
 
@@ -25,7 +25,7 @@ OPTIONS:
   -h, --help              Show help information.
 ```
 
-[Download](https://github.com/inket/MacSymbolicator/releases)
+[Download from Releases](https://github.com/inket/MacSymbolicator/releases)
 
 <a href="https://www.buymeacoffee.com/mahdibchatnia" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="48" width="173" ></a>
 
