@@ -68,6 +68,15 @@ class SymbolicatorTests: XCTestCase {
         testSymbolication(testFile: TestFile(path: "Samples/multithread-sample.txt"), dsymFiles: [dsymFile])
     }
 
+    func testMultiTargetSampleSymbolication() {
+        let dsymFiles = [
+            DSYMFile(path: testBundle.url(forResource: "dSYMs/MultiTargetHangingTest", withExtension: "dSYM")!)!,
+            DSYMFile(path: testBundle.url(forResource: "dSYMs/AnotherTarget.framework", withExtension: "dSYM")!)!
+        ]
+
+        testSymbolication(testFile: TestFile(path: "Samples/multitarget-sample.txt"), dsymFiles: dsymFiles)
+    }
+
     func testiOSSymbolication() {
         let dsymFile = DSYMFile(path: testBundle.url(forResource: "dSYMs/iOSCrashingTest.app", withExtension: "dSYM")!)!
 
