@@ -135,6 +135,31 @@ class StackFrameTests: XCTestCase {
         XCTAssertEqual(stackFrames[9].binaryImage, iOSCrashingTestBinaryImage)
     }
 
+    func testReplacingStackFrameOfCrashReport() {
+        let crashingTestBinaryImage = BinaryImage(parsingLine: "0x10bbae000 -        0x10bbb1fff CrashingTest (*) <c6c06e5a-ed30-3361-a2c3-62ebe4a785dd> /Users/USER/Desktop/*/CrashingTest")!
+        let binaryImageMap = BinaryImageMap(binaryImages: [crashingTestBinaryImage])
+
+        var stackFrame = StackFrame(
+            parsingLine: "3   CrashingTest                        0x000000010bbb1de3 CrashingTest + 15800",
+            binaryImageMap: binaryImageMap
+        )!
+        stackFrame.replace(withResult: "-[MyClass crashingMethod] (in CrashingTest) (main.m:20)")
+        XCTAssertEqual(
+            stackFrame.symbolicatedLine,
+            "3   CrashingTest                        0x000000010bbb1de3 -[MyClass crashingMethod] (in CrashingTest) (main.m:20) + 15800"
+        )
+
+        stackFrame = StackFrame(
+            parsingLine: "6  CrashingTest                             0x10bbb1de3 0x10bbae000 + 15843",
+            binaryImageMap: binaryImageMap
+        )!
+        stackFrame.replace(withResult: "main (in CrashingTest) (main.m:30)")
+        XCTAssertEqual(
+            stackFrame.symbolicatedLine,
+            "6  CrashingTest                             0x10bbb1de3 main (in CrashingTest) (main.m:30) + 15843"
+        )
+    }
+
     func testScanningStackFramesOfSampleReport() {
         let rawStackFrames = """
         7847 Thread_12789423   DispatchQueue_1: com.apple.main-thread  (serial)
@@ -196,6 +221,36 @@ class StackFrameTests: XCTestCase {
         XCTAssertEqual(stackFrames[2].byteOffset, "0x3589")
         XCTAssertEqual(stackFrames[2].readableByteOffset, "13705")
         XCTAssertEqual(stackFrames[2].binaryImage, anotherTargetBinaryImage)
+    }
+
+    func testReplacingStackFrameOfSampleReport() {
+        let multiTargetHangingTestBinaryImage = BinaryImage(parsingLine: "0x106637000 -        0x10663afff +MultiTargetHangingTest (0) <1959A738-AA4F-31D4-9D7F-F79EF1A6B762> /Users/*/Desktop/*/MultiTargetHangingTest")!
+        let anotherTargetBinaryImage = BinaryImage(parsingLine: "0x106775000 -        0x106778fff +jp.mahdi.AnotherTarget (1.0 - 1) <96657B6A-9D77-3CD0-B468-54D881F66AC5> /Users/*/Desktop/*/AnotherTarget.framework/Versions/A/AnotherTarget")!
+
+        let binaryImageMap = BinaryImageMap(binaryImages: [
+            multiTargetHangingTestBinaryImage,
+            anotherTargetBinaryImage
+        ])
+
+        var stackFrame = StackFrame(
+            parsingLine: "???  (in MultiTargetHangingTest)  load address 0x106637000 + 0x3e3f  [0x10663ae3f]",
+            binaryImageMap: binaryImageMap
+        )!
+        stackFrame.replace(withResult: "-[MyClass hangingMethod] (in MultiTargetHangingTest) (main.m:24)")
+        XCTAssertEqual(
+            stackFrame.symbolicatedLine,
+            "-[MyClass hangingMethod] (in MultiTargetHangingTest) (main.m:24) + 15935  [0x10663ae3f]"
+        )
+
+        stackFrame = StackFrame(
+            parsingLine: "???  (in AnotherTarget)  load address 0x106775000 + 0x3589  [0x106778589]",
+            binaryImageMap: binaryImageMap
+        )!
+        stackFrame.replace(withResult: "thunk for @escaping @callee_guaranteed () -> () (in AnotherTarget) (<compiler-generated>:0)")
+        XCTAssertEqual(
+            stackFrame.symbolicatedLine,
+            "thunk for @escaping @callee_guaranteed () -> () (in AnotherTarget) (<compiler-generated>:0) + 13705  [0x106778589]"
+        )
     }
 
     func testScanningStackFramesOfSpindumpReport() {
@@ -272,4 +327,35 @@ class StackFrameTests: XCTestCase {
         XCTAssertEqual(stackFrames[3].readableByteOffset, "696640")
         XCTAssertEqual(stackFrames[3].binaryImage, kernelBinaryImage)
     }
+
+    func testReplacingStackFrameOfSpindumpReport() {
+        let multiTargetHangingTestBinaryImage = BinaryImage(parsingLine: "0x106637000 -        0x106642fff  MultiTargetHangingTest (0)           <1959A738-AA4F-31D4-9D7F-F79EF1A6B762>  /Users/inket/Desktop/Payload/MultiTargetHangingTest")!
+        let anotherTargetBinaryImage = BinaryImage(parsingLine: "0x106775000 -        0x106780fff  jp.mahdi.AnotherTarget 1.0 (1)       <96657B6A-9D77-3CD0-B468-54D881F66AC5>  /Users/inket/Desktop/Payload/AnotherTarget.framework/Versions/A/AnotherTarget")!
+
+        let binaryImageMap = BinaryImageMap(binaryImages: [
+            multiTargetHangingTestBinaryImage,
+            anotherTargetBinaryImage
+        ])
+
+        var stackFrame = StackFrame(
+            parsingLine: "    1000  ??? (MultiTargetHangingTest + 15935) [0x10663ae3f]",
+            binaryImageMap: binaryImageMap
+        )!
+        stackFrame.replace(withResult: "-[MyClass hangingMethod] (in MultiTargetHangingTest) (main.m:24)")
+        XCTAssertEqual(
+            stackFrame.symbolicatedLine,
+            "    1000  -[MyClass hangingMethod] (in MultiTargetHangingTest) (main.m:24) + 15935  [0x10663ae3f]"
+        )
+
+        stackFrame = StackFrame(
+            parsingLine: "              1000  ??? (AnotherTarget + 13705) [0x106778589]",
+            binaryImageMap: binaryImageMap
+        )!
+        stackFrame.replace(withResult: "thunk for @escaping @callee_guaranteed () -> () (in AnotherTarget) (<compiler-generated>:0)")
+        XCTAssertEqual(
+            stackFrame.symbolicatedLine,
+            "              1000  thunk for @escaping @callee_guaranteed () -> () (in AnotherTarget) (<compiler-generated>:0) + 13705  [0x106778589]"
+        )
+    }
+
 }
