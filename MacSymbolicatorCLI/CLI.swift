@@ -51,7 +51,7 @@ struct MacSymbolicatorCLI: ParsableCommand {
         
         if uuidsOnly {
             let dsymIdents = reportFile.processes.map {
-                $0.binaryImages.map { "\($0.name)/\($0.uuid.pretty)"}.joined(separator: "\n")
+                $0.binariesForSymbolication.map { "\($0.name)/\($0.uuid.pretty)"}.joined(separator: "\n")
             }.joined(separator: "\n")
             
             if let output = output {
