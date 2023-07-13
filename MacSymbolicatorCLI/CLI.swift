@@ -14,6 +14,9 @@ struct MacSymbolicatorCLI: ParsableCommand {
 
     @Flag(name: .shortAndLong, help: "Translate the crash report from .ips to .crash")
     var translateOnly = false
+    
+    @Flag(name: .shortAndLong, help: "Output binary images and UUIDs")
+    var uuidsOnly = false;
 
     @Flag(name: .shortAndLong)
     var verbose = false
@@ -28,7 +31,7 @@ struct MacSymbolicatorCLI: ParsableCommand {
     var dsymPath: [String] = []
 
     mutating func run() throws {
-        if !translateOnly, dsymPath.isEmpty {
+        if !translateOnly, !uuidsOnly, dsymPath.isEmpty {
             MacSymbolicatorCLI.exit(
                 withError: ArgumentParser.ValidationError.init("Missing expected argument '<dsym-path>'")
             )
@@ -41,6 +44,20 @@ struct MacSymbolicatorCLI: ParsableCommand {
                 try reportFile.content.write(toFile: output, atomically: false, encoding: .utf8)
             } else {
                 print(reportFile.content)
+            }
+
+            MacSymbolicatorCLI.exit(withError: nil)
+        }
+        
+        if uuidsOnly {
+            let dsymIdents = reportFile.processes.map {
+                $0.binaryImages.map { "\($0.name)/\($0.uuid.pretty)"}.joined(separator: "\n")
+            }.joined(separator: "\n")
+            
+            if let output = output {
+                try dsymIdents.write(toFile: output, atomically: false, encoding: .utf8)
+            } else {
+                print(dsymIdents)
             }
 
             MacSymbolicatorCLI.exit(withError: nil)
