@@ -46,6 +46,7 @@ class MainController {
         symbolicateButton.title = "Symbolicate"
         symbolicateButton.bezelStyle = .rounded
         symbolicateButton.focusRingType = .none
+        symbolicateButton.keyEquivalent = "\r"
         symbolicateButton.target = self
         symbolicateButton.action = #selector(MainController.symbolicate)
 
