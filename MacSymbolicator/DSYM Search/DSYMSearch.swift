@@ -27,10 +27,10 @@ class DSYMSearch {
     static func search(
         forUUIDs uuids: [String],
         reportFileDirectory: String,
-        logHandler: @escaping LogHandler,
+        logHandler logMessage: @escaping LogHandler,
         callback: @escaping Callback
     ) {
-        logHandler(["Searching Spotlight for UUIDs: \(uuids)"])
+        logMessage("Searching Spotlight for UUIDs: \(uuids)")
 
         spotlightSearch.search(forUUIDs: uuids) { results in
             // Processing of results and file searches should be on a background thread to not block main
@@ -40,7 +40,7 @@ class DSYMSearch {
                 results?.forEach {
                     guard let dsymPath = dsymPath(from: $0.item, withUUID: $0.matchedUUID) else { return }
 
-                    logHandler(["Found \($0.matchedUUID): \(dsymPath)"])
+                    logMessage("Found \($0.matchedUUID): \(dsymPath)")
                     foundItems[$0.matchedUUID] = SearchResult(path: dsymPath, matchedUUID: $0.matchedUUID)
                 }
 
@@ -53,15 +53,15 @@ class DSYMSearch {
                 // No need to continue if we already found what we're looking for.
                 guard !notFoundUUIDs.isEmpty else { return }
 
-                logHandler(["Non-recursive file search starting at \(reportFileDirectory) for UUIDs: \(notFoundUUIDs)"])
+                logMessage("Non-recursive file search starting at \(reportFileDirectory) for UUIDs: \(notFoundUUIDs)")
                 foundItems = [:]
                 FileSearch
                     .nonRecursive
                     .in(directory: reportFileDirectory)
-                    .with(logHandler: logHandler)
+                    .with(logHandler: logMessage)
                     .search(fileExtension: "dsym").sorted().matching(uuids: Array(notFoundUUIDs))
                     .forEach {
-                        logHandler(["Found \($0.matchedUUID): \($0.path)"])
+                        logMessage("Found \($0.matchedUUID): \($0.path)")
                         foundItems[$0.matchedUUID] = SearchResult($0)
                     }
 
@@ -73,24 +73,24 @@ class DSYMSearch {
                 // No need to continue if we already found what we're looking for.
                 guard !notFoundUUIDs.isEmpty else { return }
 
-                logHandler([
+                logMessage(
                     "Recursive file search starting at ~/Library/Developer/Xcode/Archives/ for UUIDs: \(notFoundUUIDs)"
-                ])
+                )
                 foundItems = [:]
                 FileSearch
                     .recursive
                     .in(directory: "~/Library/Developer/Xcode/Archives/")
-                    .with(logHandler: logHandler)
+                    .with(logHandler: logMessage)
                     .search(fileExtension: "dsym").sorted().matching(uuids: Array(notFoundUUIDs))
                     .forEach {
-                        logHandler(["Found \($0.matchedUUID): \($0.path)"])
+                        logMessage("Found \($0.matchedUUID): \($0.path)")
                         foundItems[$0.matchedUUID] = SearchResult($0)
                     }
 
                 foundUUIDs = Set<String>(foundItems.keys)
                 notFoundUUIDs.subtract(foundUUIDs)
 
-                logHandler(["Remaining UUIDs: \(notFoundUUIDs)"])
+                logMessage("Remaining UUIDs: \(notFoundUUIDs)")
 
                 callback(true, Array(foundItems.values))
             }

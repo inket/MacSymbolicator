@@ -11,7 +11,7 @@ protocol ViewableLogController: LogController {
 }
 
 class DefaultViewableLogController: DefaultLogController, ViewableLogController {
-    private let textWindowController = TextWindowController(title: "Logs")
+    private let textWindowController = TextWindowController(title: "Logs", clearable: true)
 
     override var logMessages: [String] {
         didSet {

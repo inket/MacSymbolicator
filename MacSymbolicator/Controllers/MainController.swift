@@ -7,7 +7,7 @@ import Cocoa
 
 class MainController {
     private let mainWindow = CenteredWindow(width: 800, height: 400)
-    private let textWindowController = TextWindowController(title: "Symbolicated Content")
+    private let textWindowController = TextWindowController(title: "Symbolicated Content", clearable: false)
 
     private var updateButton: NSButton?
     private var availableUpdateURL: URL?
@@ -19,7 +19,7 @@ class MainController {
     private let symbolicateButton = NSButton()
     private let viewLogsButton = NSButton()
 
-    private let inputCoordinator = InputCoordinator()
+    private lazy var inputCoordinator = InputCoordinator(logController: logController)
 
     private var isSymbolicating: Bool = false {
         didSet {
@@ -32,7 +32,6 @@ class MainController {
 
     init() {
         logController.delegate = self
-        inputCoordinator.delegate = self
 
         let reportFileDropZone = inputCoordinator.reportFileDropZone
         let dsymFilesDropZone = inputCoordinator.dsymFilesDropZone
@@ -145,16 +144,13 @@ class MainController {
         var symbolicator = Symbolicator(
             reportFile: reportFile,
             dsymFiles: dsymFiles,
-            logController: DefaultLogController()
+            logController: logController
         )
 
         DispatchQueue.global(qos: .userInitiated).async {
             let success = symbolicator.symbolicate()
 
             DispatchQueue.main.async {
-                self.logController.merge(self.inputCoordinator.logController)
-                self.logController.merge(symbolicator.logController)
-
                 if success {
                     self.textWindowController.text = symbolicator.symbolicatedContent ?? ""
                     self.textWindowController.defaultSaveURL = reportFile.symbolicatedContentSaveURL
@@ -216,12 +212,5 @@ extension MainController: LogControllerDelegate {
         DispatchQueue.main.async {
             self.viewLogsButton.isHidden = logMessages.isEmpty
         }
-    }
-}
-
-extension MainController: InputCoordinatorDelegate {
-    func inputCoordinator(_ inputCoordinator: InputCoordinator, receivedNewInput newInput: Any?) {
-        logController.resetLogs()
-        logController.merge(inputCoordinator.logController)
     }
 }

@@ -28,7 +28,11 @@ class TextWindowController: NSObject {
         }
     }
 
-    init(title: String) {
+    let clearable: Bool
+
+    init(title: String, clearable: Bool) {
+        self.clearable = clearable
+
         super.init()
 
         window.styleMask = [.unifiedTitleAndToolbar, .titled, .closable, .resizable]
@@ -78,6 +82,7 @@ class TextWindowController: NSObject {
             fonts.append(contentsOf: monospacedFonts)
 
             textView.font = fonts.first
+            textView.isEditable = false
 
             scrollView.documentView = textView
         }
@@ -120,6 +125,10 @@ class TextWindowController: NSObject {
             }
         }
     }
+
+    @objc func clear() {
+        text = ""
+    }
 }
 
 extension TextWindowController: NSToolbarDelegate {
@@ -144,20 +153,44 @@ extension TextWindowController: NSToolbarDelegate {
             saveToolbarItem.view = saveButton
 
             return saveToolbarItem
+        case NSToolbarItem.Identifier.clear.rawValue:
+            let clearToolbarItem = NSToolbarItem(itemIdentifier: .clear)
+            clearToolbarItem.label = "Clear"
+            clearToolbarItem.paletteLabel = "Clear"
+            clearToolbarItem.target = self
+            clearToolbarItem.action = #selector(clear)
+
+            let clearButton = NSButton()
+            clearButton.bezelStyle = .texturedRounded
+            clearButton.title = "Clear"
+            clearButton.target = self
+            clearButton.action = #selector(clear)
+            clearToolbarItem.view = clearButton
+
+            return clearToolbarItem
         default:
             return nil
         }
     }
 
     func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [.flexibleSpace, .save]
+        if clearable {
+            return [.flexibleSpace, .clear, .save]
+        } else {
+            return [.flexibleSpace, .save]
+        }
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [.flexibleSpace, .save]
+        if clearable {
+            return [.flexibleSpace, .clear, .save]
+        } else {
+            return [.flexibleSpace, .save]
+        }
     }
 }
 
 extension NSToolbarItem.Identifier {
+    static var clear = NSToolbarItem.Identifier(rawValue: "Clear")
     static var save = NSToolbarItem.Identifier(rawValue: "Save")
 }

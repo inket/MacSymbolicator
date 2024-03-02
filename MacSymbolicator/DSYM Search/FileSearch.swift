@@ -5,7 +5,7 @@
 
 import Foundation
 
-typealias LogHandler = ([String]) -> Void
+typealias LogHandler = (String) -> Void
 
 protocol FileSearchQuery {
     func with(logHandler: @escaping LogHandler) -> FileSearchQuery
@@ -87,7 +87,7 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
                 // correctly followed by an stderr message about not being able to open macho file due to
                 // "Too many levels of symbolic links". Seems safe to ignore.
                 if !errorOutput.contains("Too many levels of symbolic links") {
-                    logHandler?(["\(command):\n\(errorOutput)"])
+                    logHandler?("\(command):\n\(errorOutput)")
                 }
             }
 

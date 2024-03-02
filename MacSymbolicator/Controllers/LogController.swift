@@ -18,12 +18,18 @@ protocol LogController: AnyObject {
 
     func addLogMessage(_ message: String)
     func addLogMessages(_ newMessages: [String])
-    func merge(_ logController: LogController)
     func resetLogs()
 }
 
 class DefaultLogController: NSObject, LogController {
     weak var delegate: LogControllerDelegate?
+
+    private static let dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        return dateFormatter
+    }()
 
     var logMessages = [String]() {
         didSet {
@@ -32,15 +38,14 @@ class DefaultLogController: NSObject, LogController {
     }
 
     func addLogMessage(_ message: String) {
-        logMessages.append(message)
+        let date = DefaultLogController.dateFormatter.string(from: Date())
+        logMessages.append("\(date): \(message)")
     }
 
     func addLogMessages(_ newMessages: [String]) {
-        logMessages.append(contentsOf: newMessages)
-    }
-
-    func merge(_ logController: LogController) {
-        logMessages.append(contentsOf: logController.logMessages)
+        for newMessage in newMessages {
+            addLogMessage(newMessage)
+        }
     }
 
     func resetLogs() {

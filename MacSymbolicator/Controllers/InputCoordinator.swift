@@ -5,10 +5,6 @@
 
 import Foundation
 
-protocol InputCoordinatorDelegate: AnyObject {
-    func inputCoordinator(_ inputCoordinator: InputCoordinator, receivedNewInput newInput: Any?)
-}
-
 class InputCoordinator {
     let reportFileDropZone = DropZone(
         fileTypes: [".crash", ".ips", ".txt"],
@@ -30,9 +26,7 @@ class InputCoordinator {
 
     private var isSearchingForDSYMs = false
 
-    weak var delegate: InputCoordinatorDelegate?
-
-    let logController: LogController = DefaultLogController()
+    private let logController: LogController
 
     private var expectedDSYMUUIDs: Set<String> {
         guard let reportFile = reportFile else { return Set<String>() }
@@ -49,7 +43,8 @@ class InputCoordinator {
         expectedDSYMUUIDs.subtracting(foundDSYMUUIDs)
     }
 
-    init() {
+    init(logController: any LogController) {
+        self.logController = logController
         reportFileDropZone.delegate = self
         dsymFilesDropZone.delegate = self
     }
@@ -78,7 +73,7 @@ class InputCoordinator {
         DSYMSearch.search(
             forUUIDs: remainingUUIDs,
             reportFileDirectory: reportFile.path.deletingLastPathComponent().path,
-            logHandler: logController.addLogMessages,
+            logHandler: logController.addLogMessage,
             callback: { [weak self] finished, results in
                 DispatchQueue.main.async {
                     results?.forEach { dsymResult in
@@ -137,6 +132,8 @@ class InputCoordinator {
     }
 }
 
+// MARK: - DropZoneDelegate
+
 extension InputCoordinator: DropZoneDelegate {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL] {
         defer {
@@ -159,8 +156,6 @@ extension InputCoordinator: DropZoneDelegate {
                 logController.addLogMessage("Error loading report file: \(error)")
             }
 
-            delegate?.inputCoordinator(self, receivedNewInput: reportFile)
-
             if reportFile != nil {
                 startSearchForDSYMs()
             }
@@ -169,8 +164,6 @@ extension InputCoordinator: DropZoneDelegate {
         } else if dropZone == dsymFilesDropZone {
             let dsymFiles = fileURLs.flatMap { DSYMFile.dsymFiles(from: $0) }
             self.dsymFiles.append(contentsOf: dsymFiles)
-
-            delegate?.inputCoordinator(self, receivedNewInput: dsymFiles)
 
             return dsymFiles.map { $0.path }
         }
