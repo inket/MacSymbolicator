@@ -14,9 +14,9 @@ struct MacSymbolicatorCLI: ParsableCommand {
 
     @Flag(name: .shortAndLong, help: "Translate the crash report from .ips to .crash")
     var translateOnly = false
-    
+
     @Flag(name: .shortAndLong, help: "Output binary images and UUIDs")
-    var uuidsOnly = false;
+    var uuidsOnly = false
 
     @Flag(name: .shortAndLong)
     var verbose = false
@@ -40,27 +40,11 @@ struct MacSymbolicatorCLI: ParsableCommand {
         let reportFile = try ReportFile(path: URL(fileURLWithPath: reportFilePath))
 
         if translateOnly {
-            if let output = output {
-                try reportFile.content.write(toFile: output, atomically: false, encoding: .utf8)
-            } else {
-                print(reportFile.content)
-            }
-
-            MacSymbolicatorCLI.exit(withError: nil)
+            try translateReport(reportFile)
         }
-        
-        if uuidsOnly {
-            let dsymIdents = reportFile.processes.map {
-                $0.binariesForSymbolication.map { "\($0.name)/\($0.uuid.pretty)"}.joined(separator: "\n")
-            }.joined(separator: "\n")
-            
-            if let output = output {
-                try dsymIdents.write(toFile: output, atomically: false, encoding: .utf8)
-            } else {
-                print(dsymIdents)
-            }
 
-            MacSymbolicatorCLI.exit(withError: nil)
+        if uuidsOnly {
+            try printUUIDsForReport(reportFile)
         }
 
         let dsymFiles: [DSYMFile] = dsymPath.compactMap { path in
@@ -116,5 +100,29 @@ struct MacSymbolicatorCLI: ParsableCommand {
             print(symbolicator.logController.logMessages.joined(separator: "\n"))
             MacSymbolicatorCLI.exit(withError: SymbolicationError.undefined)
         }
+    }
+
+    private func translateReport(_ reportFile: ReportFile) throws {
+        if let output = output {
+            try reportFile.content.write(toFile: output, atomically: false, encoding: .utf8)
+        } else {
+            print(reportFile.content)
+        }
+
+        MacSymbolicatorCLI.exit(withError: nil)
+    }
+
+    private func printUUIDsForReport(_ reportFile: ReportFile) throws {
+        let dsymIdents = reportFile.processes.map {
+            $0.binariesForSymbolication.map { "\($0.name)/\($0.uuid.pretty)"}.joined(separator: "\n")
+        }.joined(separator: "\n")
+
+        if let output = output {
+            try dsymIdents.write(toFile: output, atomically: false, encoding: .utf8)
+        } else {
+            print(dsymIdents)
+        }
+
+        MacSymbolicatorCLI.exit(withError: nil)
     }
 }

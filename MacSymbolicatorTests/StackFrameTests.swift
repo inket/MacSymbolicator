@@ -7,6 +7,7 @@ import Foundation
 import XCTest
 @testable import MacSymbolicator
 
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable line_length force_unwrapping
 
 class StackFrameTests: XCTestCase {

@@ -3,6 +3,7 @@
 //  MacSymbolicatorTests
 //
 
+// swiftlint:disable:next blanket_disable_command
 // swiftlint:disable force_try force_unwrapping
 
 import Foundation

@@ -18,7 +18,7 @@ public class ReportProcess {
         let uuids = frames.map { $0.binaryImage }
         return Array(Set<BinaryImage>(uuids))
     }()
-    
+
     lazy var uuidsForSymbolication: [BinaryUUID] = {
         let uuids = frames.map { $0.binaryImage.uuid }
         return Array(Set<BinaryUUID>(uuids))

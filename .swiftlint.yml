@@ -7,3 +7,4 @@ file_length: 500
 disabled_rules:
   - type_body_length
   - function_body_length
+  - for_where

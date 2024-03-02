@@ -145,6 +145,7 @@
 		B2C2292B1EF223C50015AB33 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C2292C1EF223C50015AB33 /* MacSymbolicator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacSymbolicator.entitlements; sourceTree = "<group>"; };
 		B2EC0F4026450D0B00E5473C /* DSYMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMTests.swift; sourceTree = "<group>"; };
+		B2F64E012B9339F700D1410D /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,6 +290,7 @@
 		B2C229161EF223C40015AB33 = {
 			isa = PBXGroup;
 			children = (
+				B2F64E012B9339F700D1410D /* .swiftlint.yml */,
 				B2C229211EF223C50015AB33 /* MacSymbolicator */,
 				B212510D20CD123900F36050 /* MacSymbolicatorTests */,
 				B21EFA56289A981400CA69B1 /* MacSymbolicatorCLI */,
