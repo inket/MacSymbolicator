@@ -12,7 +12,7 @@ Supports symbolicating:
 Includes a command-line interface (`MacSymbolicator.app/Contents/MacOS/MacSymbolicatorCLI`):
 
 ```
-USAGE: mac-symbolicator-cli [--translate-only] [--verbose] [--output <output>] <report-file-path> [<dsym-path> ...]
+USAGE: mac-symbolicator-cli [--translate-only] [--uuids-only] [--verbose] [--output <output>] <report-file-path> [<dsym-path> ...]
 
 ARGUMENTS:
   <report-file-path>      The report file: .crash/.ips for crash reports .txt for samples/spindumps
@@ -20,6 +20,7 @@ ARGUMENTS:
 
 OPTIONS:
   -t, --translate-only    Translate the crash report from .ips to .crash
+  -u, --uuids-only        Output binary images and UUIDs
   -v, --verbose
   -o, --output <output>   The output file to save the result to, instead of printing to stdout
   -h, --help              Show help information.
