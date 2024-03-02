@@ -341,7 +341,7 @@ class DropZone: NSView {
     override func draw(_ dirtyRect: NSRect) {
         // Background
         (isHoveringFile ? Colors.backgroundHover : NSColor.clear).setFill()
-        dirtyRect.fill()
+        bounds.fill()
 
         // Padding
         let borderPadding: CGFloat = 6
@@ -354,15 +354,15 @@ class DropZone: NSView {
 
         switch state {
         case .oneFileEmpty:
-            drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
+            drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = false
             drawTableViewBorder = false
         case .oneFile:
-            drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
+            drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = true
             drawTableViewBorder = false
         case .multipleFilesEmpty:
-            drawRect = dirtyRect.insetBy(dx: borderPadding, dy: borderPadding)
+            drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = false
             drawTableViewBorder = false
         case .multipleFiles:
