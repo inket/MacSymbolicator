@@ -40,7 +40,7 @@ public class ReportFile {
             .appendingPathExtension(originalPathExtension)
     }
 
-    public init(path: URL) throws {
+    public init(path: URL, targetProcessName: String? = nil) throws {
         let originalContent: String
 
         do {
@@ -53,7 +53,7 @@ public class ReportFile {
             throw InitializationError.emptyFile
         }
 
-        var processes = ReportProcess.find(in: originalContent)
+        var processes = ReportProcess.find(in: originalContent, targetProcess: targetProcessName)
 
         if processes.isEmpty && originalContent.hasPrefix("{") {
             // Could not find any processes defined in the report file -> Probably not the usual crash report format
@@ -70,7 +70,7 @@ public class ReportFile {
                 }
             }
 
-            processes = ReportProcess.find(in: content)
+            processes = ReportProcess.find(in: content, targetProcess: targetProcessName)
         } else {
             self.content = originalContent
         }

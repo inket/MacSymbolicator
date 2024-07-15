@@ -21,10 +21,13 @@ struct MacSymbolicatorCLI: ParsableCommand {
     @Flag(name: .shortAndLong)
     var verbose = false
 
+    @Option(name: .shortAndLong, help: "Only symbolicate process names containing this substring (case sensitive). Useful with HANG files as these contain many processes.")
+    var processName: String?
+
     @Option(name: .shortAndLong, help: "The output file to save the result to, instead of printing to stdout")
     var output: String?
 
-    @Argument(help: "The report file: .crash/.ips for crash reports .txt for samples/spindumps")
+    @Argument(help: "The report file: .crash/.ips for crash reports .txt/.hang for samples/spindumps/hangs")
     var reportFilePath: String
 
     @Argument(help: "The dSYMs to use for symbolication")
@@ -37,7 +40,7 @@ struct MacSymbolicatorCLI: ParsableCommand {
             )
         }
 
-        let reportFile = try ReportFile(path: URL(fileURLWithPath: reportFilePath))
+        let reportFile = try ReportFile(path: URL(fileURLWithPath: reportFilePath), targetProcessName: processName)
 
         if translateOnly {
             try translateReport(reportFile)

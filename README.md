@@ -22,6 +22,9 @@ OPTIONS:
   -t, --translate-only    Translate the crash report from .ips to .crash
   -u, --uuids-only        Output binary images and UUIDs
   -v, --verbose
+  -p, --process-name <process-name>
+                          Only symbolicate process names containing this substring (case
+                          sensitive). Useful with HANG files as these contain many processes.
   -o, --output <output>   The output file to save the result to, instead of printing to stdout
   -h, --help              Show help information.
 ```
