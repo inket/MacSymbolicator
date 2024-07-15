@@ -7,7 +7,7 @@ A simple Mac app for symbolicating macOS/iOS crash reports.
 Supports symbolicating:
 
 - .crash and .ips crash reports
-- sample and spindump reports
+- sample, spindump and hang reports
 
 Includes a command-line interface (`MacSymbolicator.app/Contents/MacOS/MacSymbolicatorCLI`):
 

@@ -7,9 +7,9 @@ import Foundation
 
 class InputCoordinator {
     let reportFileDropZone = DropZone(
-        fileTypes: [".crash", ".ips", ".txt"],
+        fileTypes: [".crash", ".ips", ".txt", ".hang"],
         allowsMultipleFiles: false,
-        text: "Drop Report File\n(crash, sample, or spindump)",
+        text: "Drop Report File\n(crash, sample, spindump or hang)",
         activatesAppAfterDrop: true
     )
 
