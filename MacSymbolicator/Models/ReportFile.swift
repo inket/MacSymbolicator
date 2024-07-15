@@ -16,9 +16,15 @@ public class ReportFile {
     let path: URL
     let filename: String
     let processes: [ReportProcess]
+    
+    lazy var binariesForSymbolication: [BinaryImage] = {
+        let images = processes.flatMap { $0.binariesForSymbolication }
+        return Array(Set<BinaryImage>(images))
+    }()
 
     lazy var uuidsForSymbolication: [BinaryUUID] = {
-        processes.flatMap { $0.uuidsForSymbolication }
+        let uuids = processes.flatMap { $0.uuidsForSymbolication }
+        return Array(Set<BinaryUUID>(uuids))
     }()
 
     let content: String

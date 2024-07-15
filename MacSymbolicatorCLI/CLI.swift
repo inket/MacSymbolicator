@@ -113,8 +113,7 @@ struct MacSymbolicatorCLI: ParsableCommand {
     }
 
     private func printUUIDsForReport(_ reportFile: ReportFile) throws {
-        let dsymIdents = reportFile.processes.map {
-            $0.binariesForSymbolication.map { "\($0.name)/\($0.uuid.pretty)"}.joined(separator: "\n")
+        let dsymIdents = reportFile.binariesForSymbolication.map { "\($0.name)/\($0.uuid.pretty)"
         }.joined(separator: "\n")
 
         if let output = output {
