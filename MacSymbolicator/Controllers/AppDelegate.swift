@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import FullDiskAccess
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -17,6 +18,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 print("Error checking for updates: \(error)")
             }
         }
+
+        FullDiskAccess.promptIfNotGranted(
+            title: "Enable Full Disk Access for MacSymbolicator",
+            message: "MacSymbolicator requires Full Disk Access to search for DSYMs using Spotlight.",
+            canBeSuppressed: true
+        )
     }
 
     func application(_ sender: NSApplication, openFile filename: String) -> Bool {

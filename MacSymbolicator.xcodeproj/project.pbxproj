@@ -58,7 +58,9 @@
 		B2C229231EF223C50015AB33 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C229221EF223C50015AB33 /* AppDelegate.swift */; };
 		B2C229271EF223C50015AB33 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C229261EF223C50015AB33 /* Assets.xcassets */; };
 		B2C2ED8C289AC09900B7FA40 /* MacSymbolicatorCLI in CopyFiles */ = {isa = PBXBuildFile; fileRef = B21EFA55289A981400CA69B1 /* MacSymbolicatorCLI */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		B2CA03D72B9CC15700AE3DFA /* FullDiskAccess in Frameworks */ = {isa = PBXBuildFile; productRef = B2CA03D62B9CC15700AE3DFA /* FullDiskAccess */; };
 		B2EC0F4126450D0B00E5473C /* DSYMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EC0F4026450D0B00E5473C /* DSYMTests.swift */; };
+		B2F6E9AF2B9E962500F2AEE2 /* FullDiskAccess in Frameworks */ = {isa = PBXBuildFile; productRef = B2F6E9AE2B9E962500F2AEE2 /* FullDiskAccess */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -168,6 +170,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2F6E9AF2B9E962500F2AEE2 /* FullDiskAccess in Frameworks */,
+				B2CA03D72B9CC15700AE3DFA /* FullDiskAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,6 +383,10 @@
 				B2C2ED8E289AC0A500B7FA40 /* PBXTargetDependency */,
 			);
 			name = MacSymbolicator;
+			packageProductDependencies = (
+				B2CA03D62B9CC15700AE3DFA /* FullDiskAccess */,
+				B2F6E9AE2B9E962500F2AEE2 /* FullDiskAccess */,
+			);
 			productName = MacSymbolicator;
 			productReference = B2C2291F1EF223C50015AB33 /* MacSymbolicator.app */;
 			productType = "com.apple.product-type.application";
@@ -420,6 +428,7 @@
 			mainGroup = B2C229161EF223C40015AB33;
 			packageReferences = (
 				B21EFA65289A98AF00CA69B1 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
+				B2F6E9AD2B9E962500F2AEE2 /* XCRemoteSwiftPackageReference "FullDiskAccess" */,
 			);
 			productRefGroup = B2C229201EF223C50015AB33 /* Products */;
 			projectDirPath = "";
@@ -875,6 +884,14 @@
 				minimumVersion = 0.4.3;
 			};
 		};
+		B2F6E9AD2B9E962500F2AEE2 /* XCRemoteSwiftPackageReference "FullDiskAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/inket/FullDiskAccess";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -882,6 +899,15 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B21EFA65289A98AF00CA69B1 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
 			productName = ArgumentParser;
+		};
+		B2CA03D62B9CC15700AE3DFA /* FullDiskAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FullDiskAccess;
+		};
+		B2F6E9AE2B9E962500F2AEE2 /* FullDiskAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2F6E9AD2B9E962500F2AEE2 /* XCRemoteSwiftPackageReference "FullDiskAccess" */;
+			productName = FullDiskAccess;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
