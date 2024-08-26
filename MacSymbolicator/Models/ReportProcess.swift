@@ -24,7 +24,7 @@ public class ReportProcess {
         return Array(Set<BinaryUUID>(uuids))
     }()
 
-    static func find(in content: String) -> [ReportProcess] {
+    static func find(in content: String, targetProcess: String?) -> [ReportProcess] {
         let processSections = content.scan(
             pattern: processSectionRegex,
             options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
@@ -32,12 +32,20 @@ public class ReportProcess {
 
         return processSections.compactMap {
             guard let match = $0.first else { return nil }
-            return ReportProcess(parsing: match)
+            return ReportProcess(parsing: match, targetProcess: targetProcess)
         }
     }
 
-    init?(parsing content: String) {
+    init?(parsing content: String, targetProcess: String?) {
         name = content.scan(pattern: Self.processNameRegex).first?.first
+        if (name == nil) {
+            return nil;
+        }
+        if (!(targetProcess ?? "").isEmpty) {
+            if (!name!.contains(targetProcess!)) {
+                return nil;
+            }
+        }
         architecture = Architecture.find(in: content)
         binaryImages = BinaryImage.find(in: content)
         frames = StackFrame.find(

@@ -7,7 +7,7 @@ A simple Mac app for symbolicating macOS/iOS crash reports.
 Supports symbolicating:
 
 - .crash and .ips crash reports
-- sample and spindump reports
+- sample, spindump and hang reports
 
 Includes a command-line interface (`MacSymbolicator.app/Contents/MacOS/MacSymbolicatorCLI`):
 
@@ -22,6 +22,9 @@ OPTIONS:
   -t, --translate-only    Translate the crash report from .ips to .crash
   -u, --uuids-only        Output binary images and UUIDs
   -v, --verbose
+  -p, --process-name <process-name>
+                          Only symbolicate process names containing this substring (case
+                          sensitive). Useful with HANG files as these contain many processes.
   -o, --output <output>   The output file to save the result to, instead of printing to stdout
   -h, --help              Show help information.
 ```
