@@ -32,20 +32,23 @@ public class ReportProcess {
 
         return processSections.compactMap {
             guard let match = $0.first else { return nil }
-            return ReportProcess(parsing: match, targetProcess: targetProcess)
+
+            let processName = match.scan(pattern: Self.processNameRegex).first?.first
+
+            if let targetProcess {
+                if let processName, processName.contains(targetProcess) {
+                    return ReportProcess(name: processName, parsing: match)
+                } else {
+                    return nil
+                }
+            } else {
+                return ReportProcess(name: processName, parsing: match)
+            }
         }
     }
 
-    init?(parsing content: String, targetProcess: String?) {
-        name = content.scan(pattern: Self.processNameRegex).first?.first
-        if (name == nil) {
-            return nil;
-        }
-        if (!(targetProcess ?? "").isEmpty) {
-            if (!name!.contains(targetProcess!)) {
-                return nil;
-            }
-        }
+    init?(name: String?, parsing content: String) {
+        self.name = name
         architecture = Architecture.find(in: content)
         binaryImages = BinaryImage.find(in: content)
         frames = StackFrame.find(
