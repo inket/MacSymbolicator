@@ -9,6 +9,7 @@ class StackFrame {
     private enum Parsing {
         static let lineRegex = #"^\d+\s+.*?0x.*?\s.*?\s\+\s.*$"#
         static let componentsRegex = #"^\d+\s+(.*?)\s+(0x.*?)\s(.*?)\s\+\s(.*)"#
+        static let sourceCodeRegex = #"\s+(\(([\w\-. ]+\.[\w\-. ]+)\:(\d+)\))"#
 
         static func replacementLoadAddressRegex(address: String, loadAddress: String) -> NSRegularExpression {
             // swiftlint:disable:next force_try
@@ -93,15 +94,22 @@ class StackFrame {
             pattern: Parsing.componentsRegex,
             options: [.caseInsensitive]
         ).first, components.count == 4 {
-            // Crash report format, 0 = target, 1 = address, 2 = load address / target, 3 = byte offset
+            // Crash report format cases
+            // case1, 0 = target, 1 = address, 2 = load address, 3 = byte offset
+            // case2, 0 = target, 1 = address, 2 = target, 3 = byte offset
+            // case3(new), 0 = target, 1 = address, 2 = symbol name, 3 = byte offset
             address = components[1]
-            loadAddressOrTargetName = components[2]
-            byteOffset = components[3]
-
-            guard components[2].hasPrefix("0x") || components[0] == components[2] else {
-                // Only needs symbolication if we have a load address or the target name on the right side
-                return nil
+            if components[2].hasPrefix("0x") {
+                // case 1
+                loadAddressOrTargetName = components[2]
+            } else if components[0] == components[2] {
+                // case 2
+                loadAddressOrTargetName = components[2]
+            } else {
+                // case 3
+                loadAddressOrTargetName = components[0]
             }
+            byteOffset = components[3]
         } else if let components = line.scan(
             pattern: Parsing.sampleComponentsRegex,
             options: [.caseInsensitive]
@@ -136,12 +144,21 @@ class StackFrame {
 
     func replace(withResult result: String) {
         let symbolicatedLine = NSMutableString(string: line)
-
-        Parsing.sampleReplacementRegex(address: address).replaceMatches(
-            in: symbolicatedLine,
-            range: NSRange(location: 0, length: symbolicatedLine.length),
-            withTemplate: "\(result) + \(readableByteOffset)  [\(address)]"
-        )
+        // Preserve source code filename and line number
+        // Example from atos: `foobar() (in App) (Foobar.cpp:147)`
+        let sourceCodeComponents = result.scan(pattern: Parsing.sourceCodeRegex)
+        if sourceCodeComponents.first?.count == 3 {
+            let sourceCode = sourceCodeComponents[0][0]
+//            let fileName = sourceCodeComponents[0][1]
+//            let lineNumber = sourceCodeComponents[0][2]
+            symbolicatedLine.append(" \(sourceCode)")
+        } else {
+            Parsing.sampleReplacementRegex(address: address).replaceMatches(
+                in: symbolicatedLine,
+                range: NSRange(location: 0, length: symbolicatedLine.length),
+                withTemplate: "\(result) + \(readableByteOffset)  [\(address)]"
+            )
+        }
 
         Parsing.replacementLoadAddressRegex(address: address, loadAddress: binaryImage.loadAddress).replaceMatches(
             in: symbolicatedLine,
