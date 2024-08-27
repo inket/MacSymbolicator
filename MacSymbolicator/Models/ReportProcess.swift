@@ -11,8 +11,8 @@ public class ReportProcess {
     let binaryImages: [BinaryImage]
     let frames: [StackFrame]
 
-    private static let processSectionRegex = #"^(Process:.*?)(?=\z|^Process:)"#
-    private static let processNameRegex = #"^Process:\s*(.+?)\s*\["#
+    private static let processSectionRegex = #"^((?:Process|Command):.*?)(?=\z|^(?:Process|Command):)"#
+    private static let processNameRegex = #"^(?:Process|Command):\s*(.+?)\s*\["#
 
     lazy var binariesForSymbolication: [BinaryImage] = {
         let uuids = frames.map { $0.binaryImage }
