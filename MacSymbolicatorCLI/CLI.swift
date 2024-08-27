@@ -21,7 +21,10 @@ struct MacSymbolicatorCLI: ParsableCommand {
     @Flag(name: .shortAndLong)
     var verbose = false
 
-    @Option(name: .shortAndLong, help: "Only symbolicate process names containing this substring (case sensitive). Useful with HANG files as these contain many processes.")
+    @Option(name: .shortAndLong, help: """
+    Only symbolicate process names containing this substring (case sensitive).
+    Useful with HANG files as these contain many processes.
+    """)
     var processName: String?
 
     @Option(name: .shortAndLong, help: "The output file to save the result to, instead of printing to stdout")
