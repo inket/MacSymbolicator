@@ -12,7 +12,7 @@ public class ReportProcess {
     let frames: [StackFrame]
 
     private static let processSectionRegex = #"^((?:Process|Command):.*?)(?=\z|^(?:Process|Command):)"#
-    private static let processNameRegex = #"^(?:Process|Command):\s*(.+?)\s*\["#
+    private static let processNameRegex = #"^(?:Process|Command):\s*(.+?)\s*(?:\[|$)"#
 
     lazy var binariesForSymbolication: [BinaryImage] = {
         let uuids = frames.map { $0.binaryImage }
