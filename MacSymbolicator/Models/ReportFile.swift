@@ -16,7 +16,7 @@ public class ReportFile {
     let path: URL
     let filename: String
     let processes: [ReportProcess]
-    
+
     lazy var binariesForSymbolication: [BinaryImage] = {
         let images = processes.flatMap { $0.binariesForSymbolication }
         return Array(Set<BinaryImage>(images))
@@ -27,6 +27,7 @@ public class ReportFile {
         return Array(Set<BinaryUUID>(uuids))
     }()
 
+    let metadata: String?
     let content: String
     var symbolicatedContent: String?
 
@@ -45,19 +46,29 @@ public class ReportFile {
 
         do {
             originalContent = try String(contentsOf: path, encoding: .utf8)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
         } catch {
             throw InitializationError.readingFile(error)
         }
 
-        guard !originalContent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        guard !originalContent.isEmpty else {
             throw InitializationError.emptyFile
         }
 
-        var processes = ReportProcess.find(in: originalContent, targetProcess: targetProcessName)
+        let rangeOfFirstLine = originalContent.lineRange(for: ..<originalContent.startIndex)
+        let firstLine = String(originalContent[rangeOfFirstLine])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let restOfContents = String(originalContent[rangeOfFirstLine.upperBound..<originalContent.endIndex])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if processes.isEmpty && originalContent.hasPrefix("{") {
-            // Could not find any processes defined in the report file -> Probably not the usual crash report format
-            // However, the contents might be JSON -> It might be the new .ips format
+        if firstLine.hasPrefix("{") {
+            metadata = firstLine
+        } else {
+            metadata = nil
+        }
+
+        if restOfContents.hasPrefix("{") {
+            // Contents are likely JSON -> It might be the new .ips format
             // Attempt translation to the old crash format
 
             do {
@@ -69,14 +80,13 @@ public class ReportFile {
                     throw InitializationError.other(error)
                 }
             }
-
-            processes = ReportProcess.find(in: content, targetProcess: targetProcessName)
         } else {
-            self.content = originalContent
+            content = originalContent
         }
+
+        processes = ReportProcess.find(in: content, targetProcess: targetProcessName)
 
         self.path = path
         self.filename = path.lastPathComponent
-        self.processes = processes
     }
 }
