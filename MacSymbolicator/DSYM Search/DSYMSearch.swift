@@ -21,6 +21,7 @@ class DSYMSearch {
     private static func processSearchResults(
         _ results: [SearchResult],
         expectedUUIDs: Set<String>,
+        finished: Bool,
         logHandler logMessage: @escaping LogHandler,
         callback: @escaping Callback
     ) -> ProcessingResult {
@@ -39,7 +40,7 @@ class DSYMSearch {
         let foundUUIDs = Set<String>(foundItems.keys)
         let missingUUIDs = expectedUUIDs.subtracting(foundUUIDs)
 
-        callback(missingUUIDs.isEmpty, Array(foundItems.values))
+        callback(finished || missingUUIDs.isEmpty, Array(foundItems.values))
 
         return ProcessingResult(missingUUIDs: missingUUIDs)
     }
@@ -63,6 +64,7 @@ class DSYMSearch {
                     processingResult = processSearchResults(
                         results,
                         expectedUUIDs: expectedUUIDs,
+                        finished: false,
                         logHandler: logMessage,
                         callback: callback
                     )
@@ -85,6 +87,7 @@ class DSYMSearch {
                 processingResult = processSearchResults(
                     nonRecursiveFileSearchResults,
                     expectedUUIDs: expectedUUIDs,
+                    finished: false,
                     logHandler: logMessage,
                     callback: callback
                 )
@@ -104,6 +107,7 @@ class DSYMSearch {
                 processingResult = processSearchResults(
                     recursiveFileSearchResults,
                     expectedUUIDs: expectedUUIDs,
+                    finished: true,
                     logHandler: logMessage,
                     callback: callback
                 )
