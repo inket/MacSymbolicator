@@ -51,6 +51,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B2C2291E1EF223C50015AB33"
+            BuildableName = "MacSymbolicator.app"
+            BlueprintName = "MacSymbolicator"
+            ReferencedContainer = "container:MacSymbolicator.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

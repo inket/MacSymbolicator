@@ -65,13 +65,13 @@ struct MacSymbolicatorCLI: ParsableCommand {
             print("---------")
             print("Symbolicating with:")
 
-            let reportUUIDs = reportFile.uuidsForSymbolication.map { $0.pretty }.joined(separator: ", ")
+            let reportUUIDs = reportFile.dsymRequirements.sortedDSYMs.map { $0.uuid.pretty }.joined(separator: ", ")
             print("Report: \(reportFile.path.path) [\(reportUUIDs)]")
 
             let dsymDescriptions: [String] = dsymFiles.map {
                 let uuids = $0.uuids.map { "    \($0.key): \($0.value.pretty)" }
 
-                return "DSYM file: \($0.binaryPath)\n\(uuids.joined(separator: "\n"))"
+                return "dSYM file: \($0.binaryPath)\n\(uuids.joined(separator: "\n"))"
             }
             print(dsymDescriptions.joined(separator: "\n"))
             print("---------")
@@ -119,13 +119,14 @@ struct MacSymbolicatorCLI: ParsableCommand {
     }
 
     private func printUUIDsForReport(_ reportFile: ReportFile) throws {
-        let dsymIdents = reportFile.binariesForSymbolication.map { "\($0.name)/\($0.uuid.pretty)"
-        }.joined(separator: "\n")
+        let result = reportFile.dsymRequirements.sortedDSYMs
+            .map { "\($0.targetName)/\($0.uuid.pretty)" }
+            .joined(separator: "\n")
 
         if let output = output {
-            try dsymIdents.write(toFile: output, atomically: false, encoding: .utf8)
+            try result.write(toFile: output, atomically: false, encoding: .utf8)
         } else {
-            print(dsymIdents)
+            print(result)
         }
 
         MacSymbolicatorCLI.exit(withError: nil)

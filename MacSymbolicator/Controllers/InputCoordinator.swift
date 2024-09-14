@@ -5,18 +5,21 @@
 
 import Foundation
 
-class InputCoordinator {
-    let reportFileDropZone = DropZone(
+final class InputCoordinator {
+    private(set) lazy var reportFileDropZone = DropZone(
         fileTypes: [".crash", ".ips", ".txt", ".hang"],
         allowsMultipleFiles: false,
+        tableViewViewModel: nil,
         text: "Drop Report File\n(crash, sample, spindump or hang)",
         activatesAppAfterDrop: true
     )
 
-    let dsymFilesDropZone = DropZone(
+    private let dsymListViewModel = DSYMListViewModel()
+    private(set) lazy var dsymFilesDropZone = DropZone(
         fileTypes: [".dSYM"],
         allowsMultipleFiles: true,
-        text: "Drop App DSYMs",
+        tableViewViewModel: dsymListViewModel,
+        text: "Drop App dSYMs",
         detailText: "(if not found automatically)",
         activatesAppAfterDrop: true
     )
@@ -29,9 +32,7 @@ class InputCoordinator {
     private let logController: LogController
 
     private var expectedDSYMUUIDs: Set<String> {
-        guard let reportFile = reportFile else { return Set<String>() }
-
-        return Set<String>(reportFile.uuidsForSymbolication.map { $0.pretty })
+        Set<String>(reportFile?.dsymRequirements.expectedUUIDs.map { $0.pretty } ?? [])
     }
 
     private var foundDSYMUUIDs: Set<String> {
@@ -58,17 +59,18 @@ class InputCoordinator {
     }
 
     func startSearchForDSYMs() {
-        guard let reportFile = reportFile else { return }
+        guard let reportFile else { return }
 
         let remainingUUIDs = Array(remainingDSYMUUIDs)
 
         guard !remainingUUIDs.isEmpty else {
-            updateDSYMDetailText()
+            updateDSYMDropZone()
             return
         }
 
         isSearchingForDSYMs = true
-        updateDSYMDetailText()
+        dsymFilesDropZone.state = .multipleFiles
+        updateDSYMDropZone()
 
         DSYMSearch.search(
             forUUIDs: remainingUUIDs,
@@ -85,7 +87,7 @@ class InputCoordinator {
                         self?.isSearchingForDSYMs = false
                     }
 
-                    self?.updateDSYMDetailText()
+                    self?.updateDSYMDropZone()
                 }
             }
         )
@@ -108,17 +110,22 @@ class InputCoordinator {
         case 0:
             reportFileDropZone.detailText = "(Symbolication not needed)"
         case 1:
-            reportFileDropZone.detailText = "(1 DSYM necessary)"
+            reportFileDropZone.detailText = "(1 dSYM necessary)"
         default:
-            reportFileDropZone.detailText = "(\(expectedCount) DSYMs necessary)"
+            reportFileDropZone.detailText = "(\(expectedCount) dSYMs necessary)"
         }
     }
 
-    func updateDSYMDetailText() {
-        guard reportFile != nil else {
+    func updateDSYMDropZone() {
+        guard let reportFile else {
             dsymFilesDropZone.detailText = "(if not found automatically)"
+            dsymListViewModel.recommendedDSYMs = []
+            dsymListViewModel.optionalDSYMs = []
             return
         }
+
+        dsymListViewModel.recommendedDSYMs = Array(reportFile.dsymRequirements.recommendedDSYMs.values)
+        dsymListViewModel.optionalDSYMs = Array(reportFile.dsymRequirements.optionalDSYMs.values)
 
         guard !expectedDSYMUUIDs.isEmpty else {
             dsymFilesDropZone.detailText = ""
@@ -141,7 +148,7 @@ extension InputCoordinator: DropZoneDelegate {
             if dropZone == reportFileDropZone {
                 DispatchQueue.main.async(execute: self.updateCrashDetailText)
             } else if dropZone == dsymFilesDropZone {
-                DispatchQueue.main.async(execute: self.updateDSYMDetailText)
+                DispatchQueue.main.async(execute: self.updateDSYMDropZone)
             }
         }
 

@@ -15,6 +15,10 @@
 		B2036AF128DDE81700ED1268 /* dSYMs in Resources */ = {isa = PBXBuildFile; fileRef = B2036AEB28DDE81700ED1268 /* dSYMs */; };
 		B2036AF328DDE81700ED1268 /* Samples in Resources */ = {isa = PBXBuildFile; fileRef = B2036AED28DDE81700ED1268 /* Samples */; };
 		B2036AF428DDE81700ED1268 /* Spindumps in Resources */ = {isa = PBXBuildFile; fileRef = B2036AEE28DDE81700ED1268 /* Spindumps */; };
+		B203F3AD2C7EB4DF00CF33D9 /* DSYMListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3AC2C7EB4DF00CF33D9 /* DSYMListViewModel.swift */; };
+		B203F3B12C82D8CF00CF33D9 /* DSYMRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */; };
+		B203F3B22C854C9600CF33D9 /* DSYMRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */; };
+		B203F3B42C85531600CF33D9 /* NSLayoutConstraintExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */; };
 		B212510F20CD123900F36050 /* MacSymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */; };
 		B212511720CD125E00F36050 /* SymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212511620CD125E00F36050 /* SymbolicatorTests.swift */; };
 		B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */; };
@@ -112,6 +116,9 @@
 		B2036AEC28DDE81700ED1268 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2036AED28DDE81700ED1268 /* Samples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Samples; sourceTree = "<group>"; };
 		B2036AEE28DDE81700ED1268 /* Spindumps */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Spindumps; sourceTree = "<group>"; };
+		B203F3AC2C7EB4DF00CF33D9 /* DSYMListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMListViewModel.swift; sourceTree = "<group>"; };
+		B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMRequirement.swift; sourceTree = "<group>"; };
+		B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutConstraintExtensions.swift; sourceTree = "<group>"; };
 		B212510C20CD123800F36050 /* MacSymbolicatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacSymbolicatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSymbolicatorTests.swift; sourceTree = "<group>"; };
 		B212511620CD125E00F36050 /* SymbolicatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicatorTests.swift; sourceTree = "<group>"; };
@@ -247,6 +254,7 @@
 			isa = PBXGroup;
 			children = (
 				B2B74D8E1EF8E9CC000BBFD6 /* StringExtensions.swift */,
+				B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -262,6 +270,7 @@
 				B23646862618178400AB9486 /* BinaryImage.swift */,
 				B236468D2618214F00AB9486 /* StackFrame.swift */,
 				B29D4B80290C421300E9D1A1 /* BinaryImageMap.swift */,
+				B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -271,6 +280,7 @@
 			children = (
 				B2BC4CB31EF22A6400B3189A /* CenteredWindow.swift */,
 				B27931331EF2875E00DDAA7D /* DropZone.swift */,
+				B203F3AC2C7EB4DF00CF33D9 /* DSYMListViewModel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -514,6 +524,7 @@
 				B24BB98728AFCC5A00610CF0 /* ReportProcess.swift in Sources */,
 				B21EFA5C289A983200CA69B1 /* Symbolicator.swift in Sources */,
 				B21EFA63289A984000CA69B1 /* Translator.swift in Sources */,
+				B203F3B22C854C9600CF33D9 /* DSYMRequirement.swift in Sources */,
 				B29D4B82290C42A800E9D1A1 /* BinaryImageMap.swift in Sources */,
 				B21EFA60289A983B00CA69B1 /* Architecture.swift in Sources */,
 				B21EFA5D289A983B00CA69B1 /* DSYMFile.swift in Sources */,
@@ -536,6 +547,7 @@
 				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
 				B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */,
 				B2421B852896E887008B59EB /* Translator.swift in Sources */,
+				B203F3AD2C7EB4DF00CF33D9 /* DSYMListViewModel.swift in Sources */,
 				B21EFA6A289AAB6600CA69B1 /* ViewableLogController.swift in Sources */,
 				B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */,
 				B26D624F232D497400DF1D1E /* LogController.swift in Sources */,
@@ -544,7 +556,9 @@
 				B29D4B81290C421300E9D1A1 /* BinaryImageMap.swift in Sources */,
 				B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */,
 				B25A35CD1EF9211F00F52E00 /* Symbolicator.swift in Sources */,
+				B203F3B42C85531600CF33D9 /* NSLayoutConstraintExtensions.swift in Sources */,
 				B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */,
+				B203F3B12C82D8CF00CF33D9 /* DSYMRequirement.swift in Sources */,
 				B2C229231EF223C50015AB33 /* AppDelegate.swift in Sources */,
 				B289E0A223F5F7350019C28B /* DSYMSearch.swift in Sources */,
 				B289E0A423F5F77C0019C28B /* SpotlightSearch.swift in Sources */,
@@ -596,7 +610,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -622,7 +636,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicatorTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -720,7 +734,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -774,7 +788,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -800,6 +814,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -826,6 +841,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = jp.mahdi.MacSymbolicator;
 				PRODUCT_NAME = "$(TARGET_NAME)";

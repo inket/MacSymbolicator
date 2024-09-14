@@ -7,7 +7,7 @@ import Cocoa
 import FullDiskAccess
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+final class AppDelegate: NSObject, NSApplicationDelegate {
     let mainController = MainController()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -21,7 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         FullDiskAccess.promptIfNotGranted(
             title: "Enable Full Disk Access for MacSymbolicator",
-            message: "MacSymbolicator requires Full Disk Access to search for DSYMs using Spotlight.",
+            message: "MacSymbolicator requires Full Disk Access to search for dSYMs using Spotlight.",
             canBeSuppressed: true
         )
     }

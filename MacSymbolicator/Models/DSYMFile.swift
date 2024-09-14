@@ -26,7 +26,7 @@ public struct DSYMFile: Equatable {
         if let file = DSYMFile(path: url) {
             return [file]
         } else {
-            // Maybe embedded DSYM files created by fastlane. See https://github.com/inket/MacSymbolicator/issues/21
+            // Maybe embedded dSYM files created by fastlane. See https://github.com/inket/MacSymbolicator/issues/21
             let entries = (try? FileManager.default.contentsOfDirectory(atPath: url.path)) ?? []
 
             return entries.compactMap {
@@ -52,8 +52,8 @@ public struct DSYMFile: Equatable {
         output?.components(separatedBy: .newlines).forEach { line in
             guard
                 let match = line.scan(pattern: #"UUID: (.*?) \((.*?)\)"#).first, match.count == 2,
-                let uuid = match.first.flatMap(BinaryUUID.init),
-                let architecture = match.last.flatMap(Architecture.init)
+                let rawArchitecture = match.last, let architecture = Architecture(rawArchitecture),
+                let rawUUID = match.first, let uuid = BinaryUUID(rawUUID, architecture: architecture)
             else { return }
 
             uuids[architecture] = uuid

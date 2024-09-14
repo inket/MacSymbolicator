@@ -6,7 +6,12 @@
 import Cocoa
 
 class MainController {
-    private let mainWindow = CenteredWindow(width: 800, height: 400)
+    private enum Layout {
+        static let windowSize = CGSize(width: 1000, height: 600)
+        static let reportFileDropZoneHeight: CGFloat = 300
+    }
+
+    private let mainWindow = CenteredWindow(width: Layout.windowSize.width, height: Layout.windowSize.height)
     private let textWindowController = TextWindowController(title: "Symbolicated Content", clearable: false)
 
     private var updateButton: NSButton?
@@ -35,8 +40,17 @@ class MainController {
 
         let reportFileDropZone = inputCoordinator.reportFileDropZone
         let dsymFilesDropZone = inputCoordinator.dsymFilesDropZone
-        mainWindow.styleMask = [.unifiedTitleAndToolbar, .titled]
+        mainWindow.titlebarAppearsTransparent = true
+        mainWindow.styleMask = [.fullSizeContentView, .unifiedTitleAndToolbar, .titled, .closable, .miniaturizable]
         mainWindow.title = "MacSymbolicator"
+        mainWindow.backgroundColor = nil
+        mainWindow.contentView = {
+            let visualEffect = NSVisualEffectView()
+            visualEffect.state = .inactive
+            visualEffect.material = .sidebar
+            return visualEffect
+        }()
+        mainWindow.titlebarAppearsTransparent = true
 
         statusTextField.drawsBackground = false
         statusTextField.isBezeled = false
@@ -80,10 +94,10 @@ class MainController {
         viewLogsButton.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            contentView.heightAnchor.constraint(equalToConstant: 400),
-            contentView.widthAnchor.constraint(equalToConstant: 800),
+            contentView.heightAnchor.constraint(equalToConstant: Layout.windowSize.height),
+            contentView.widthAnchor.constraint(equalToConstant: Layout.windowSize.width),
 
-            dropZonesContainerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            dropZonesContainerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 26),
             dropZonesContainerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             dropZonesContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             dropZonesContainerView.heightAnchor.constraint(lessThanOrEqualToConstant: mainWindow.frame.size.height),
@@ -100,8 +114,12 @@ class MainController {
             reportFileDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
             reportFileDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),
             reportFileDropZone.widthAnchor.constraint(equalTo: dropZonesContainerView.widthAnchor, multiplier: 0.5),
+//            reportFileDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
+//            reportFileDropZone.heightAnchor.constraint(equalToConstant: Layout.reportFileDropZoneHeight),
 
             dsymFilesDropZone.topAnchor.constraint(equalTo: dropZonesContainerView.topAnchor),
+//            dsymFilesDropZone.topAnchor.constraint(equalTo: reportFileDropZone.bottomAnchor),
+//            dsymFilesDropZone.leadingAnchor.constraint(equalTo: dropZonesContainerView.leadingAnchor),
             dsymFilesDropZone.trailingAnchor.constraint(equalTo: dropZonesContainerView.trailingAnchor),
             dsymFilesDropZone.bottomAnchor.constraint(equalTo: dropZonesContainerView.bottomAnchor),
             dsymFilesDropZone.heightAnchor.constraint(equalTo: dropZonesContainerView.heightAnchor),

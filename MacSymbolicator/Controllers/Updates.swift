@@ -47,7 +47,7 @@ extension OperatingSystemVersion: Comparable {
     }
 }
 
-class Updates {
+final class Updates {
     enum UpdatesError: Error {
         case invalidURL
         case network(Int)

@@ -11,23 +11,41 @@ protocol DropZoneDelegate: AnyObject {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL]
 }
 
-class DropZone: NSView {
+protocol DropZoneTableViewViewModel: AnyObject {
+    func setup(with tableView: NSTableView, tableViewScrollView: NSScrollView)
+    func updateSnapshot(withFiles files: [URL])
+}
+
+final class DropZone: NSView {
+    private enum Layout {
+        static let borderPadding: CGFloat = 12
+        static let tableViewInset: CGFloat = 0.5
+        static let multipleFilesDropZoneHeight: CGFloat = 80
+    }
+
     enum State {
         case oneFileEmpty
         case oneFile
-        case multipleFilesEmpty
+        case multipleFilesInitial
         case multipleFiles
     }
 
     // MARK: Properties
     weak var delegate: DropZoneDelegate?
+    var tableViewViewModel: DropZoneTableViewViewModel?
 
     var state: State {
         didSet {
             layoutElements()
 
-            tableViewScrollView.isHidden = files.isEmpty
-            tableView.reloadData()
+            switch state {
+            case .oneFile, .oneFileEmpty, .multipleFilesInitial:
+                tableViewScrollView.isHidden = true
+            case .multipleFiles:
+                tableViewScrollView.isHidden = false
+            }
+
+            tableViewViewModel?.updateSnapshot(withFiles: Array(files))
 
             display()
         }
@@ -83,7 +101,7 @@ class DropZone: NSView {
     var files = Set<URL>() {
         didSet {
             if allowsMultipleFiles {
-                state = files.isEmpty ? .multipleFilesEmpty : .multipleFiles
+                state = .multipleFiles
             } else {
                 state = files.isEmpty ? .oneFileEmpty : .oneFile
             }
@@ -112,13 +130,15 @@ class DropZone: NSView {
     init(
         fileTypes: [String],
         allowsMultipleFiles: Bool,
+        tableViewViewModel: DropZoneTableViewViewModel?,
         text: String? = nil,
         detailText: String? = nil,
         activatesAppAfterDrop: Bool = false
     ) {
         self.activatesAppAfterDrop = activatesAppAfterDrop
         self.allowsMultipleFiles = allowsMultipleFiles
-        state = allowsMultipleFiles ? .multipleFilesEmpty : .oneFileEmpty
+        self.tableViewViewModel = tableViewViewModel
+        state = allowsMultipleFiles ? .multipleFilesInitial : .oneFileEmpty
 
         super.init(frame: .zero)
 
@@ -144,8 +164,6 @@ class DropZone: NSView {
             textContainerStackView.addArrangedSubview($0)
         }
 
-        wantsLayer = true
-        layer?.cornerRadius = 14
         translatesAutoresizingMaskIntoConstraints = false
 
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -174,23 +192,8 @@ class DropZone: NSView {
         iconImageView.unregisterDraggedTypes()
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
 
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.focusRingType = .none
-        tableView.usesAlternatingRowBackgroundColors = true
-        tableView.headerView = nil
-        tableView.rowHeight = 44
-
-        tableViewScrollView.documentView = tableView
         tableViewScrollView.translatesAutoresizingMaskIntoConstraints = false
-        tableViewScrollView.automaticallyAdjustsContentInsets = false
-        tableViewScrollView.contentInsets = NSEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
-        tableViewScrollView.wantsLayer = true
-        tableViewScrollView.layer?.cornerRadius = 8
-
-        let column = NSTableColumn(identifier: .init(rawValue: "name"))
-        column.width = CGFloat(300)
-        tableView.addTableColumn(column)
+        tableViewViewModel?.setup(with: tableView, tableViewScrollView: tableViewScrollView)
 
         layoutElements()
 
@@ -198,10 +201,22 @@ class DropZone: NSView {
             addSubview(tableViewScrollView)
 
             NSLayoutConstraint.activate([
-                tableViewScrollView.topAnchor.constraint(equalTo: topAnchor, constant: 6.5 + 60),
-                tableViewScrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6.5),
-                tableViewScrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6.5),
-                tableViewScrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6.5)
+                tableViewScrollView.topAnchor.constraint(
+                    equalTo: topAnchor,
+                    constant: Layout.borderPadding + Layout.tableViewInset + 70
+                ),
+                tableViewScrollView.leadingAnchor.constraint(
+                    equalTo: leadingAnchor,
+                    constant: Layout.borderPadding + Layout.tableViewInset
+                ),
+                tableViewScrollView.trailingAnchor.constraint(
+                    equalTo: trailingAnchor,
+                    constant: -(Layout.borderPadding + Layout.tableViewInset)
+                ),
+                tableViewScrollView.bottomAnchor.constraint(
+                    equalTo: bottomAnchor,
+                    constant: -(Layout.borderPadding + Layout.tableViewInset)
+                )
             ])
 
             tableViewScrollView.isHidden = true
@@ -216,11 +231,14 @@ class DropZone: NSView {
             layoutConstraints = [
                 containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
                 containerView.topAnchor.constraint(equalTo: topAnchor),
-                containerView.heightAnchor.constraint(equalToConstant: 60),
+                containerView.heightAnchor.constraint(equalToConstant: Layout.multipleFilesDropZoneHeight),
                 containerView.widthAnchor.constraint(equalTo: widthAnchor),
 
                 iconImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-                iconImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 12),
+                iconImageView.leadingAnchor.constraint(
+                    equalTo: containerView.leadingAnchor,
+                    constant: Layout.borderPadding + 12
+                ),
                 iconImageView.heightAnchor.constraint(equalToConstant: 32),
                 iconImageView.widthAnchor.constraint(equalToConstant: 32),
 
@@ -233,7 +251,7 @@ class DropZone: NSView {
             textContainerStackView.spacing = 0
             textContainerStackView.alignment = .leading
             NSLayoutConstraint.activate(layoutConstraints)
-        case .oneFile, .oneFileEmpty, .multipleFilesEmpty:
+        case .oneFile, .oneFileEmpty, .multipleFilesInitial:
             layoutConstraints = [
                 containerView.topAnchor.constraint(equalTo: topAnchor),
                 containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -298,7 +316,7 @@ class DropZone: NSView {
             mainLabelText = files.first?.lastPathComponent ?? text
             fileTypeLabelText = _fileTypes.joined(separator: " / ")
             detailLabelText = detailText
-        case .multipleFilesEmpty, .oneFileEmpty:
+        case .multipleFilesInitial, .oneFileEmpty:
             mainLabelText = text
             fileTypeLabelText = _fileTypes.joined(separator: " / ")
             detailLabelText = detailText
@@ -344,7 +362,7 @@ class DropZone: NSView {
         bounds.fill()
 
         // Padding
-        let borderPadding: CGFloat = 6
+        let borderPadding: CGFloat = 12
 
         let drawRect: CGRect
 
@@ -361,14 +379,14 @@ class DropZone: NSView {
             drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = true
             drawTableViewBorder = false
-        case .multipleFilesEmpty:
+        case .multipleFilesInitial:
             drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = false
             drawTableViewBorder = false
         case .multipleFiles:
             var rect = containerView.frame
 
-            let newHeight: CGFloat = 60
+            let newHeight: CGFloat = Layout.multipleFilesDropZoneHeight
             rect.origin.y += (rect.size.height - newHeight)
             rect.size.height = newHeight
 
@@ -394,7 +412,7 @@ class DropZone: NSView {
         roundedRectanglePath.stroke()
 
         if drawTableViewBorder {
-            let borderRect = tableViewScrollView.frame.insetBy(dx: -0.5, dy: -0.5)
+            let borderRect = tableViewScrollView.frame.insetBy(dx: -Layout.tableViewInset, dy: -Layout.tableViewInset)
             let tableViewBorderPath = NSBezierPath(roundedRect: borderRect, xRadius: 8, yRadius: 8)
             tableViewBorderPath.lineWidth = 1.5
             tableViewBorderPath.stroke()
@@ -472,54 +490,6 @@ extension DropZone {
 
     private func validFileURL(_ url: URL) -> Bool {
         return fileTypesPredicate.evaluate(with: url.path)
-    }
-}
-
-// MARK: NSTableViewDataSource & NSTableViewDelegate
-extension DropZone: NSTableViewDataSource, NSTableViewDelegate {
-    func numberOfRows(in tableView: NSTableView) -> Int {
-        files.count
-    }
-
-    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
-        let rowIndex = files.index(files.startIndex, offsetBy: row)
-        return files[rowIndex].lastPathComponent
-    }
-
-    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
-        let rowIndex = files.index(files.startIndex, offsetBy: row)
-
-        let fileURL = files[rowIndex]
-        let filename = fileURL.lastPathComponent
-        let containingPath = (fileURL.deletingLastPathComponent().path as NSString).abbreviatingWithTildeInPath
-
-        let filenameLabel = NSTextField(labelWithString: filename)
-        filenameLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
-        let pathLabel = NSTextField(labelWithString: containingPath)
-        pathLabel.textColor = NSColor.secondaryLabelColor
-        pathLabel.font = NSFont.controlContentFont(ofSize: NSFont.smallSystemFontSize)
-        pathLabel.lineBreakMode = .byTruncatingMiddle
-        pathLabel.toolTip = containingPath
-
-        let paddingView = NSView()
-
-        let stackView = NSStackView(views: [filenameLabel, pathLabel])
-        stackView.orientation = .vertical
-        stackView.distribution = .equalCentering
-        stackView.alignment = .leading
-        stackView.spacing = 0
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-
-        paddingView.addSubview(stackView)
-
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: paddingView.topAnchor, constant: 6),
-            stackView.leadingAnchor.constraint(equalTo: paddingView.leadingAnchor, constant: 4),
-            stackView.trailingAnchor.constraint(equalTo: paddingView.trailingAnchor, constant: -4),
-            stackView.bottomAnchor.constraint(equalTo: paddingView.bottomAnchor, constant: -6)
-        ])
-
-        return paddingView
     }
 }
 
