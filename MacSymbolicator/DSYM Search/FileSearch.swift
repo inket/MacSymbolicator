@@ -19,7 +19,7 @@ protocol FileSearchResults {
     func sorted() -> FileSearchResults
 }
 
-private class InternalFileSearch: FileSearchResults, FileSearchQuery {
+private final class InternalFileSearch: FileSearchResults, FileSearchQuery {
     var directory: String?
     var recursive = true
     var results = [String]()
@@ -100,7 +100,7 @@ private class InternalFileSearch: FileSearchResults, FileSearchQuery {
     }
 }
 
-class FileSearch {
+final class FileSearch {
     private let internalFileSearch = InternalFileSearch()
 
     static var recursive: FileSearch {

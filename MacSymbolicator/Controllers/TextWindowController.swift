@@ -5,7 +5,7 @@
 
 import Cocoa
 
-class TextWindowController: NSObject {
+final class TextWindowController: NSObject {
     private let window = CenteredWindow(width: 1100, height: 800)
     private let scrollView = NSScrollView()
     private let textView = NSTextView()

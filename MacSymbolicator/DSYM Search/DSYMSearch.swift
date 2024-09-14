@@ -10,7 +10,7 @@ struct SearchResult {
     let matchedUUID: String
 }
 
-class DSYMSearch {
+final class DSYMSearch {
     private struct ProcessingResult {
         let missingUUIDs: Set<String>
     }
@@ -25,7 +25,7 @@ class DSYMSearch {
         logHandler logMessage: @escaping LogHandler,
         callback: @escaping Callback
     ) -> ProcessingResult {
-        // Log results and deduplicate them since some DSYMs might be duplicated in other locations.
+        // Log results and deduplicate them since some dSYMs might be duplicated in other locations.
         var foundItems: [String: SearchResult] = [:]
 
         for result in results {

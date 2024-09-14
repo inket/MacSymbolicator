@@ -5,7 +5,7 @@
 
 import Foundation
 
-class BinaryImageMap {
+final class BinaryImageMap {
     private let nameMap: [String: BinaryImage]
     private let loadAddressMap: [String: BinaryImage]
 

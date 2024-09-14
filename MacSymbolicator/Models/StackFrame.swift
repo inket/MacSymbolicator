@@ -5,7 +5,7 @@
 
 import Foundation
 
-class StackFrame {
+final class StackFrame {
     private enum Parsing {
         static let lineRegex = #"^\d+\s+.*?0x.*?\s.*?\s\+\s.*$"#
         static let componentsRegex = #"^\d+\s+(.*?)\s+(0x.*?)\s(.*?)\s\+\s(\d*)"#
@@ -48,6 +48,7 @@ class StackFrame {
     let address: String
     let binaryImage: BinaryImage
     let byteOffset: String
+    let symbolicationRecommended: Bool
 
     var readableByteOffset: String {
         // Samples can have hexadecimal byte offsets, so we convert them to integers
@@ -89,6 +90,7 @@ class StackFrame {
 
         let loadAddressOrTargetName: String
         let address: String
+        let symbolicationRecommended: Bool
 
         if let components = line.scan(
             pattern: Parsing.componentsRegex,
@@ -102,12 +104,15 @@ class StackFrame {
             if components[2].hasPrefix("0x") {
                 // Case 1
                 loadAddressOrTargetName = components[2]
+                symbolicationRecommended = true
             } else if components[0] == components[2] {
                 // Case 2
                 loadAddressOrTargetName = components[2]
+                symbolicationRecommended = true
             } else {
                 // Case 3
                 loadAddressOrTargetName = components[0]
+                symbolicationRecommended = false
             }
             byteOffset = components[3]
         } else if let components = line.scan(
@@ -118,6 +123,7 @@ class StackFrame {
             loadAddressOrTargetName = components[0]
             byteOffset = components[1]
             address = components[2]
+            symbolicationRecommended = true
         } else if let components = line.scan(
             pattern: Parsing.spindumpComponentsRegex,
             options: [.caseInsensitive]
@@ -126,6 +132,7 @@ class StackFrame {
             loadAddressOrTargetName = components[0]
             byteOffset = components[1]
             address = components[2]
+            symbolicationRecommended = true
         } else {
             return nil
         }
@@ -140,6 +147,7 @@ class StackFrame {
 
         self.address = address
         self.binaryImage = binaryImage
+        self.symbolicationRecommended = symbolicationRecommended && !binaryImage.isLikelySystem
     }
 
     func replace(withResult result: String) {

@@ -5,7 +5,7 @@
 
 import Foundation
 
-public class ReportFile {
+public final class ReportFile {
     enum InitializationError: Error {
         case readingFile(Error)
         case emptyFile
@@ -17,14 +17,8 @@ public class ReportFile {
     let filename: String
     let processes: [ReportProcess]
 
-    lazy var binariesForSymbolication: [BinaryImage] = {
-        let images = processes.flatMap { $0.binariesForSymbolication }
-        return Array(Set<BinaryImage>(images))
-    }()
-
-    lazy var uuidsForSymbolication: [BinaryUUID] = {
-        let uuids = processes.flatMap { $0.uuidsForSymbolication }
-        return Array(Set<BinaryUUID>(uuids))
+    lazy var dsymRequirements: DSYMRequirements = {
+        DSYMRequirements(combining: processes.map { $0.dsymRequirements })
     }()
 
     let metadata: String?

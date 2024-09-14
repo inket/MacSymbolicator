@@ -7,6 +7,7 @@ import Foundation
 
 struct BinaryUUID: Equatable, Hashable {
     let raw: String
+    let architecture: Architecture?
 
     var pretty: String {
         let distribution = [8, 4, 4, 4]
@@ -19,7 +20,15 @@ struct BinaryUUID: Equatable, Hashable {
         return characters.joined().uppercased()
     }
 
-    init?(_ string: String) {
+    static func == (_ lhs: Self, _ rhs: Self) -> Bool {
+        lhs.raw == rhs.raw
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(raw)
+    }
+
+    init?(_ string: String, architecture: Architecture?) {
         let value = string.lowercased()
         let dashless = value.replacingOccurrences(of: "-", with: "")
 
@@ -44,5 +53,6 @@ struct BinaryUUID: Equatable, Hashable {
         }
 
         raw = dashless
+        self.architecture = architecture
     }
 }

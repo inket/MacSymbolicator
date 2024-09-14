@@ -5,7 +5,7 @@
 
 import Foundation
 
-class SpotlightSearch {
+final class SpotlightSearch {
     typealias CompletionHandler = ([SearchResult]?) -> Void
 
     private var query: NSMetadataQuery?
