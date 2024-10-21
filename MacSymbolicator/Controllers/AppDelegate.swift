@@ -10,6 +10,10 @@ import FullDiskAccess
 final class AppDelegate: NSObject, NSApplicationDelegate {
     let mainController = MainController()
 
+    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
+        true
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         Updates.availableUpdate(forUser: "inket", repository: "MacSymbolicator") { [weak self] release, error in
             if let release = release {
