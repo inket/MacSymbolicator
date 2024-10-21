@@ -147,7 +147,7 @@ final class StackFrame {
 
         self.address = address
         self.binaryImage = binaryImage
-        self.symbolicationRecommended = symbolicationRecommended && !binaryImage.isLikelySystem
+        self.symbolicationRecommended = symbolicationRecommended
     }
 
     func replace(withResult result: String) {

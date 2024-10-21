@@ -12,6 +12,7 @@ protocol DropZoneDelegate: AnyObject {
 }
 
 protocol DropZoneTableViewViewModel: AnyObject {
+    func tableViewClass() -> NSTableView.Type
     func setup(with tableView: NSTableView, tableViewScrollView: NSScrollView)
     func updateSnapshot(withFiles files: [URL])
 }
@@ -120,7 +121,7 @@ final class DropZone: NSView {
     private let iconImageView = NSImageView()
 
     private let tableViewScrollView = NSScrollView()
-    private let tableView = NSTableView()
+    private let tableView: NSTableView
 
     private var isFlashing: Bool = false
 
@@ -137,6 +138,7 @@ final class DropZone: NSView {
     ) {
         self.activatesAppAfterDrop = activatesAppAfterDrop
         self.allowsMultipleFiles = allowsMultipleFiles
+        self.tableView = tableViewViewModel?.tableViewClass().init(frame: .zero) ?? NSTableView()
         self.tableViewViewModel = tableViewViewModel
         state = allowsMultipleFiles ? .multipleFilesInitial : .oneFileEmpty
 
