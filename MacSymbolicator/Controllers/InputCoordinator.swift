@@ -35,6 +35,10 @@ final class InputCoordinator {
         Set<String>(reportFile?.dsymRequirements.expectedUUIDs.map { $0.pretty } ?? [])
     }
 
+    private var expectedNonSystemDSYMUUIDs: Set<String> {
+        Set<String>(reportFile?.dsymRequirements.expectedNonSystemUUIDs.map { $0.pretty } ?? [])
+    }
+
     private var foundDSYMUUIDs: Set<String> {
         let addedDSYMUUIDs = dsymFiles.flatMap { $0.uuids.values }.map { $0.pretty }
         return expectedDSYMUUIDs.intersection(addedDSYMUUIDs)
@@ -121,11 +125,13 @@ final class InputCoordinator {
             dsymFilesDropZone.detailText = "(if not found automatically)"
             dsymListViewModel.recommendedDSYMs = []
             dsymListViewModel.optionalDSYMs = []
+            dsymListViewModel.systemDSYMs = []
             return
         }
 
         dsymListViewModel.recommendedDSYMs = Array(reportFile.dsymRequirements.recommendedDSYMs.values)
         dsymListViewModel.optionalDSYMs = Array(reportFile.dsymRequirements.optionalDSYMs.values)
+        dsymListViewModel.systemDSYMs = Array(reportFile.dsymRequirements.systemDSYMs.values)
 
         guard !expectedDSYMUUIDs.isEmpty else {
             dsymFilesDropZone.detailText = ""
@@ -133,7 +139,7 @@ final class InputCoordinator {
         }
 
         let prefix = isSearchingForDSYMs ? "Searching…" : "Found"
-        let count = "\(foundDSYMUUIDs.count)/\(expectedDSYMUUIDs.count)"
+        let count = "\(foundDSYMUUIDs.count)/\(expectedNonSystemDSYMUUIDs.count)"
 
         dsymFilesDropZone.detailText = "\(prefix) \(count)"
     }

@@ -17,6 +17,7 @@ public final class ReportProcess {
     lazy var dsymRequirements: DSYMRequirements = {
         var recommendedDSYMs = Set<DSYMRequirement>()
         var optionalDSYMs = Set<DSYMRequirement>()
+        var systemDSYMs = Set<DSYMRequirement>()
 
         for frame in frames {
             let requirement = DSYMRequirement(
@@ -24,14 +25,20 @@ public final class ReportProcess {
                 uuid: frame.binaryImage.uuid
             )
 
-            if frame.symbolicationRecommended {
+            if frame.binaryImage.isLikelySystem {
+                systemDSYMs.insert(requirement)
+            } else if frame.symbolicationRecommended {
                 recommendedDSYMs.insert(requirement)
             } else {
                 optionalDSYMs.insert(requirement)
             }
         }
 
-        return DSYMRequirements(recommendedDSYMs: recommendedDSYMs, optionalDSYMs: optionalDSYMs)
+        return DSYMRequirements(
+            recommendedDSYMs: recommendedDSYMs,
+            optionalDSYMs: optionalDSYMs,
+            systemDSYMs: systemDSYMs
+        )
     }()
 
     static func find(in content: String, targetProcess: String?) -> [ReportProcess] {

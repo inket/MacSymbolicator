@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,7 +15,6 @@
 		B2036AF128DDE81700ED1268 /* dSYMs in Resources */ = {isa = PBXBuildFile; fileRef = B2036AEB28DDE81700ED1268 /* dSYMs */; };
 		B2036AF328DDE81700ED1268 /* Samples in Resources */ = {isa = PBXBuildFile; fileRef = B2036AED28DDE81700ED1268 /* Samples */; };
 		B2036AF428DDE81700ED1268 /* Spindumps in Resources */ = {isa = PBXBuildFile; fileRef = B2036AEE28DDE81700ED1268 /* Spindumps */; };
-		B203F3AD2C7EB4DF00CF33D9 /* DSYMListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3AC2C7EB4DF00CF33D9 /* DSYMListViewModel.swift */; };
 		B203F3B12C82D8CF00CF33D9 /* DSYMRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */; };
 		B203F3B22C854C9600CF33D9 /* DSYMRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */; };
 		B203F3B42C85531600CF33D9 /* NSLayoutConstraintExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */; };
@@ -116,7 +115,6 @@
 		B2036AEC28DDE81700ED1268 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2036AED28DDE81700ED1268 /* Samples */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Samples; sourceTree = "<group>"; };
 		B2036AEE28DDE81700ED1268 /* Spindumps */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Spindumps; sourceTree = "<group>"; };
-		B203F3AC2C7EB4DF00CF33D9 /* DSYMListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMListViewModel.swift; sourceTree = "<group>"; };
 		B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMRequirement.swift; sourceTree = "<group>"; };
 		B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutConstraintExtensions.swift; sourceTree = "<group>"; };
 		B212510C20CD123800F36050 /* MacSymbolicatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacSymbolicatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -156,6 +154,10 @@
 		B2EC0F4026450D0B00E5473C /* DSYMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMTests.swift; sourceTree = "<group>"; };
 		B2F64E012B9339F700D1410D /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		B2BF18AF2C9C6AE3004245C5 /* DSYMList */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DSYMList; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		B212510920CD123800F36050 /* Frameworks */ = {
@@ -278,9 +280,9 @@
 		B2B74D941EF910E1000BBFD6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B2BF18AF2C9C6AE3004245C5 /* DSYMList */,
 				B2BC4CB31EF22A6400B3189A /* CenteredWindow.swift */,
 				B27931331EF2875E00DDAA7D /* DropZone.swift */,
-				B203F3AC2C7EB4DF00CF33D9 /* DSYMListViewModel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -391,6 +393,9 @@
 			);
 			dependencies = (
 				B2C2ED8E289AC0A500B7FA40 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				B2BF18AF2C9C6AE3004245C5 /* DSYMList */,
 			);
 			name = MacSymbolicator;
 			packageProductDependencies = (
@@ -547,7 +552,6 @@
 				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
 				B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */,
 				B2421B852896E887008B59EB /* Translator.swift in Sources */,
-				B203F3AD2C7EB4DF00CF33D9 /* DSYMListViewModel.swift in Sources */,
 				B21EFA6A289AAB6600CA69B1 /* ViewableLogController.swift in Sources */,
 				B2BC4CB41EF22A6400B3189A /* CenteredWindow.swift in Sources */,
 				B26D624F232D497400DF1D1E /* LogController.swift in Sources */,
