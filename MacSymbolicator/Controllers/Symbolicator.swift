@@ -18,12 +18,12 @@ struct Symbolicator {
         self.logController = logController
     }
 
-    mutating func symbolicate() -> Bool {
+    mutating func symbolicate() async -> Bool {
         logController.resetLogs()
 
         var hasFailed = false
 
-        reportFile.processes.forEach { process in
+        await reportFile.processes.forEach { process in
             if symbolicateProcess(process) == false {
                 hasFailed = true
             }

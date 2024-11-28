@@ -144,13 +144,13 @@ final class DropZone: NSView {
 
         super.init(frame: .zero)
 
-        DispatchQueue.main.async { // So that all didSet do trigger
-            self.fileTypes = fileTypes
-            self.text = text
-            self.detailText = detailText
+        self.fileTypes = fileTypes
+        updateRegisteredFileTypes()
+        self.text = text
+        self.detailText = detailText
+        updateText()
 
-            self.setup()
-        }
+        setup()
     }
 
     required init?(coder: NSCoder) {
@@ -205,19 +205,19 @@ final class DropZone: NSView {
             NSLayoutConstraint.activate([
                 tableViewScrollView.topAnchor.constraint(
                     equalTo: topAnchor,
-                    constant: Layout.borderPadding + Layout.tableViewInset + 70
+                    constant: Layout.tableViewInset + 70
                 ),
                 tableViewScrollView.leadingAnchor.constraint(
                     equalTo: leadingAnchor,
-                    constant: Layout.borderPadding + Layout.tableViewInset
+                    constant: Layout.tableViewInset
                 ),
                 tableViewScrollView.trailingAnchor.constraint(
                     equalTo: trailingAnchor,
-                    constant: -(Layout.borderPadding + Layout.tableViewInset)
+                    constant: Layout.tableViewInset
                 ),
                 tableViewScrollView.bottomAnchor.constraint(
                     equalTo: bottomAnchor,
-                    constant: -(Layout.borderPadding + Layout.tableViewInset)
+                    constant: -Layout.tableViewInset
                 )
             ])
 
@@ -369,22 +369,18 @@ final class DropZone: NSView {
         let drawRect: CGRect
 
         // Drop area outline drawing
-        let drawTableViewBorder: Bool
         let isFilled: Bool
 
         switch state {
         case .oneFileEmpty:
             drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = false
-            drawTableViewBorder = false
         case .oneFile:
             drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = true
-            drawTableViewBorder = false
         case .multipleFilesInitial:
             drawRect = bounds.insetBy(dx: borderPadding, dy: borderPadding)
             isFilled = false
-            drawTableViewBorder = false
         case .multipleFiles:
             var rect = containerView.frame
 
@@ -395,7 +391,6 @@ final class DropZone: NSView {
             drawRect = rect.insetBy(dx: borderPadding, dy: borderPadding)
 
             isFilled = true
-            drawTableViewBorder = true
         }
 
         if isFilled {
@@ -412,13 +407,6 @@ final class DropZone: NSView {
         }
 
         roundedRectanglePath.stroke()
-
-        if drawTableViewBorder {
-            let borderRect = tableViewScrollView.frame.insetBy(dx: -Layout.tableViewInset, dy: -Layout.tableViewInset)
-            let tableViewBorderPath = NSBezierPath(roundedRect: borderRect, xRadius: 8, yRadius: 8)
-            tableViewBorderPath.lineWidth = 1.5
-            tableViewBorderPath.stroke()
-        }
     }
 
     @discardableResult
@@ -426,6 +414,22 @@ final class DropZone: NSView {
         guard validFileURL(fileURL) else { return false }
 
         let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: [fileURL]) ?? [fileURL]
+
+        if allowsMultipleFiles {
+            files.formUnion(acceptedFileURLs)
+        } else {
+            files = acceptedFileURLs.last.flatMap { Set<URL>(arrayLiteral: $0) } ?? Set<URL>()
+        }
+
+        return true
+    }
+
+    @discardableResult
+    func acceptFiles(urls fileURLs: [URL]) -> Bool {
+        let validFileURLs = fileURLs.filter { validFileURL($0) }
+        guard !validFileURLs.isEmpty else { return false }
+
+        let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: fileURLs) ?? fileURLs
 
         if allowsMultipleFiles {
             files.formUnion(acceptedFileURLs)
@@ -465,19 +469,28 @@ extension DropZone {
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         let draggedFileURLs = validDraggedFileURLs(from: sender)
 
-        if allowsMultipleFiles {
-            let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: draggedFileURLs) ?? draggedFileURLs
-            files.formUnion(acceptedFileURLs)
-        } else if let lastValidURL = draggedFileURLs.last {
-            let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: [lastValidURL]) ?? [lastValidURL]
-            files = acceptedFileURLs.last.flatMap { Set<URL>(arrayLiteral: $0) } ?? Set<URL>()
-        }
+        // Do this async so that the drag operation doesn't freeze
+        DispatchQueue.main.async {
+            if self.allowsMultipleFiles {
+                let acceptedFileURLs = self.delegate?.receivedFiles(
+                    dropZone: self,
+                    fileURLs: draggedFileURLs
+                ) ?? draggedFileURLs
+                self.files.formUnion(acceptedFileURLs)
+            } else if let lastValidURL = draggedFileURLs.last {
+                let acceptedFileURLs = self.delegate?.receivedFiles(
+                    dropZone: self,
+                    fileURLs: [lastValidURL]
+                ) ?? [lastValidURL]
+                self.files = acceptedFileURLs.last.flatMap { Set<URL>(arrayLiteral: $0) } ?? Set<URL>()
+            }
 
-        isHoveringFile = false
+            self.isHoveringFile = false
 
-        if activatesAppAfterDrop {
-            // It's a bit weird if we drag a file to this app but it doesn't become active
-            NSApp.activate(ignoringOtherApps: true)
+            if self.activatesAppAfterDrop {
+                // It's a bit weird if we drag a file to this app but it doesn't become active
+                NSApp.activate(ignoringOtherApps: true)
+            }
         }
 
         return true
