@@ -36,21 +36,24 @@ struct MacSymbolicatorCLI: ParsableCommand {
     @Argument(help: "The dSYMs to use for symbolication")
     var dsymPath: [String] = []
 
-    mutating func run() throws {
+    mutating func run() async throws {
         if !translateOnly, !uuidsOnly, dsymPath.isEmpty {
             MacSymbolicatorCLI.exit(
                 withError: ArgumentParser.ValidationError.init("Missing expected argument '<dsym-path>'")
             )
         }
 
-        let reportFile = try ReportFile(path: URL(fileURLWithPath: reportFilePath), targetProcessName: processName)
+        let reportFile = try ReportFile(
+            path: URL(fileURLWithPath: reportFilePath),
+            targetProcessName: processName
+        )
 
         if translateOnly {
             try translateReport(reportFile)
         }
 
         if uuidsOnly {
-            try printUUIDsForReport(reportFile)
+            try await printUUIDsForReport(reportFile)
         }
 
         let dsymFiles: [DSYMFile] = dsymPath.compactMap { path in
@@ -65,7 +68,8 @@ struct MacSymbolicatorCLI: ParsableCommand {
             print("---------")
             print("Symbolicating with:")
 
-            let reportUUIDs = reportFile.dsymRequirements.sortedDSYMs.map { $0.uuid.pretty }.joined(separator: ", ")
+            let reportUUIDs = await reportFile.dsymRequirements
+                .sortedDSYMs.map { $0.uuid.pretty }.joined(separator: ", ")
             print("Report: \(reportFile.path.path) [\(reportUUIDs)]")
 
             let dsymDescriptions: [String] = dsymFiles.map {
@@ -83,7 +87,7 @@ struct MacSymbolicatorCLI: ParsableCommand {
             logController: DefaultLogController()
         )
 
-        let success = symbolicator.symbolicate()
+        let success = await symbolicator.symbolicate()
 
         if success {
             if verbose {
@@ -118,8 +122,8 @@ struct MacSymbolicatorCLI: ParsableCommand {
         MacSymbolicatorCLI.exit(withError: nil)
     }
 
-    private func printUUIDsForReport(_ reportFile: ReportFile) throws {
-        let result = reportFile.dsymRequirements.sortedDSYMs
+    private func printUUIDsForReport(_ reportFile: ReportFile) async throws {
+        let result = await reportFile.dsymRequirements.sortedDSYMs
             .map { "\($0.targetName)/\($0.uuid.pretty)" }
             .joined(separator: "\n")
 

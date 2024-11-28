@@ -189,8 +189,3 @@ extension TextWindowController: NSToolbarDelegate {
         }
     }
 }
-
-extension NSToolbarItem.Identifier {
-    static var clear = NSToolbarItem.Identifier(rawValue: "Clear")
-    static var save = NSToolbarItem.Identifier(rawValue: "Save")
-}

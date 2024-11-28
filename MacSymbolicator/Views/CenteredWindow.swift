@@ -5,6 +5,22 @@
 
 import Cocoa
 
+extension NSWindow {
+    func resizeToFit(contentSize: CGSize, animated: Bool) {
+        let newWindowSize = frameRect(forContentRect: CGRect(
+            origin: frame.origin,
+            size: contentSize
+        )).size
+
+        let newWindowOrigin = CGPoint(
+            x: frame.origin.x - ((newWindowSize.width / 2) - (frame.size.width / 2)),
+            y: frame.origin.y - (newWindowSize.height - frame.size.height)
+        )
+
+        animator().setFrame(CGRect(origin: newWindowOrigin, size: newWindowSize), display: true, animate: animated)
+    }
+}
+
 final class CenteredWindow: NSWindow {
     init(width: CGFloat, height: CGFloat) {
         guard let screen = NSScreen.main else { fatalError("No attached screen found.") }

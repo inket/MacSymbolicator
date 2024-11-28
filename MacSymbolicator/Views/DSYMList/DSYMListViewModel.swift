@@ -4,6 +4,7 @@
 //
 
 import Cocoa
+import Combine
 
 final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
     struct ProvidedDSYM: Equatable, Hashable, Sendable {
@@ -53,6 +54,23 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
     }
 
     private weak var tableView: DSYMListTableView?
+
+    private let logController: any LogController
+    private let reportFileDirectory: String
+
+    var isSearchingForDSYMs: CurrentValueSubject<Bool, Never> = .init(false)
+
+    let expectedDSYMUUIDs: Set<String>
+    let expectedNonSystemDSYMUUIDs: Set<String>
+
+    var foundDSYMUUIDs: Set<String> {
+        let addedDSYMUUIDs = providedDSYMs.keys.map { $0.pretty }
+        return expectedDSYMUUIDs.intersection(addedDSYMUUIDs)
+    }
+
+    var remainingDSYMUUIDs: Set<String> {
+        expectedDSYMUUIDs.subtracting(foundDSYMUUIDs)
+    }
 
     private var dsymCache: [URL: [DSYMFile]] = [:]
 
@@ -137,6 +155,20 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
     private var providedSystemDSYMsCount = 0
     private var inapplicableDSYMs: [ProvidedDSYM] = []
 
+    init(dsymRequirements: DSYMRequirements, reportFileDirectory: String, logController: any LogController) {
+        expectedDSYMUUIDs = Set<String>(dsymRequirements.expectedUUIDs.map { $0.pretty })
+        expectedNonSystemDSYMUUIDs = Set<String>(dsymRequirements.expectedNonSystemUUIDs.map { $0.pretty })
+
+        self.reportFileDirectory = reportFileDirectory
+        self.logController = logController
+
+        super.init()
+
+        recommendedDSYMs = Array(dsymRequirements.recommendedDSYMs.values)
+        optionalDSYMs = Array(dsymRequirements.optionalDSYMs.values)
+        systemDSYMs = Array(dsymRequirements.systemDSYMs.values)
+    }
+
     func updateApplicableAndInapplicableDSYMs() {
         var inapplicableDSYMs = providedDSYMs
 
@@ -190,8 +222,6 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
         tableViewScrollView.documentView = tableView
         tableViewScrollView.automaticallyAdjustsContentInsets = false
         tableViewScrollView.contentInsets = NSEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
-        tableViewScrollView.wantsLayer = true
-        tableViewScrollView.layer?.cornerRadius = 8
         tableViewScrollView.hasVerticalScroller = true
 
         let column = NSTableColumn(identifier: .init(rawValue: "name"))
@@ -229,7 +259,7 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
             case .copy:
                 menuItem = NSMenuItem(title: "Copy", action: #selector(copyRows(_:)), keyEquivalent: "")
             case .copyUUIDs:
-                menuItem = NSMenuItem(title: "Copy UUIDs", action: #selector(copyUUIDs(_:)), keyEquivalent: "")
+                menuItem = NSMenuItem(title: "Copy UUID(s)", action: #selector(copyUUIDs(_:)), keyEquivalent: "")
             }
 
             menuItem.target = self
@@ -302,9 +332,27 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
         return paddingView
     }
 
+    func searchForDSYMs(resultHandler: @escaping @MainActor ([URL]) -> Void) {
+        isSearchingForDSYMs.value = true
+        DSYMSearch.search(
+            forUUIDs: Array(remainingDSYMUUIDs),
+            reportFileDirectory: reportFileDirectory,
+            logHandler: logController.addLogMessage,
+            callback: { [weak self] finished, results in
+                DispatchQueue.main.async {
+                    let resultURLs = (results ?? []).map { URL(fileURLWithPath: $0.path) }
+                    resultHandler(resultURLs)
+
+                    if finished {
+                        self?.isSearchingForDSYMs.value = false
+                    }
+                }
+            }
+        )
+    }
+
     func updateSnapshot(withFiles files: [URL]) {
         self.files = files
-        updateSnapshot()
     }
 
     func updateSnapshot() {
@@ -404,6 +452,21 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
     }
 }
 
+// MARK: - NSMenuDelegate
+
+extension DSYMListViewModel: NSMenuDelegate {
+    func menuWillOpen(_ menu: NSMenu) {
+        guard let tableView else { return }
+
+        let rowViews = tableView.rightClickRowIndexes.compactMap {
+            tableView.rowView(atRow: $0, makeIfNecessary: false) as? DSYMListTableViewDSYMRow
+        }
+        (tableView.menu as? DSYMListTableViewRowMenu)?.update(forRowViews: rowViews)
+    }
+}
+
+// MARK: -
+
 final private class DSYMListTableViewRowMenu: NSMenu {
     enum MenuItem {
         case showInFinder
@@ -437,18 +500,7 @@ final private class DSYMListTableViewRowMenu: NSMenu {
     }
 }
 
-extension DSYMListViewModel: NSMenuDelegate {
-    func menuWillOpen(_ menu: NSMenu) {
-        guard let tableView else { return }
-
-        let rowViews = tableView.rightClickRowIndexes.compactMap {
-            tableView.rowView(atRow: $0, makeIfNecessary: false) as? DSYMListTableViewDSYMRow
-        }
-        (tableView.menu as? DSYMListTableViewRowMenu)?.update(forRowViews: rowViews)
-    }
-}
-
-private class DSYMListTableViewDSYMRow: NSTableRowView {
+final private class DSYMListTableViewDSYMRow: NSTableRowView {
     var cellView: NSView? {
         subviews.first(where: { $0 is InteractableDSYMCellView })
     }
@@ -466,7 +518,7 @@ private class DSYMListTableViewDSYMRow: NSTableRowView {
     }
 }
 
-private class DSYMListTableView: NSTableView {
+final private class DSYMListTableView: NSTableView {
     private var _clickedRow: Int = -1
     override var clickedRow: Int {
         get { return _clickedRow }

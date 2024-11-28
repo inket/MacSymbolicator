@@ -4,6 +4,25 @@
 //
 
 import Foundation
+import Combine
+
+actor LazyAsync<T: Sendable> {
+    private var value: T?
+    private let closure: () async -> T
+
+    init(_ closure: @escaping () async -> T) {
+        self.closure = closure
+    }
+
+    func get() async -> T {
+        if let value {
+            return value
+        } else {
+            self.value = await closure()
+            return await get()
+        }
+    }
+}
 
 public final class ReportFile {
     enum InitializationError: Error {
@@ -15,11 +34,30 @@ public final class ReportFile {
 
     let path: URL
     let filename: String
-    let processes: [ReportProcess]
+    let targetProcessName: String?
 
-    lazy var dsymRequirements: DSYMRequirements = {
-        DSYMRequirements(combining: processes.map { $0.dsymRequirements })
-    }()
+    private(set) lazy var lazyProcesses: LazyAsync<[ReportProcess]> = LazyAsync { [weak self] in
+        guard let self else { return [] }
+        return ReportProcess.find(
+            in: self.content,
+            targetProcess: self.targetProcessName
+        )
+    }
+    var processes: [ReportProcess] {
+        get async {
+            await lazyProcesses.get()
+        }
+    }
+
+    private(set) lazy var lazyDSYMRequirements: LazyAsync<DSYMRequirements> = LazyAsync { [weak self] in
+        guard let self else { return DSYMRequirements(combining: []) }
+        return await DSYMRequirements(combining: self.processes.map { $0.dsymRequirements })
+    }
+    var dsymRequirements: DSYMRequirements {
+        get async {
+            await lazyDSYMRequirements.get()
+        }
+    }
 
     let metadata: String?
     let content: String
@@ -78,9 +116,13 @@ public final class ReportFile {
             content = originalContent
         }
 
-        processes = ReportProcess.find(in: content, targetProcess: targetProcessName)
-
         self.path = path
         self.filename = path.lastPathComponent
+        self.targetProcessName = targetProcessName
+    }
+
+    func load() async {
+        _ = await processes
+        _ = await dsymRequirements
     }
 }
