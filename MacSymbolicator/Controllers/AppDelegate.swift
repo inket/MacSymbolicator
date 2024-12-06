@@ -27,6 +27,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func application(_ sender: NSApplication, openFile filename: String) -> Bool {
-        mainController.openFile(filename)
+		DispatchQueue.main.async {
+			_ = self.mainController.openFile(filename)
+		}
+		return true
     }
 }
