@@ -52,8 +52,8 @@ public struct DSYMFile: Equatable {
         output?.components(separatedBy: .newlines).forEach { line in
             guard
                 let match = line.scan(pattern: #"UUID: (.*?) \((.*?)\)"#).first, match.count == 2,
-                let rawArchitecture = match.last, let architecture = Architecture(rawArchitecture),
-                let rawUUID = match.first, let uuid = BinaryUUID(rawUUID, architecture: architecture)
+                let rawArchitecture = match.last?.text, let architecture = Architecture(rawArchitecture),
+                let rawUUID = match.first?.text, let uuid = BinaryUUID(rawUUID, architecture: architecture)
             else { return }
 
             uuids[architecture] = uuid

@@ -174,14 +174,14 @@ struct Symbolicator {
 
             frame.replace(withResult: replacement)
 
-            if let symbolicatedLine = frame.symbolicatedLine {
+            if let symbolicatedMatch = frame.symbolicatedMatch {
                 logController.addLogMessage(
-                    "Replacing matches in sample/spindump report: \(String(describing: frame.line))"
+                    "Replacing matches in sample/spindump report: \(String(describing: frame.match.text))"
                 )
 
                 content.replaceOccurrences(
-                    of: frame.line,
-                    with: symbolicatedLine,
+                    of: frame.match.text,
+                    with: symbolicatedMatch,
                     range: NSRange(location: 0, length: content.length)
                 )
             }

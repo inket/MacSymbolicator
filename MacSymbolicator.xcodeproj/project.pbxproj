@@ -18,7 +18,6 @@
 		B203F3B12C82D8CF00CF33D9 /* DSYMRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */; };
 		B203F3B22C854C9600CF33D9 /* DSYMRequirement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */; };
 		B203F3B42C85531600CF33D9 /* NSLayoutConstraintExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */; };
-		B20E171D2CC7F26200D0C61F /* SymbolicatorTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20E171C2CC7F24F00D0C61F /* SymbolicatorTextView.swift */; };
 		B212510F20CD123900F36050 /* MacSymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */; };
 		B212511720CD125E00F36050 /* SymbolicatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B212511620CD125E00F36050 /* SymbolicatorTests.swift */; };
 		B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */; };
@@ -46,6 +45,16 @@
 		B29D4B81290C421300E9D1A1 /* BinaryImageMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29D4B80290C421300E9D1A1 /* BinaryImageMap.swift */; };
 		B29D4B82290C42A800E9D1A1 /* BinaryImageMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29D4B80290C421300E9D1A1 /* BinaryImageMap.swift */; };
 		B29D4B85290D815700E9D1A1 /* StackFrameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B29D4B84290D815700E9D1A1 /* StackFrameTests.swift */; };
+		B2B0D8F52D088D2200812EFA /* Match.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D8F42D088D1F00812EFA /* Match.swift */; };
+		B2B0D8F62D088D2200812EFA /* Match.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D8F42D088D1F00812EFA /* Match.swift */; };
+		B2B0D8FC2D0E639B00812EFA /* NSRangeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D8FB2D0E639500812EFA /* NSRangeExtensions.swift */; };
+		B2B0D8FD2D0E639B00812EFA /* NSRangeExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D8FB2D0E639500812EFA /* NSRangeExtensions.swift */; };
+		B2B0D8FF2D0E794200812EFA /* NSColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D8FE2D0E794000812EFA /* NSColorExtensions.swift */; };
+		B2B0D9002D0E794200812EFA /* NSColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D8FE2D0E794000812EFA /* NSColorExtensions.swift */; };
+		B2B0D9022D14548300812EFA /* NSBezierPathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D9012D14547F00812EFA /* NSBezierPathExtensions.swift */; };
+		B2B0D9032D14548300812EFA /* NSBezierPathExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D9012D14547F00812EFA /* NSBezierPathExtensions.swift */; };
+		B2B0D9052D16B54D00812EFA /* NSRectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D9042D16B54900812EFA /* NSRectExtensions.swift */; };
+		B2B0D9062D16B54D00812EFA /* NSRectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B0D9042D16B54900812EFA /* NSRectExtensions.swift */; };
 		B2B74D8D1EF8E925000BBFD6 /* DSYMFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B74D8C1EF8E925000BBFD6 /* DSYMFile.swift */; };
 		B2B74D8F1EF8E9CC000BBFD6 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B74D8E1EF8E9CC000BBFD6 /* StringExtensions.swift */; };
 		B2B74D911EF8F7B6000BBFD6 /* ReportFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B74D901EF8F7B6000BBFD6 /* ReportFile.swift */; };
@@ -108,7 +117,6 @@
 		B2036AEE28DDE81700ED1268 /* Spindumps */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Spindumps; sourceTree = "<group>"; };
 		B203F3B02C82D8CF00CF33D9 /* DSYMRequirement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMRequirement.swift; sourceTree = "<group>"; };
 		B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSLayoutConstraintExtensions.swift; sourceTree = "<group>"; };
-		B20E171C2CC7F24F00D0C61F /* SymbolicatorTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicatorTextView.swift; sourceTree = "<group>"; };
 		B212510C20CD123800F36050 /* MacSymbolicatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MacSymbolicatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B212510E20CD123900F36050 /* MacSymbolicatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSymbolicatorTests.swift; sourceTree = "<group>"; };
 		B212511620CD125E00F36050 /* SymbolicatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolicatorTests.swift; sourceTree = "<group>"; };
@@ -127,6 +135,11 @@
 		B289E0A323F5F77C0019C28B /* SpotlightSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightSearch.swift; sourceTree = "<group>"; };
 		B29D4B80290C421300E9D1A1 /* BinaryImageMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryImageMap.swift; sourceTree = "<group>"; };
 		B29D4B84290D815700E9D1A1 /* StackFrameTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackFrameTests.swift; sourceTree = "<group>"; };
+		B2B0D8F42D088D1F00812EFA /* Match.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Match.swift; sourceTree = "<group>"; };
+		B2B0D8FB2D0E639500812EFA /* NSRangeExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSRangeExtensions.swift; sourceTree = "<group>"; };
+		B2B0D8FE2D0E794000812EFA /* NSColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSColorExtensions.swift; sourceTree = "<group>"; };
+		B2B0D9012D14547F00812EFA /* NSBezierPathExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSBezierPathExtensions.swift; sourceTree = "<group>"; };
+		B2B0D9042D16B54900812EFA /* NSRectExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSRectExtensions.swift; sourceTree = "<group>"; };
 		B2B74D8C1EF8E925000BBFD6 /* DSYMFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMFile.swift; sourceTree = "<group>"; };
 		B2B74D8E1EF8E9CC000BBFD6 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		B2B74D901EF8F7B6000BBFD6 /* ReportFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportFile.swift; sourceTree = "<group>"; };
@@ -260,6 +273,11 @@
 		B2B74D921EF910CB000BBFD6 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				B2B0D9042D16B54900812EFA /* NSRectExtensions.swift */,
+				B2B0D9012D14547F00812EFA /* NSBezierPathExtensions.swift */,
+				B2B0D8FE2D0E794000812EFA /* NSColorExtensions.swift */,
+				B2B0D8FB2D0E639500812EFA /* NSRangeExtensions.swift */,
+				B2B0D8F42D088D1F00812EFA /* Match.swift */,
 				B226079B2CEF72C200559F4D /* FutureExtensions.swift */,
 				B2B74D8E1EF8E9CC000BBFD6 /* StringExtensions.swift */,
 				B203F3B32C85531600CF33D9 /* NSLayoutConstraintExtensions.swift */,
@@ -286,7 +304,6 @@
 		B2B74D941EF910E1000BBFD6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				B20E171C2CC7F24F00D0C61F /* SymbolicatorTextView.swift */,
 				B2BF18AF2C9C6AE3004245C5 /* DSYMList */,
 				B2BC4CB31EF22A6400B3189A /* CenteredWindow.swift */,
 				B27931331EF2875E00DDAA7D /* DropZone.swift */,
@@ -518,13 +535,18 @@
 			files = (
 				B21EFA5E289A983B00CA69B1 /* BinaryImage.swift in Sources */,
 				B21EFA58289A981400CA69B1 /* CLI.swift in Sources */,
+				B2B0D8F62D088D2200812EFA /* Match.swift in Sources */,
 				B21EFA64289A986C00CA69B1 /* StringExtensions.swift in Sources */,
 				B21EFA5F289A983B00CA69B1 /* StackFrame.swift in Sources */,
 				B24BB98728AFCC5A00610CF0 /* ReportProcess.swift in Sources */,
+				B2B0D9032D14548300812EFA /* NSBezierPathExtensions.swift in Sources */,
 				B203F3B22C854C9600CF33D9 /* DSYMRequirement.swift in Sources */,
 				B29D4B82290C42A800E9D1A1 /* BinaryImageMap.swift in Sources */,
 				B21EFA60289A983B00CA69B1 /* Architecture.swift in Sources */,
 				B226079C2CEF72CB00559F4D /* FutureExtensions.swift in Sources */,
+				B2B0D8FD2D0E639B00812EFA /* NSRangeExtensions.swift in Sources */,
+				B2B0D8FF2D0E794200812EFA /* NSColorExtensions.swift in Sources */,
+				B2B0D9052D16B54D00812EFA /* NSRectExtensions.swift in Sources */,
 				B21EFA5D289A983B00CA69B1 /* DSYMFile.swift in Sources */,
 				B21EFA61289A983B00CA69B1 /* ReportFile.swift in Sources */,
 				B21EFA62289A983B00CA69B1 /* BinaryUUID.swift in Sources */,
@@ -535,9 +557,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2B0D9022D14548300812EFA /* NSBezierPathExtensions.swift in Sources */,
 				B2B74D8F1EF8E9CC000BBFD6 /* StringExtensions.swift in Sources */,
 				B226079D2CEF72CB00559F4D /* FutureExtensions.swift in Sources */,
 				B2B74D8D1EF8E925000BBFD6 /* DSYMFile.swift in Sources */,
+				B2B0D8F52D088D2200812EFA /* Match.swift in Sources */,
 				B23646872618178400AB9486 /* BinaryImage.swift in Sources */,
 				B24BB98628AFB42600610CF0 /* ReportProcess.swift in Sources */,
 				B272E3C2235F26C500B33076 /* Architecture.swift in Sources */,
@@ -547,12 +571,14 @@
 				B29D4B81290C421300E9D1A1 /* BinaryImageMap.swift in Sources */,
 				B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */,
 				B203F3B42C85531600CF33D9 /* NSLayoutConstraintExtensions.swift in Sources */,
+				B2B0D9002D0E794200812EFA /* NSColorExtensions.swift in Sources */,
 				B21CA7E81EFCB61500AD9B75 /* FileSearch.swift in Sources */,
 				B203F3B12C82D8CF00CF33D9 /* DSYMRequirement.swift in Sources */,
 				B289E0A223F5F7350019C28B /* DSYMSearch.swift in Sources */,
+				B2B0D9062D16B54D00812EFA /* NSRectExtensions.swift in Sources */,
+				B2B0D8FC2D0E639B00812EFA /* NSRangeExtensions.swift in Sources */,
 				B289E0A423F5F77C0019C28B /* SpotlightSearch.swift in Sources */,
 				B2B74D911EF8F7B6000BBFD6 /* ReportFile.swift in Sources */,
-				B20E171D2CC7F26200D0C61F /* SymbolicatorTextView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -90,8 +90,8 @@ private final class InternalFileSearch: FileSearchResults, FileSearchQuery {
 
             let foundUUIDs = dwarfDumpOutput.scan(pattern: #"UUID: (.*) \("#).flatMap({ $0 })
             for foundUUID in foundUUIDs {
-                if uuids.contains(foundUUID) {
-                    return SearchResult(path: file, matchedUUID: foundUUID)
+                if uuids.contains(foundUUID.text) {
+                    return SearchResult(path: file, matchedUUID: foundUUID.text)
                 }
             }
 

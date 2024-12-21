@@ -47,10 +47,10 @@ public final class ReportProcess {
             options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
         )
 
-        return processSections.compactMap {
-            guard let match = $0.first else { return nil }
+        return processSections.compactMap { (_ matches: [Match]) -> ReportProcess? in
+            guard let match = matches.first else { return nil }
 
-            let processName = match.scan(pattern: Self.processNameRegex).first?.first
+            let processName = match.scan(pattern: Self.processNameRegex).first?.first?.text
 
             if let targetProcess {
                 if let processName, processName.contains(targetProcess) {
@@ -64,10 +64,11 @@ public final class ReportProcess {
         }
     }
 
-    init?(name: String?, parsing content: String) {
+    init?(name: String?, parsing content: Match) {
         self.name = name
-        architecture = Architecture.find(in: content)
-        binaryImages = BinaryImage.find(in: content)
+
+        architecture = Architecture.find(in: content.text)
+        binaryImages = BinaryImage.find(in: content.text)
         frames = StackFrame.find(
             in: content,
             binaryImageMap: BinaryImageMap(binaryImages: binaryImages)

@@ -38,6 +38,8 @@ final class DSYMListViewController: NSViewController {
     }
 
     override func viewDidLoad() {
+        super.viewDidLoad()
+
         dropZone.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(dropZone)
         NSLayoutConstraint.activate([

@@ -26,21 +26,6 @@ final class SymbolicatorSplitViewController: NSSplitViewController {
 //    }
 }
 
-final class TextViewController: NSViewController {
-    let textView = SymbolicatorTextView()
-
-    override func viewDidLoad() {
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(textView)
-        NSLayoutConstraint.activate([
-            textView.topAnchor.constraint(equalTo: view.topAnchor),
-            textView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            textView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-}
-
 protocol DocumentControllerDelegate: AnyObject {
     func documentControllerWillClose(_ documentController: DocumentController)
 }
@@ -70,7 +55,7 @@ final class DocumentController: NSObject {
     // MARK: - Properties for the symbolicating state
 
     private let splitViewController = SymbolicatorSplitViewController()
-    private let textViewController = TextViewController()
+    private var symbolicatorViewController: SymbolicatorViewController?
     private var dsymFilesOnHold: [DSYMFile] = []
     private var dsymListViewController: DSYMListViewController?
     private var dsymListSplitViewWidthConstraint: NSLayoutConstraint?
@@ -134,6 +119,9 @@ final class DocumentController: NSObject {
                 fatalError("window has no contentView")
             }
 
+            let symbolicatorViewModel = SymbolicatorViewModel(reportFile: reportFile, defaultSaveURL: nil)
+            let symbolicatorViewController = SymbolicatorViewController(viewModel: symbolicatorViewModel)
+
             let dsymListViewController = DSYMListViewController(
                 reportFile: reportFile,
                 dsymRequirements: await reportFile.dsymRequirements,
@@ -145,7 +133,7 @@ final class DocumentController: NSObject {
             let dsymListSplitViewItem = NSSplitViewItem(contentListWithViewController: dsymListViewController)
             dsymListSplitViewItem.minimumThickness = Layout.initialSidebarWidth
 //            dsymListSplitViewItem.maximumThickness = Layout.initialSidebarWidth
-            let textViewSplitViewItem = NSSplitViewItem(viewController: textViewController)
+            let textViewSplitViewItem = NSSplitViewItem(viewController: symbolicatorViewController)
             textViewSplitViewItem.minimumThickness = 500
             splitViewController.addSplitViewItem(dsymListSplitViewItem)
             splitViewController.addSplitViewItem(textViewSplitViewItem)
@@ -225,8 +213,7 @@ final class DocumentController: NSObject {
 //                            greaterThanOrEqualToConstant: Layout.initialSidebarWidth
 //                        ).isActive = true
 //                        dsymListSplitViewWidthConstraint.isActive = false
-//                        self.dsymListViewController.view.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-//                        DispatchQueue.main.async {
+//                        self.dsymListViewController.view.setContentHuggingPriority(.defaultH buioj
 //                            dsymListSplitViewWidthConstraint.isActive = false
 //                        }
                     }
@@ -235,9 +222,6 @@ final class DocumentController: NSObject {
 
             window.subtitle = reportFile.filename
             window.styleMask = [.titled, .unifiedTitleAndToolbar, .closable, .miniaturizable, .resizable]
-
-            textViewController.textView.text = reportFile.content
-            textViewController.textView.takeOverToolbar()
         }
     }
 

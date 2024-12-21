@@ -15,7 +15,7 @@ enum Architecture: Hashable {
     private static let binaryImagesRegex = #"Binary Images:.*\s+([^\s]+)\s+<"#
 
     static func find(in content: String) -> Architecture? {
-        var result = content.scan(pattern: Self.architectureRegex).first?.first?.trimmed
+        var result = content.scan(pattern: Self.architectureRegex).first?.first?.text.trimmed
             .components(separatedBy: " ").first.flatMap(Architecture.init)
 
         // In the case of plain "ARM" (without version or specifiers) the actual architecture is on
@@ -24,7 +24,7 @@ enum Architecture: Hashable {
             result = (content.scan(
                 pattern: Self.binaryImagesRegex,
                 options: [.caseInsensitive, .anchorsMatchLines, .dotMatchesLineSeparators]
-            ).first?.first?.trimmed).flatMap(Architecture.init)
+            ).first?.first?.text.trimmed).flatMap(Architecture.init)
         }
 
         return result

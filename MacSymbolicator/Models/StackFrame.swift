@@ -42,8 +42,10 @@ final class StackFrame {
         static let spindumpComponentsRegex = #"^\s*\*?\d+\s+\?{3}\s+\((.*?)\s\+\s+(.*?)\)\s+\[(0x.*?)\]"#
     }
 
-    let line: String
-    var symbolicatedLine: String?
+    let match: Match
+    var symbolicatedMatch: String?
+
+    let loadAddressMatch: Match?
 
     let address: String
     let binaryImage: BinaryImage
@@ -63,7 +65,7 @@ final class StackFrame {
     }
 
     static func find(
-        in content: String,
+        in content: Match,
         binaryImageMap: BinaryImageMap
     ) -> [StackFrame] {
         let lines = content.scan(
@@ -80,19 +82,20 @@ final class StackFrame {
         )
 
         return (lines + sampleLines + spindumpLines).compactMap { result -> StackFrame? in
-            guard let line = result.first else { return nil }
-            return StackFrame(parsingLine: line, binaryImageMap: binaryImageMap)
+            guard let match = result.first else { return nil }
+            return StackFrame(parsing: match, binaryImageMap: binaryImageMap)
         }
     }
 
-    init?(parsingLine line: String, binaryImageMap: BinaryImageMap) {
-        self.line = line
+    init?(parsing match: Match, binaryImageMap: BinaryImageMap) {
+        self.match = match
 
+        let loadAddressMatch: Match?
         let loadAddressOrTargetName: String
         let address: String
         let symbolicationRecommended: Bool
 
-        if let components = line.scan(
+        if let components = match.scan(
             pattern: Parsing.componentsRegex,
             options: [.caseInsensitive]
         ).first, components.count == 4 {
@@ -100,38 +103,43 @@ final class StackFrame {
             // Case 1: 0 = target, 1 = address, 2 = load address, 3 = byte offset
             // Case 2: 0 = target, 1 = address, 2 = target, 3 = byte offset
             // Case 3: 0 = target, 1 = address, 2 = symbol name, 3 = byte offset
-            address = components[1]
-            if components[2].hasPrefix("0x") {
+            address = components[1].text
+            if components[2].text.hasPrefix("0x") {
                 // Case 1
-                loadAddressOrTargetName = components[2]
+                loadAddressMatch = components[2]
+                loadAddressOrTargetName = components[2].text
                 symbolicationRecommended = true
-            } else if components[0] == components[2] {
+            } else if components[0].text == components[2].text {
                 // Case 2
-                loadAddressOrTargetName = components[2]
+                loadAddressMatch = components[2]
+                loadAddressOrTargetName = components[2].text
                 symbolicationRecommended = true
             } else {
                 // Case 3
-                loadAddressOrTargetName = components[0]
+                loadAddressMatch = components[2]
+                loadAddressOrTargetName = components[0].text
                 symbolicationRecommended = false
             }
-            byteOffset = components[3]
-        } else if let components = line.scan(
+            byteOffset = components[3].text
+        } else if let components = match.scan(
             pattern: Parsing.sampleComponentsRegex,
             options: [.caseInsensitive]
         ).first, components.count == 3 {
             // Sample format, 0 = load address, 1 = byte offset, 2 = address
-            loadAddressOrTargetName = components[0]
-            byteOffset = components[1]
-            address = components[2]
+            loadAddressMatch = components[0]
+            loadAddressOrTargetName = components[0].text
+            byteOffset = components[1].text
+            address = components[2].text
             symbolicationRecommended = true
-        } else if let components = line.scan(
+        } else if let components = match.scan(
             pattern: Parsing.spindumpComponentsRegex,
             options: [.caseInsensitive]
         ).first, components.count == 3 {
             // Spindump format, 0 = target, 1 = byte offset, 2 = address
-            loadAddressOrTargetName = components[0]
-            byteOffset = components[1]
-            address = components[2]
+            loadAddressMatch = nil
+            loadAddressOrTargetName = components[0].text
+            byteOffset = components[1].text
+            address = components[2].text
             symbolicationRecommended = true
         } else {
             return nil
@@ -141,36 +149,37 @@ final class StackFrame {
             binaryImageMap.binaryImage(forLoadAddress: loadAddressOrTargetName) ??
             binaryImageMap.binaryImage(forName: loadAddressOrTargetName)
 
-        guard let binaryImage = binaryImage else {
+        guard let binaryImage else {
             return nil
         }
 
+        self.loadAddressMatch = loadAddressMatch
         self.address = address
         self.binaryImage = binaryImage
         self.symbolicationRecommended = symbolicationRecommended
     }
 
     func replace(withResult result: String) {
-        let symbolicatedLine = NSMutableString(string: line)
+        let symbolicatedMatch = NSMutableString(string: match.text)
 
         Parsing.sampleReplacementRegex(address: address).replaceMatches(
-            in: symbolicatedLine,
-            range: NSRange(location: 0, length: symbolicatedLine.length),
+            in: symbolicatedMatch,
+            range: NSRange(location: 0, length: symbolicatedMatch.length),
             withTemplate: "\(result) + \(readableByteOffset)  [\(address)]"
         )
 
         Parsing.replacementLoadAddressRegex(address: address, loadAddress: binaryImage.loadAddress).replaceMatches(
-            in: symbolicatedLine,
-            range: NSRange(location: 0, length: symbolicatedLine.length),
+            in: symbolicatedMatch,
+            range: NSRange(location: 0, length: symbolicatedMatch.length),
             withTemplate: "\(address) \(result)"
         )
 
         Parsing.replacementTargetNameRegex(address: address, targetName: binaryImage.name).replaceMatches(
-            in: symbolicatedLine,
-            range: NSRange(location: 0, length: symbolicatedLine.length),
+            in: symbolicatedMatch,
+            range: NSRange(location: 0, length: symbolicatedMatch.length),
             withTemplate: "\(address) \(result)"
         )
 
-        self.symbolicatedLine = String(symbolicatedLine)
+        self.symbolicatedMatch = String(symbolicatedMatch)
     }
 }

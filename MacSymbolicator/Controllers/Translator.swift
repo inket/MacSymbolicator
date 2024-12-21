@@ -44,6 +44,6 @@ public enum Translator {
             throw Error.unexpectedOutput
         }
 
-        return output
+        return output.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
