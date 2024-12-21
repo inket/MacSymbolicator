@@ -1,80 +1,70 @@
 //
-//  SymbolicatorTextView.swift
+//  SymbolicatorViewController.swift
 //  MacSymbolicator
 //
 
 import Cocoa
 
-final class SymbolicatorTextView: NSView {
+final class SymbolicatorViewController: NSViewController {
+    let viewModel: SymbolicatorViewModel
+
     private let scrollView = NSScrollView()
-    private let textView = NSTextView()
+    private let textView = SymbolicatorTextView()
 
     private let savePanel = NSSavePanel()
 
-    var defaultSaveURL: URL? {
-        didSet {
-            let saveButton = window?.toolbar?.items.compactMap { $0.view as? NSButton }.first
-            saveButton?.title = defaultSaveURL == nil ? "Save…" : "Save"
-        }
-    }
+    init(viewModel: SymbolicatorViewModel) {
+        self.viewModel = viewModel
 
-    var text: String {
-        get {
-            textView.string
-        }
-        set {
-            textView.string = newValue
-        }
-    }
-
-    init() {
-        super.init(frame: .zero)
-        commonInit()
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
+        fatalError("init(coder:) has not been implemented")
     }
 
-    private func commonInit() {
-        addSubview(scrollView)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.hasVerticalScroller = true
 
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
         textView.autoresizingMask = .width
-
-        var fonts = [NSFont]()
-
-        if #available(OSX 10.15, *) {
-            fonts.append(NSFont.monospacedSystemFont(ofSize: NSFont.systemFontSize, weight: .regular))
-        }
-
-        let monospacedFonts = ["SFMono-Regular", "Menlo"].compactMap {
-            NSFont(name: $0, size: NSFont.systemFontSize)
-        }
-
-        fonts.append(contentsOf: monospacedFonts)
-
-        textView.font = fonts.first
+        textView.font = viewModel.font
         textView.isEditable = false
 
         scrollView.documentView = textView
+
+        textView.string = viewModel.text
+
+        Task { @MainActor in
+            var rangeOffset = 0
+            for token in await viewModel.tokens {
+                var attributes: [NSAttributedString.Key: Any] = [
+                    .token: token.state
+                ]
+
+                if let foregroundColor = token.state.foregroundColor {
+                    attributes[.foregroundColor] = foregroundColor
+                }
+
+                textView.textStorage?.addAttributes(attributes, range: token.range)
+
+                rangeOffset = rangeOffset - token.range.length + 1
+            }
+        }
     }
 
-    func takeOverToolbar() {
-        guard window != nil else {
-            assertionFailure("takeOverToolbar() should not be called until the text view is in the view hierarchy")
-            return
-        }
-
+    override func viewDidAppear() {
+        super.viewDidAppear()
         setupToolbar()
     }
 
@@ -82,7 +72,7 @@ final class SymbolicatorTextView: NSView {
         let toolbar = NSToolbar(identifier: "TextViewToolbar")
         toolbar.delegate = self
         toolbar.displayMode = .iconOnly
-        window?.toolbar = toolbar
+        view.window?.toolbar = toolbar
     }
 
     @objc func save() {
@@ -94,21 +84,21 @@ final class SymbolicatorTextView: NSView {
             alert.runModal()
         }
 
-        if let defaultSaveURL = defaultSaveURL {
+        if let defaultSaveURL = viewModel.defaultSaveURL {
             do {
-                try text.write(to: defaultSaveURL, atomically: true, encoding: .utf8)
+                try viewModel.text.write(to: defaultSaveURL, atomically: true, encoding: .utf8)
                 NSWorkspace.shared.activateFileViewerSelecting([defaultSaveURL])
             } catch {
                 saveFailureHandler(error)
             }
-        } else if let window {
+        } else if let window = view.window {
             savePanel.beginSheetModal(for: window) { response in
                 switch response {
                 case .OK:
                     guard let url = self.savePanel.url else { return }
 
                     do {
-                        try self.text.write(to: url, atomically: true, encoding: .utf8)
+                        try self.viewModel.text.write(to: url, atomically: true, encoding: .utf8)
                     } catch {
                         saveFailureHandler(error)
                     }
@@ -120,7 +110,7 @@ final class SymbolicatorTextView: NSView {
     }
 }
 
-extension SymbolicatorTextView: NSToolbarDelegate {
+extension SymbolicatorViewController: NSToolbarDelegate {
     func toolbar(
         _ toolbar: NSToolbar,
         itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier,
@@ -136,7 +126,7 @@ extension SymbolicatorTextView: NSToolbarDelegate {
 
             let saveButton = NSButton()
             saveButton.bezelStyle = .texturedRounded
-            saveButton.title = defaultSaveURL == nil ? "Save…" : "Save"
+            saveButton.title = "Save"
             saveButton.target = self
             saveButton.action = #selector(save)
             saveToolbarItem.view = saveButton

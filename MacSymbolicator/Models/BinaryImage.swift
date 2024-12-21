@@ -29,7 +29,7 @@ struct BinaryImage: Equatable, Hashable {
         ).first?.first
 
         var binaryImages = [BinaryImage]()
-        binaryImagesSection?.enumerateLines(invoking: { line, _ in
+        binaryImagesSection?.text.enumerateLines(invoking: { line, _ in
             guard let binaryImage = BinaryImage(parsingLine: line) else { return }
             binaryImages.append(binaryImage)
         })
@@ -41,11 +41,11 @@ struct BinaryImage: Equatable, Hashable {
             return nil
         }
 
-        name = result[3]
-        path = result[2]
-        loadAddress = result[0]
+        name = result[3].text
+        path = result[2].text
+        loadAddress = result[0].text
 
-        guard let binaryUUID = BinaryUUID(result[1], architecture: nil) else {
+        guard let binaryUUID = BinaryUUID(result[1].text, architecture: nil) else {
             return nil
         }
         uuid = binaryUUID

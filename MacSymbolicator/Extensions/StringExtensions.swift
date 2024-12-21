@@ -35,23 +35,11 @@ extension String {
         )
     }
 
-    func scan(
-        pattern: String,
-        options: NSRegularExpression.Options = [.caseInsensitive, .anchorsMatchLines]
-    ) -> [[String]] {
-        // swiftlint:disable:next force_try
-        let regularExpression = try! NSRegularExpression(pattern: pattern, options: options)
-        let matches = regularExpression.matches(in: self, options: [], range: NSRange(self.startIndex..., in: self))
-        return matches.map {
-            var match = [String]()
-            let startIndex = $0.numberOfRanges == 1 ? 0 : 1
-            for rangeIndex in startIndex...($0.numberOfRanges - 1) {
-                let range = $0.range(at: rangeIndex)
-                if let newRange = Range<Index>(range, in: self) {
-                    match.append(String(self[newRange]))
-                }
-            }
-            return match
+    subscript(_ oldRange: NSRange) -> Substring? {
+        if let range = Range<String.Index>(oldRange, in: self) {
+            return self[range]
+        } else {
+            return nil
         }
     }
 }
