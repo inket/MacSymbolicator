@@ -47,6 +47,10 @@ public class ReportFile {
         do {
             originalContent = try String(contentsOf: path, encoding: .utf8)
                 .trimmingCharacters(in: .whitespacesAndNewlines)
+                // Copying and pasting from Help Scout, and possibly other web based systems,
+                // leaves unconverted &lt; and &gt; in the content
+                .replacingOccurrences(of: "&lt;", with: "<")
+                .replacingOccurrences(of: "&gt;", with: ">")
         } catch {
             throw InitializationError.readingFile(error)
         }
