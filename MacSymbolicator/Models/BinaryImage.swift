@@ -10,7 +10,7 @@ struct BinaryImage: Equatable, Hashable {
     let uuid: BinaryUUID
     let loadAddress: String
 
-    private static let binaryImagesSectionRegex = #"Binary Images:.*"#
+    private static let binaryImagesSectionRegex = #"Binary Images:.*?(?=\n\s*\n|\Z)"#
     private static let binaryImagesLineRegex = #"(0x.*?)\s.*?<(.*?)>.*/(.+)$"#
 
     static func find(in content: String) -> [BinaryImage] {
