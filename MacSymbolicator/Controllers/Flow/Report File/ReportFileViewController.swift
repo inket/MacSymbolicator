@@ -6,6 +6,7 @@
 import AppKit
 import Combine
 
+@MainActor
 protocol ReportFileViewControllerDelegate: AnyObject {
     func reportFileViewController(
         _ reportFileViewController: ReportFileViewController,

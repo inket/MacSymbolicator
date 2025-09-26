@@ -26,10 +26,12 @@ final class SymbolicatorSplitViewController: NSSplitViewController {
 //    }
 }
 
+@MainActor
 protocol DocumentControllerDelegate: AnyObject {
     func documentControllerWillClose(_ documentController: DocumentController)
 }
 
+@MainActor
 final class DocumentController: NSObject {
     private enum Layout {
         static let initialContentSize = CGSize(width: 500, height: 300)

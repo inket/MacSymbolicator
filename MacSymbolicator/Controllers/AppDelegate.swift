@@ -6,7 +6,7 @@
 import Cocoa
 import FullDiskAccess
 
-@NSApplicationMain
+@NSApplicationMain @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var controllers: [DocumentController] = []
 
@@ -91,12 +91,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         return openedSomeFiles
     }
-
-
-    func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
-        return true
-    }
-
 }
 
 // MARK: - DocumentControllerDelegate

@@ -5,8 +5,6 @@
 
 import Cocoa
 
-// swiftlint:disable file_length
-
 protocol DropZoneDelegate: AnyObject {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL]
 }

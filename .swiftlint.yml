@@ -3,9 +3,10 @@ excluded:
   - Carthage
   - DerivedData
 line_length: 120
-file_length: 500
+file_length: 800
 disabled_rules:
   - type_body_length
   - function_body_length
   - for_where
   - trailing_comma
+  - nesting
