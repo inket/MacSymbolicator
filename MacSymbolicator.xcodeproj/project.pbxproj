@@ -37,6 +37,7 @@
 		B236468E2618214F00AB9486 /* StackFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = B236468D2618214F00AB9486 /* StackFrame.swift */; };
 		B24BB98628AFB42600610CF0 /* ReportProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BB98528AFB42600610CF0 /* ReportProcess.swift */; };
 		B24BB98728AFCC5A00610CF0 /* ReportProcess.swift in Sources */ = {isa = PBXBuildFile; fileRef = B24BB98528AFB42600610CF0 /* ReportProcess.swift */; };
+		B259E7FF2E86846D004F309A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = B259E7FE2E86846D004F309A /* AppIcon.icon */; };
 		B272E3C2235F26C500B33076 /* Architecture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C1235F26C500B33076 /* Architecture.swift */; };
 		B272E3C4235F2F6500B33076 /* BinaryUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B272E3C3235F2F6500B33076 /* BinaryUUID.swift */; };
 		B27931341EF2875E00DDAA7D /* DropZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = B27931331EF2875E00DDAA7D /* DropZone.swift */; };
@@ -128,6 +129,7 @@
 		B2364689261818B700AB9486 /* ScanningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningTests.swift; sourceTree = "<group>"; };
 		B236468D2618214F00AB9486 /* StackFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackFrame.swift; sourceTree = "<group>"; };
 		B24BB98528AFB42600610CF0 /* ReportProcess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportProcess.swift; sourceTree = "<group>"; };
+		B259E7FE2E86846D004F309A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		B272E3C1235F26C500B33076 /* Architecture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Architecture.swift; sourceTree = "<group>"; };
 		B272E3C3235F2F6500B33076 /* BinaryUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryUUID.swift; sourceTree = "<group>"; };
 		B27931331EF2875E00DDAA7D /* DropZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropZone.swift; sourceTree = "<group>"; };
@@ -248,6 +250,7 @@
 				B2C2292B1EF223C50015AB33 /* Info.plist */,
 				B2C2292C1EF223C50015AB33 /* MacSymbolicator.entitlements */,
 				B200A3AC1EF23244006CD542 /* Main.storyboard */,
+				B259E7FE2E86846D004F309A /* AppIcon.icon */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -486,6 +489,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2C229271EF223C50015AB33 /* Assets.xcassets in Resources */,
+				B259E7FF2E86846D004F309A /* AppIcon.icon in Resources */,
 				B200A3AA1EF23244006CD542 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
