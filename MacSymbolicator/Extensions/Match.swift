@@ -10,7 +10,7 @@ extension String {
         pattern: String,
         options: NSRegularExpression.Options = [.caseInsensitive, .anchorsMatchLines]
     ) -> [[Match]] {
-        Match(rangeOffset: 0, text: self, originalText: self)
+        Match(text: self, originalText: self)
             .scan(pattern: pattern, options: options)
     }
 }
@@ -26,7 +26,7 @@ struct Match: Hashable, Equatable, Sendable {
         self.originalText = originalText
     }
 
-    init(rangeOffset: Int, text: String, originalText: String) {
+    init(text: String, originalText: String) {
         range = NSRange(location: 0, length: 0)
         self.text = text
         self.originalText = originalText

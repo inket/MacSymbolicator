@@ -333,6 +333,14 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
     }
 
     func searchForDSYMs(resultHandler: @escaping @MainActor ([URL]) -> Void) {
+        guard !remainingDSYMUUIDs.isEmpty else {
+            DispatchQueue.main.async {
+                resultHandler([])
+            }
+
+            return
+        }
+
         isSearchingForDSYMs.value = true
         DSYMSearch.search(
             forUUIDs: Array(remainingDSYMUUIDs),

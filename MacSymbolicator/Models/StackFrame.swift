@@ -9,6 +9,8 @@ final class StackFrame {
     private enum Parsing {
         static let lineRegex = #"^\d+\s+.*?0x.*?\s.*?\s\+\s.*$"#
         static let componentsRegex = #"^\d+\s+(.*?)\s+(0x.*?)\s(.*?)\s\+\s(\d*)"#
+        static let componentsRegexFormat1 = #"0x.*?\s(0x.*?\s\+\s\d+)"#
+        static let componentsRegexFormat2 = #"0x.*?\s((.*?)\s\+\s\d+)"#
         static let sourceCodeRegex = #"\s+(\(([\w\-. ]+\.[\w\-. ]+)\:(\d+)\))"#
 
         static func replacementLoadAddressRegex(address: String, loadAddress: String) -> NSRegularExpression {
@@ -28,7 +30,8 @@ final class StackFrame {
         }
 
         static let sampleLineRegex = #"\?{3}\s+\(in\s.*?\)\s+load\saddress\s+0x.*?\s+\+\s+.*?\s+\[0x.*?\]"#
-        static let sampleComponentsRegex = #"\?{3}\s+\(in\s.*?\)\s+load\saddress\s+(0x.*?)\s+\+\s+(.*?)\s+\[(0x.*?)\]"#
+        // swiftlint:disable:next line_length
+        static let sampleComponentsRegex = #"(\?{3}\s+\(in\s.*?\)\s+load\saddress\s+(0x.*?)\s+\+\s+(.*?))\s+\[(0x.*?)\]"#
 
         static func sampleReplacementRegex(address: String) -> NSRegularExpression {
             // swiftlint:disable:next force_try
@@ -38,14 +41,14 @@ final class StackFrame {
             )
         }
 
-        static let spindumpLineRegex = #"^\s*\*?\d+\s+\?{3}\s+\(.*?\s+\+\s+.*?\)\s+\[0x.*?\]"#
-        static let spindumpComponentsRegex = #"^\s*\*?\d+\s+\?{3}\s+\((.*?)\s\+\s+(.*?)\)\s+\[(0x.*?)\]"#
+        static let spindumpLineRegex = #"^\s*\*?\d+\s+.*?\s+\(.*?\s+\+\s+.*?\)\s+\[0x.*?\]"#
+        static let spindumpComponentsRegex = #"^\s*\*?\d+\s+(.*?\s+\((.*?)\s\+\s+(.*?)\))\s+\[(0x.*?)\]"#
     }
 
     let match: Match
     var symbolicatedMatch: String?
 
-    let loadAddressMatch: Match?
+    let highlightMatch: Match?
 
     let address: String
     let binaryImage: BinaryImage
@@ -90,7 +93,7 @@ final class StackFrame {
     init?(parsing match: Match, binaryImageMap: BinaryImageMap) {
         self.match = match
 
-        let loadAddressMatch: Match?
+        let highlightMatch: Match?
         let loadAddressOrTargetName: String
         let address: String
         let symbolicationRecommended: Bool
@@ -106,17 +109,26 @@ final class StackFrame {
             address = components[1].text
             if components[2].text.hasPrefix("0x") {
                 // Case 1
-                loadAddressMatch = components[2]
+                highlightMatch = match.scan(
+                    pattern: Parsing.componentsRegexFormat1,
+                    options: [.caseInsensitive]
+                ).flatMap { $0 }.first
                 loadAddressOrTargetName = components[2].text
                 symbolicationRecommended = true
             } else if components[0].text == components[2].text {
                 // Case 2
-                loadAddressMatch = components[2]
+                highlightMatch = match.scan(
+                    pattern: Parsing.componentsRegexFormat2,
+                    options: [.caseInsensitive]
+                ).flatMap { $0 }.first
                 loadAddressOrTargetName = components[2].text
                 symbolicationRecommended = true
             } else {
                 // Case 3
-                loadAddressMatch = components[2]
+                highlightMatch = match.scan(
+                    pattern: Parsing.componentsRegexFormat2,
+                    options: [.caseInsensitive]
+                ).flatMap { $0 }.first
                 loadAddressOrTargetName = components[0].text
                 symbolicationRecommended = false
             }
@@ -124,22 +136,23 @@ final class StackFrame {
         } else if let components = match.scan(
             pattern: Parsing.sampleComponentsRegex,
             options: [.caseInsensitive]
-        ).first, components.count == 3 {
-            // Sample format, 0 = load address, 1 = byte offset, 2 = address
-            loadAddressMatch = components[0]
-            loadAddressOrTargetName = components[0].text
-            byteOffset = components[1].text
-            address = components[2].text
+        ).first, components.count == 4 {
+            // Sample format, 0 = ???..., 1 = load address, 2 = byte offset, 3 = address
+            highlightMatch = components[0]
+            loadAddressOrTargetName = components[1].text
+            byteOffset = components[2].text
+            address = components[3].text
             symbolicationRecommended = true
         } else if let components = match.scan(
             pattern: Parsing.spindumpComponentsRegex,
             options: [.caseInsensitive]
-        ).first, components.count == 3 {
-            // Spindump format, 0 = target, 1 = byte offset, 2 = address
-            loadAddressMatch = nil
-            loadAddressOrTargetName = components[0].text
-            byteOffset = components[1].text
-            address = components[2].text
+        ).first, components.count == 4 {
+            // Spindump format, 0 = ???..., 1 = target, 2 = byte offset, 3 = address
+            // TODO: figure out this: if match.text.contains 
+            highlightMatch = components[0]
+            loadAddressOrTargetName = components[1].text
+            byteOffset = components[2].text
+            address = components[3].text
             symbolicationRecommended = true
         } else {
             return nil
@@ -153,7 +166,7 @@ final class StackFrame {
             return nil
         }
 
-        self.loadAddressMatch = loadAddressMatch
+        self.highlightMatch = highlightMatch
         self.address = address
         self.binaryImage = binaryImage
         self.symbolicationRecommended = symbolicationRecommended

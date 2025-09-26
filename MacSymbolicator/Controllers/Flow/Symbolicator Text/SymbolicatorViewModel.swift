@@ -100,7 +100,7 @@ final class SymbolicatorViewModel {
         (await reportFile.processes).forEach { process in
             process.frames.forEach { frame in
                 guard
-                    let loadAddressMatch = frame.loadAddressMatch
+                    let highlightMatch = frame.highlightMatch
                 else { return }
 
                 let state: SymbolicatorToken.State
@@ -114,9 +114,9 @@ final class SymbolicatorViewModel {
 
                 tokens.append(
                     .init(
-                        range: loadAddressMatch.range,
-                        text: loadAddressMatch.text,
-                        replacementText: "YAY\(loadAddressMatch.text)YAY",
+                        range: highlightMatch.range,
+                        text: highlightMatch.text,
+                        replacementText: "YAY\(highlightMatch.text)YAY",
                         state: state,
                         font: font
                     )
