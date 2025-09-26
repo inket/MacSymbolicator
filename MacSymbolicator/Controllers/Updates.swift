@@ -1,48 +1,50 @@
 //
-//  Releases.swift
+//  Updates.swift
 //  MacSymbolicator
 //
 
 import Foundation
 
-extension OperatingSystemVersion {
+struct Version {
+    let major: Int
+    let minor: Int
+    let patch: Int
+
     init(string: String) {
         let components = string.components(separatedBy: ".")
 
-        self.init(
-            majorVersion: components.count > 0 ? Int(components[0]) ?? 0 : 0,
-            minorVersion: components.count > 1 ? Int(components[1]) ?? 0 : 0,
-            patchVersion: components.count > 2 ? Int(components[2]) ?? 0 : 0
-        )
+        major = components.count > 0 ? Int(components[0]) ?? 0 : 0
+        minor = components.count > 1 ? Int(components[1]) ?? 0 : 0
+        patch = components.count > 2 ? Int(components[2]) ?? 0 : 0
     }
 
     var string: String {
-        "\(majorVersion).\(minorVersion).\(patchVersion)"
+        "\(major).\(minor).\(patch)"
     }
 }
 
-extension OperatingSystemVersion: Comparable {
-    public static func == (lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Bool {
-        lhs.majorVersion == rhs.majorVersion &&
-        lhs.minorVersion == rhs.minorVersion &&
-        lhs.patchVersion == rhs.patchVersion
+extension Version: Comparable {
+    public static func == (lhs: Version, rhs: Version) -> Bool {
+        lhs.major == rhs.major &&
+        lhs.minor == rhs.minor &&
+        lhs.patch == rhs.patch
     }
 
-    public static func < (lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Bool {
-        lessThan(lhs: lhs.majorVersion, rhs: rhs.majorVersion) {
-            lessThan(lhs: lhs.minorVersion, rhs: rhs.minorVersion) {
-                lessThan(lhs: lhs.patchVersion, rhs: rhs.patchVersion, orEqual: nil)
-            }
-        }
+    public static func < (lhs: Version, rhs: Version) -> Bool {
+        lessThan(lhs: lhs.major, rhs: rhs.major, whenEqual: {
+            lessThan(lhs: lhs.minor, rhs: rhs.minor, whenEqual: {
+                lessThan(lhs: lhs.patch, rhs: rhs.patch, whenEqual: nil)
+            })
+        })
     }
 
-    private static func lessThan(lhs: Int, rhs: Int, orEqual: (() -> Bool)?) -> Bool {
+    private static func lessThan(lhs: Int, rhs: Int, whenEqual: (() -> Bool)?) -> Bool {
         if lhs < rhs {
             return true
         } else if lhs > rhs {
             return false
         } else {
-            return orEqual?() ?? false
+            return whenEqual?() ?? false
         }
     }
 }
@@ -73,8 +75,8 @@ final class Updates {
         let name: String
         let tagName: String
 
-        var version: OperatingSystemVersion {
-            return OperatingSystemVersion(string: tagName)
+        var version: Version {
+            Version(string: tagName)
         }
     }
 
@@ -100,7 +102,7 @@ final class Updates {
                 return mainCallback(nil, UpdatesError.couldntReadAppVersion)
             }
 
-            if highestVersionRelease.version > OperatingSystemVersion(string: appVersion) {
+            if highestVersionRelease.version > Version(string: appVersion) {
                 return mainCallback(highestVersionRelease, nil)
             } else {
                 return mainCallback(nil, nil)
