@@ -18,6 +18,12 @@ final class DSYMListViewController: NSViewController {
         activatesAppAfterDrop: true
     )
 
+    var minimumWidth: CGFloat = 240 {
+        didSet {
+            updateMinimumWidth()
+        }
+    }
+
     init(reportFile: ReportFile, dsymRequirements: DSYMRequirements, logController: any LogController) {
         self.reportFile = reportFile
 
@@ -37,16 +43,21 @@ final class DSYMListViewController: NSViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func loadView() {
+        view = CustomIntrinsicContentSizeView()
+        updateMinimumWidth()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         dropZone.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(dropZone)
         NSLayoutConstraint.activate([
-            dropZone.topAnchor.constraint(equalTo: view.topAnchor),
-            dropZone.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            dropZone.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            dropZone.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            dropZone.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            dropZone.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            dropZone.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            dropZone.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
 
@@ -68,11 +79,43 @@ final class DSYMListViewController: NSViewController {
     func appearAnimationCompleted() {
         startSearchForDSYMs()
     }
+
+    private func updateMinimumWidth() {
+        let loadedView: NSView? = isViewLoaded ? view : nil
+
+        (loadedView as? CustomIntrinsicContentSizeView)?.intrinsicContentSizeValue = .override(
+            NSSize(width: minimumWidth, height: NSView.noIntrinsicMetric)
+        )
+    }
 }
+
+// MARK: - DropZoneDelegate
 
 extension DSYMListViewController: DropZoneDelegate {
     func receivedFiles(dropZone: DropZone, fileURLs: [URL]) -> [URL] {
         let dsymFiles = fileURLs.flatMap { DSYMFile.dsymFiles(from: $0) }
         return dsymFiles.map { $0.path }
+    }
+}
+
+private class CustomIntrinsicContentSizeView: NSView {
+    enum Value {
+        case `default`
+        case override(NSSize)
+    }
+
+    var intrinsicContentSizeValue: Value = .default {
+        didSet {
+            invalidateIntrinsicContentSize()
+        }
+    }
+
+    override var intrinsicContentSize: NSSize {
+        switch intrinsicContentSizeValue {
+        case .default:
+            super.intrinsicContentSize
+        case .override(let nSSize):
+            nSSize
+        }
     }
 }

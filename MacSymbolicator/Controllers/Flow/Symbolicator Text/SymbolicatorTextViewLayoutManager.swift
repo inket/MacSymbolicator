@@ -117,26 +117,26 @@ extension SymbolicatorTextViewLayoutManager {
         // The solution is to find out the rect for each line until we've had all vertically distinct bounding rects.
         guard glyphRange.range.length > 1 else {
             return [BoundingRect(
-                rect: boundingRect(forGlyphRange: glyphRange.range, in: container),
+                rect: insetBoundingRect(forGlyphRange: glyphRange.range, in: container),
                 includesTextStart: glyphRange.includesTextStart,
                 includesTextEnd: glyphRange.includesTextEnd
             )]
         }
 
         let firstCharacterRange = NSRange(location: glyphRange.range.location, length: 1)
-        let firstCharacterRect = boundingRect(forGlyphRange: firstCharacterRange, in: container)
+        let firstCharacterRect = insetBoundingRect(forGlyphRange: firstCharacterRange, in: container)
         let lastCharacterRange = NSRange(location: glyphRange.range.location + glyphRange.range.length - 1, length: 1)
-        let lastCharacterRect = boundingRect(forGlyphRange: lastCharacterRange, in: container)
+        let lastCharacterRect = insetBoundingRect(forGlyphRange: lastCharacterRange, in: container)
 
         if firstCharacterRect.maxY == lastCharacterRect.maxY, firstCharacterRect.minY == lastCharacterRect.minY {
             // Both the first character and the last character are on the same rect, meaning it's one line
             return [BoundingRect(
-                rect: boundingRect(forGlyphRange: glyphRange.range, in: container),
+                rect: insetBoundingRect(forGlyphRange: glyphRange.range, in: container),
                 includesTextStart: glyphRange.includesTextStart,
                 includesTextEnd: glyphRange.includesTextEnd
             )]
         } else {
-            let entireTextRect = boundingRect(forGlyphRange: glyphRange.range, in: container)
+            let entireTextRect = insetBoundingRect(forGlyphRange: glyphRange.range, in: container)
             let firstLineRect = NSRect(
                 x: firstCharacterRect.minX,
                 y: firstCharacterRect.minY,
@@ -154,7 +154,7 @@ extension SymbolicatorTextViewLayoutManager {
             var workingRange = NSRange(location: glyphRange.range.location, length: 1)
             var previousLineRect = firstLineRect
             while workingRange.upperBound <= glyphRange.range.upperBound, previousLineRect.minY != lastLineRect.minY {
-                let newLineRect = boundingRect(forGlyphRange: workingRange, in: container)
+                let newLineRect = insetBoundingRect(forGlyphRange: workingRange, in: container)
 
                 if newLineRect.minY != previousLineRect.minY, newLineRect.minY != lastLineRect.minY {
                     // New line
@@ -196,5 +196,11 @@ extension SymbolicatorTextViewLayoutManager {
             ))
             return result
         }
+    }
+
+    private func insetBoundingRect(forGlyphRange glyphRange: NSRange, in container: NSTextContainer) -> NSRect {
+        let rect = boundingRect(forGlyphRange: glyphRange, in: container)
+        guard let textContainerInset = container.textView?.textContainerInset else { return rect }
+        return rect.offsetBy(dx: textContainerInset.width, dy: textContainerInset.height)
     }
 }

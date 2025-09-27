@@ -65,10 +65,10 @@ final class ReportFileViewController: NSViewController {
         loadingStackView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            dropZone.topAnchor.constraint(equalTo: view.topAnchor),
-            dropZone.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            dropZone.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            dropZone.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            dropZone.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            dropZone.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            dropZone.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            dropZone.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 
             loadingStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)

@@ -40,6 +40,7 @@ final class SymbolicatorViewController: NSViewController {
         textView.autoresizingMask = .width
         textView.font = viewModel.font
         textView.isEditable = false
+        textView.textContainerInset = NSSize(width: 16, height: 16)
 
         scrollView.documentView = textView
 

@@ -60,7 +60,6 @@ final class DocumentController: NSObject {
     private var symbolicatorViewController: SymbolicatorViewController?
     private var dsymFilesOnHold: [DSYMFile] = []
     private var dsymListViewController: DSYMListViewController?
-    private var dsymListSplitViewWidthConstraint: NSLayoutConstraint?
 
     // MARK: - Methods
 
@@ -75,11 +74,9 @@ final class DocumentController: NSObject {
         reportFileViewController.delegate = self
 
         window.isReleasedWhenClosed = false
-        window.styleMask = [.titled, .unifiedTitleAndToolbar, .closable, .miniaturizable]
+        window.styleMask = [.titled, .closable, .resizable, .miniaturizable, .fullSizeContentView]
         window.titleVisibility = .visible
         window.title = "MacSymbolicator"
-        let customToolbar = NSToolbar()
-        window.toolbar = customToolbar
         window.setContentSize(Layout.initialContentSize)
         window.contentMinSize = Layout.initialContentSize
         window.contentMaxSize = Layout.initialContentSize
@@ -117,10 +114,6 @@ final class DocumentController: NSObject {
         case .initial(let reportFile):
             window.subtitle = reportFile?.filename ?? ""
         case .symbolicating(let reportFile):
-            guard let contentView = window.contentView else {
-                fatalError("window has no contentView")
-            }
-
             let symbolicatorViewModel = SymbolicatorViewModel(reportFile: reportFile, defaultSaveURL: nil)
             let symbolicatorViewController = SymbolicatorViewController(viewModel: symbolicatorViewModel)
 
@@ -129,42 +122,22 @@ final class DocumentController: NSObject {
                 dsymRequirements: await reportFile.dsymRequirements,
                 logController: logController
             )
+            dsymListViewController.minimumWidth = Layout.initialSidebarWidth
             _ = dsymListViewController.acceptDSYMFiles(dsymFilesOnHold)
             self.dsymListViewController = dsymListViewController
 
-            let dsymListSplitViewItem = NSSplitViewItem(contentListWithViewController: dsymListViewController)
+            let dsymListSplitViewItem = NSSplitViewItem(sidebarWithViewController: dsymListViewController)
+            dsymListSplitViewItem.canCollapse = false
             dsymListSplitViewItem.minimumThickness = Layout.initialSidebarWidth
-//            dsymListSplitViewItem.maximumThickness = Layout.initialSidebarWidth
-            let textViewSplitViewItem = NSSplitViewItem(viewController: symbolicatorViewController)
+            let textViewSplitViewItem = NSSplitViewItem(contentListWithViewController: symbolicatorViewController)
             textViewSplitViewItem.minimumThickness = 500
             splitViewController.addSplitViewItem(dsymListSplitViewItem)
             splitViewController.addSplitViewItem(textViewSplitViewItem)
 
             splitViewController.view.alphaValue = 0
             splitViewController.view.translatesAutoresizingMaskIntoConstraints = false
-            contentView.addSubview(splitViewController.view)
 
-            // Initial width is fixed to animate properly, changed later to allow resizing
-            let dsymListSplitViewWidthConstraint = dsymListViewController.view.widthAnchor.constraint(
-                greaterThanOrEqualToConstant: Layout.initialSidebarWidth
-            ).withPriority(.required)
-
-            NSLayoutConstraint.activate([
-                splitViewController.view.topAnchor.constraint(equalTo: contentView.topAnchor),
-                splitViewController.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                splitViewController.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-                splitViewController.view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-
-//                textViewController.view.widthAnchor.constraint(
-//                    greaterThanOrEqualTo: contentView.widthAnchor,
-//                    multiplier: 0.6
-//                ).withPriority(.defaultHigh),
-//                dsymListViewController.view.widthAnchor.constraint(
-//                    equalToConstant: Layout.initialSidebarWidth
-//                ).withPriority(.defaultLow),
-//
-//                dsymListSplitViewWidthConstraint,
-            ])
+            window.contentViewController = splitViewController
 
             if skipsAnimation {
                 reportFileViewController.view.removeFromSuperview()
@@ -208,22 +181,11 @@ final class DocumentController: NSObject {
                         DispatchQueue.main.async {
                             dsymListViewController.appearAnimationCompleted()
                         }
-
-//                        dsymListSplitViewItem.maximumThickness = NSSplitViewItem.unspecifiedDimension
-                        // To allow resizing
-//                        self.dsymListViewController?.view.widthAnchor.constraint(
-//                            greaterThanOrEqualToConstant: Layout.initialSidebarWidth
-//                        ).isActive = true
-//                        dsymListSplitViewWidthConstraint.isActive = false
-//                        self.dsymListViewController.view.setContentHuggingPriority(.defaultH buioj
-//                            dsymListSplitViewWidthConstraint.isActive = false
-//                        }
                     }
                 )
             }
 
             window.subtitle = reportFile.filename
-            window.styleMask = [.titled, .unifiedTitleAndToolbar, .closable, .miniaturizable, .resizable]
         }
     }
 

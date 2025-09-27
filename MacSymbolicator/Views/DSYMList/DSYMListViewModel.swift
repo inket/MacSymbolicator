@@ -223,6 +223,7 @@ final class DSYMListViewModel: NSObject, DropZoneTableViewViewModel {
         tableViewScrollView.automaticallyAdjustsContentInsets = false
         tableViewScrollView.contentInsets = NSEdgeInsets(top: -10, left: 0, bottom: 0, right: 0)
         tableViewScrollView.hasVerticalScroller = true
+        tableViewScrollView.backgroundColor = .clear
 
         let column = NSTableColumn(identifier: .init(rawValue: "name"))
         column.width = tableView.frame.size.width
@@ -523,6 +524,12 @@ final private class DSYMListTableViewDSYMRow: NSTableRowView {
 
     func copyableUUIDs() -> String? {
         (cellView as? InteractableDSYMCellView)?.copyableUUIDs()
+    }
+
+    override func addSubview(_ view: NSView) {
+        super.addSubview(view)
+
+        view.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -24).isActive = true
     }
 }
 

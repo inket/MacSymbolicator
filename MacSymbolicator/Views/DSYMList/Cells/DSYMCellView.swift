@@ -24,8 +24,8 @@ class DSYMCellView: NSView {
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6),
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 4),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4).withPriority(.required),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6).withPriority(.required)
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -4),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6)
         ])
     }
 
