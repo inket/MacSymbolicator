@@ -61,6 +61,7 @@
 		B2CA03D72B9CC15700AE3DFA /* FullDiskAccess in Frameworks */ = {isa = PBXBuildFile; productRef = B2CA03D62B9CC15700AE3DFA /* FullDiskAccess */; };
 		B2EC0F4126450D0B00E5473C /* DSYMTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2EC0F4026450D0B00E5473C /* DSYMTests.swift */; };
 		B2F6E9AF2B9E962500F2AEE2 /* FullDiskAccess in Frameworks */ = {isa = PBXBuildFile; productRef = B2F6E9AE2B9E962500F2AEE2 /* FullDiskAccess */; };
+		B518E9CF2EA6D21900EB1AB2 /* SymbolStoreSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B518E9CE2EA6D20B00EB1AB2 /* SymbolStoreSearch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -148,6 +149,7 @@
 		B2C2292C1EF223C50015AB33 /* MacSymbolicator.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MacSymbolicator.entitlements; sourceTree = "<group>"; };
 		B2EC0F4026450D0B00E5473C /* DSYMTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DSYMTests.swift; sourceTree = "<group>"; };
 		B2F64E012B9339F700D1410D /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		B518E9CE2EA6D20B00EB1AB2 /* SymbolStoreSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolStoreSearch.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -228,6 +230,7 @@
 		B289E0A023F5F72A0019C28B /* DSYM Search */ = {
 			isa = PBXGroup;
 			children = (
+				B518E9CE2EA6D20B00EB1AB2 /* SymbolStoreSearch.swift */,
 				B289E0A123F5F7350019C28B /* DSYMSearch.swift */,
 				B289E0A323F5F77C0019C28B /* SpotlightSearch.swift */,
 				B21CA7E71EFCB61500AD9B75 /* FileSearch.swift */,
@@ -529,6 +532,7 @@
 				B2B74D8F1EF8E9CC000BBFD6 /* StringExtensions.swift in Sources */,
 				B2B74D8D1EF8E925000BBFD6 /* DSYMFile.swift in Sources */,
 				B2B74D8B1EF8BF70000BBFD6 /* MainController.swift in Sources */,
+				B518E9CF2EA6D21900EB1AB2 /* SymbolStoreSearch.swift in Sources */,
 				B295FFB3232DDCE8002791BF /* TextWindowController.swift in Sources */,
 				B23646872618178400AB9486 /* BinaryImage.swift in Sources */,
 				B24BB98628AFB42600610CF0 /* ReportProcess.swift in Sources */,

@@ -107,12 +107,29 @@ class DSYMSearch {
                 processingResult = processSearchResults(
                     recursiveFileSearchResults,
                     expectedUUIDs: expectedUUIDs,
-                    finished: true,
+                    finished: false,
                     logHandler: logMessage,
                     callback: callback
                 )
                 missingUUIDs = processingResult.missingUUIDs
-                logMessage("Missing UUIDs: \(missingUUIDs)")
+
+                // Try downloading them using the user's symbol search
+                guard !missingUUIDs.isEmpty else { return }
+
+                SymbolStoreSearch().search(forUUIDs: missingUUIDs, logHandler: logMessage) { results, finished in
+                    if let results {
+                         processingResult = processSearchResults(
+                             results,
+                             expectedUUIDs: expectedUUIDs,
+                             finished: finished,
+                             logHandler: logMessage,
+                             callback: callback
+                         )
+                     } else {
+                         logMessage("Symbol server query failure.")
+                         processingResult = ProcessingResult(missingUUIDs: expectedUUIDs)
+                     }
+                }
             }
         }
     }
