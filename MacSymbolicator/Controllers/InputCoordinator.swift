@@ -78,7 +78,7 @@ class InputCoordinator {
                 DispatchQueue.main.async {
                     results?.forEach { dsymResult in
                         let dsymURL = URL(fileURLWithPath: dsymResult.path)
-                        self?.dsymFilesDropZone.acceptFile(url: dsymURL)
+                        self?.dsymFilesDropZone.acceptFile(url: dsymURL, validate: false)
                     }
 
                     if finished {
