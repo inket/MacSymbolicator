@@ -402,8 +402,10 @@ class DropZone: NSView {
     }
 
     @discardableResult
-    func acceptFile(url fileURL: URL) -> Bool {
-        guard validFileURL(fileURL) else { return false }
+    func acceptFile(url fileURL: URL, validate: Bool = true) -> Bool {
+        if validate {
+            guard validFileURL(fileURL) else { return false }
+        }
 
         let acceptedFileURLs = delegate?.receivedFiles(dropZone: self, fileURLs: [fileURL]) ?? [fileURL]
 
